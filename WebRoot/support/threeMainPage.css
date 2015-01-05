@@ -1,0 +1,28 @@
+input, select {
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #aaa;
+	border-radius: 5px;		
+}
+
+#appDate,#form-field-select-1 {
+	display:block;
+	padding: 5px;
+	margin: 5px 0;
+	border: 1px solid #aaa;
+	border-radius: 5px;		
+}
+
+label{
+	font-size:18px;
+	display:block;
+	padding: 5px;
+	margin: 5px 0;
+}
+
+hr {
+	margin-top: 20px;
+	margin-bottom: 20px;
+	border: 0;
+	border-top: 1px solid #eee;
+}

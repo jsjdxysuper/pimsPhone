@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="pimsPhone"
+  id="myeclipse.1420451651396"
+  context-root="/pimsPhone"
+  j2ee-spec="6.0"
+  archive="pimsPhone.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+
