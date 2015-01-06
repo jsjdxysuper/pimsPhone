@@ -3,7 +3,7 @@
 <html manifest="generator.manifest">
 	<head>
     	<meta name="viewport" content="width=device-width">
-		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Highcharts Example</title>
   		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>
          <script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>    
@@ -218,6 +218,24 @@ $(function () {
             }]
         });
     });
+    
+    submit_request = function()
+    {
+    	var date = $("#appDate").val().trim();
+    	var time_span = $("#menu_title").text().trim();
+    	$.ajax({
+    		url:"http://localhost:8080/pimsPhone/GeneratorServlet",
+    		data:$.param({"date":date,"time_span":time_span}),
+    		type:"post"  		
+    	})
+    	.done(function(data,statusText){
+    		
+    		alert(data);
+    	})
+    	.fail(function(){
+    		alert("服务器响应出错");
+    	});
+    };
 	</script>
 	
 	<script type="text/javascript" src="./support/threeMainPage.js"></script>
@@ -253,6 +271,7 @@ $(function () {
         </div>
 														
 	</div>
+	<button id="submit_request" onclick="submit_request()">查询</button>
 </div>
 <hr style="clear:left">
     <!--机组的统计信息(表格)-->
@@ -265,7 +284,7 @@ $(function () {
         </thead>  
             <tbody>   
                 <tr>   
-                    <td>容量</td><td>1245</td><td>最大出力</td><td>27233</td>   
+                    <td>容量</td><td>1200</td><td>最大出力</td><td>27233</td>   
                 </tr>   
                 <tr>   
                     <td>平均出力</td><td>1545</td><td>最小出力</td><td>2323</td>   
@@ -284,7 +303,7 @@ $(function () {
             <div id="container-speed" style=""></div>
             <div style="margin:0 auto">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
-                <div style=" ">机组容量</div>
+                <div style=" ">机组容量:600</div>
                 <div style="">发电量</div>
                 <div style="">最小出力</div>
             </div>
@@ -298,7 +317,7 @@ $(function () {
             <div id="container-rpm" style=""></div>
             <div style="margin:0 auto;text-align:center;width:100%">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
-                <div style="">机组容量</div>
+                <div style="">机组容量:600</div>
                 <div style="">发电量</div>
                 <div style="">最小出力</div>
             </div>
@@ -336,5 +355,6 @@ $(function () {
 			
 
         </script>
+        <div id="content_my" style="clear:both"></div>
 	</body>
 </html>

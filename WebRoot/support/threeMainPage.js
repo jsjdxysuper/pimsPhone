@@ -10,7 +10,7 @@ $(function () {
         display: 'modal', //显示方式 
         mode: 'mixed', //日期选择模式
 		lang:'zh',
-        startYear:currYear - 10, //开始年份
+        startYear:currYear - 5, //开始年份
         endYear:currYear + 10 //结束年份
 	};
 	$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
