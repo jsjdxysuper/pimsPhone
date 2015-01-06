@@ -1,0 +1,26 @@
+CACHE MANIFEST
+#version 1
+CACHE:
+./support/jquery-1.11.2.min.js
+./support/ace/assets/css/bootstrap.min.css
+./support/easyui/jquery.easyui.min.js
+./support/datatable/media/css/jquery.dataTables.min.css
+./support/datatable/media/js/jquery.dataTables.min.js
+./support/datepicker/js/mobiscroll.core-2.5.2.js
+./support/datepicker/js/mobiscroll.core-2.5.2-zh.js
+./support/datepicker/css/mobiscroll.core-2.5.2.css
+./support/datepicker/css/mobiscroll.animation-2.5.2.css
+./support/datepicker/js/mobiscroll.datetime-2.5.1.js
+./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js
+./support/datepicker/js/mobiscroll.android-ics-2.5.2.js
+./support/datepicker/css/mobiscroll.android-ics-2.5.2.css
+./support/highcharts/js/highcharts.js
+./support/highcharts/js/modules/exporting.js
+./support/highcharts/js/highcharts-more.js
+./support/highcharts/js/modules/solid-gauge.js
+./support/ace/assets/js/bootstrap.min.js
+./support/bootstrap/js/bootstrap.min.js
+./support/bootstrap/css/bootstrap.min.css
+NETWORK:
+
+FALLBACK:
