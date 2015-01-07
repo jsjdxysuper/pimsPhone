@@ -73,7 +73,7 @@ $(function () {
             tickPixelInterval: 400,
             tickWidth: 0,
 	        title: {
-                y: -40//标题的位置
+                y: -60//标题的位置
 	        },
             labels: {
                 y: 10//表盘刻度位置
@@ -245,7 +245,7 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://192.168.137.1:8080/pimsPhone/GeneratorServlet",
+    		url:"http://192.168.1.102:8080/pimsPhone/GeneratorServlet",
     		data:$.param({"date":date,"time_span":time_span}),
     		type:"post"  		
     	})
@@ -319,6 +319,14 @@ $(function () {
 	</div>
 	<button id="submitRequest" onclick="submitRequest()">查询</button>
 </div>
+
+
+<div id="g1Container" style="float:left"></div>
+<div id="g2Container" style="float:left"></div>
+
+
+
+
 <hr style="clear:left">
     <!--机组的统计信息(表格)-->
     <div style="margin: 0px auto 20px auto;clear:left">
@@ -346,7 +354,7 @@ $(function () {
     <!--机组实时信息(表盘)-->
     <div style=" height: 200px; margin: 0px auto 40px auto;text-align:center;">
         <div style="text-align:center;width:50%; float: left;">
-            <div id="g1Container" style=""></div>
+            
             <div style="margin:0 auto">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
                 <div style="" id="g1Volume">机组容量</div>
@@ -360,7 +368,7 @@ $(function () {
             </div>     
         </div>
         <div style="text-align:center;width: 50%;  float: left;">
-            <div id="g2Container" style=""></div>
+            
             <div style="margin:0 auto;text-align:center;width:100%">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
                 <div style="" id="g2Volume">机组容量</div>
@@ -389,13 +397,13 @@ $(function () {
 					container_rpm=document.getElementById('g2Container');
 					//table_width=document.getElementById('table_id2').offsetWidth;
 					table_width=window.screen.width;
-					wid=table_width/2;
-					container_speed.style.width='100%';
-					container_rpm.style.width='100%';
+					wid=document.body.clientWidth/2;
+					container_speed.style.width=wid-10+'px';
+					container_rpm.style.width=wid-10+'px';
 					
 					container_speed.style.height=(container_speed.offsetWidth/9*7)+'px';
 					container_rpm.style.height=(container_rpm.offsetWidth/9*7)+'px';
-			}
+			};
 			
 			window.onresize= resize_gauge;
 			resize_gauge();
