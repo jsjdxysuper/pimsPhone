@@ -8,6 +8,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -26,6 +27,7 @@ public class GeneratorServlet extends HttpServlet {
 
 	private String date;
 	private String time_span;
+	private String dateWildcard;
 	/**
 	 * Constructor of the object.
 	 */
@@ -96,11 +98,17 @@ public class GeneratorServlet extends HttpServlet {
 	}
 
 	
-	public String getData(){
+
+	/**
+	 * 获得电厂的总体运行数据
+	 * @return 含有康平电厂信息的MAP
+	 */
+	public HashMap<String,String> getPlantData(){
 		
+		HashMap<String,String> plantData = new HashMap<String,String>();
 		OracleConnection oc = new OracleConnection();
 		String plantSqlStr="select RQ,SJ,YG from info_data_dcyg t where DCMC='沈阳康平电厂'AND RQ like ? ORDER BY RQ,SJ";
-		String dataPara;
+
 		float max,min,average,energy,timeUse,sum,timeOfHours;
 		
 		min             = Float.MAX_VALUE;
@@ -111,25 +119,11 @@ public class GeneratorServlet extends HttpServlet {
 		sum             = 0;
 		timeOfHours     = 0;
 		
-		char[]dateSplit = date.toCharArray();
-		if(time_span.compareTo(Tools.time_span[0])==0){//实时
-
-		}else if(time_span.compareTo(Tools.time_span[1])==0){//年
-			dateSplit[5]='%';
-			dateSplit[6]='%';
-			dateSplit[8]='%';
-			dateSplit[9]='%';
-		}else if(time_span.compareTo(Tools.time_span[2])==0){//月
-			dateSplit[8]='%';
-			dateSplit[9]='%';
-		}else if(time_span.compareTo(Tools.time_span[3])==0){//日
-			
-		}
-		dataPara = String.copyValueOf(dateSplit);
-		String []dataParas={dataPara};
+		dateWildcard = Tools.change2WildcardDate(date, time_span);
+		String []dataParas={dateWildcard};
 		System.out.println("time_span"+dataParas[0]);
 		ResultSet rs= oc.query(plantSqlStr,dataParas);
-		JSONObject jo = new JSONObject();
+
 		ArrayList<String> rq = new ArrayList<String>();
 		ArrayList<String> sj = new ArrayList<String>();
 		ArrayList<String> yg = new ArrayList<String>();
@@ -174,18 +168,27 @@ public class GeneratorServlet extends HttpServlet {
 		//保留两位小数
 		DecimalFormat form = new DecimalFormat("##0.00");
 		
-		jo.put("max",form.format(max));
-		jo.put("min", form.format(min));
-		jo.put("average", form.format(average));
-		jo.put("energy",form.format(energy));
-		jo.put("timeUse", form.format(timeUse));
-		jo.put("recordCount", String.valueOf(recordCount));
-		jo.put("timeOfHours", form.format(timeOfHours));
+		plantData.put("max",form.format(max));
+		plantData.put("min", form.format(min));
+		plantData.put("average", form.format(average));
+		plantData.put("energy",form.format(energy));
+		plantData.put("timeUse", form.format(timeUse));
+		plantData.put("recordCount", String.valueOf(recordCount));
+		plantData.put("timeOfHours", form.format(timeOfHours));
 		
+		return plantData;
+	}
+	
+	/**
+	 *  以下代码为康平“机组”信息的查询
+	 * @return 康平机组信息的Map
+	 */
+	public HashMap<String,String> getEachGenerator(){
 		
-		/**
-		 * 以下代码为康平“机组”信息的查询
-		 */
+
+		HashMap<String,String> eachGeneratorData = new HashMap<String,String>();
+
+		OracleConnection oc = new OracleConnection();
 		float g1Max,g1Min,g1Average,g1Energy,g1TimeUse,g1Sum,g1TimeOfHours;
 		float g2Max,g2Min,g2Average,g2Energy,g2TimeUse,g2Sum,g2TimeOfHours;
 		
@@ -195,7 +198,10 @@ public class GeneratorServlet extends HttpServlet {
 		g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
 		
 		String generatorSqlStr="select JZBM,YG from info_data_jzyg t WHERE JZMC IN ('沈阳康平#1机','沈阳康平#2机') AND RQ LIKE ? ORDER BY RQ,SJ";
-		rs = oc.query(generatorSqlStr,dataParas);
+		dateWildcard = Tools.change2WildcardDate(date, time_span);
+		String []dataParas={dateWildcard};
+
+		ResultSet rs = oc.query(generatorSqlStr,dataParas);
 
 		ArrayList<String> g1_yg = new ArrayList<String>();
 		ArrayList<String> g2_yg = new ArrayList<String>();
@@ -238,7 +244,7 @@ public class GeneratorServlet extends HttpServlet {
 			
 		}else
 		{
-			g1Average = g1Sum/recordCount;
+			g1Average = g1Sum/g1RecordCount;
 			g1Energy   = g1Sum/120;
 			g1TimeOfHours    = g1RecordCount/12;
 			g1TimeUse = g1Energy/Tools.rongLiang*10;
@@ -249,27 +255,41 @@ public class GeneratorServlet extends HttpServlet {
 			g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
 		}else
 		{
-			g2Average = g2Sum/recordCount;
+			g2Average = g2Sum/g2RecordCount;
 			g2Energy   = g2Sum/120;
 			g2TimeOfHours    = g2RecordCount/12;
 			g2TimeUse = g2Energy/Tools.rongLiang*10;
 		}	
+		DecimalFormat form = new DecimalFormat("##0.00");
+		eachGeneratorData.put("g1Max",form.format(g1Max));
+		eachGeneratorData.put("g1Min",form.format(g1Min));
+		eachGeneratorData.put("g1Average",form.format(g1Average));
+		eachGeneratorData.put("g1Energy",form.format(g1Energy));
+		eachGeneratorData.put("g1TimeOfHours",form.format(g1TimeOfHours));
+		eachGeneratorData.put("g1TimeUse",form.format(g1TimeUse));
+		
+		eachGeneratorData.put("g2Max",form.format(g2Max));
+		eachGeneratorData.put("g2Min",form.format(g2Min));
+		eachGeneratorData.put("g2Average",form.format(g2Average));
+		eachGeneratorData.put("g2Energy",form.format(g2Energy));
+		eachGeneratorData.put("g2TimeOfHours",form.format(g2TimeOfHours));
+		eachGeneratorData.put("g2TimeUse",form.format(g2TimeUse));
+		return eachGeneratorData;
+	}
+	public String getData(){
+		
+		JSONObject jo = new JSONObject();
 
-		
-		jo.put("g1Max",form.format(g1Max));
-		jo.put("g1Min",form.format(g1Min));
-		jo.put("g1Average",form.format(g1Average));
-		jo.put("g1Energy",form.format(g1Energy));
-		jo.put("g1TimeOfHours",form.format(g1TimeOfHours));
-		jo.put("g1TimeUse",form.format(g1TimeUse));
-		
-		jo.put("g2Max",form.format(g2Max));
-		jo.put("g2Min",form.format(g2Min));
-		jo.put("g2Average",form.format(g2Average));
-		jo.put("g2Energy",form.format(g2Energy));
-		jo.put("g2TimeOfHours",form.format(g2TimeOfHours));
-		jo.put("g2TimeUse",form.format(g2TimeUse));
+		HashMap<String,String> plantMap = getPlantData();
+		HashMap<String,String> generatorMap = getEachGenerator();
+		jo.putAll(plantMap);
+		jo.putAll(generatorMap);
 		return jo.toString();
+		
+		
+		
+		
+		
 	}
 	/**
 	 * Initialization of the servlet. <br>

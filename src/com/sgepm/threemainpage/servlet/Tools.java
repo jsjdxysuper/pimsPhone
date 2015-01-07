@@ -16,6 +16,25 @@ public class Tools {
 		return a[0]+"-"+a[1]+"-"+a[2];
 	}
 	public static float rongLiang = 600;
+	
+	public static String change2WildcardDate(String old,String time_span){
+		char[]dateSplit = old.toCharArray();
+		if(time_span.compareTo(Tools.time_span[0])==0){//实时
+
+		}else if(time_span.compareTo(Tools.time_span[1])==0){//年
+			dateSplit[5]='%';
+			dateSplit[6]='%';
+			dateSplit[8]='%';
+			dateSplit[9]='%';
+		}else if(time_span.compareTo(Tools.time_span[2])==0){//月
+			dateSplit[8]='%';
+			dateSplit[9]='%';
+		}else if(time_span.compareTo(Tools.time_span[3])==0){//日
+			
+		}
+		String newDate = String.copyValueOf(dateSplit);
+		return newDate;
+	}
 //	public static int getHours(String date,String span){
 //		int a = 0;
 //		boolean run_year = false;
