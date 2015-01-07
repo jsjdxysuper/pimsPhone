@@ -115,7 +115,7 @@ public class GeneratorServlet extends HttpServlet {
 		max             = 0;
 		average         = 0;
 		energy          = 0;
-		timeUse        = 0;
+		timeUse         = 0;
 		sum             = 0;
 		timeOfHours     = 0;
 		

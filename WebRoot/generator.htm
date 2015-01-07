@@ -28,6 +28,8 @@
 		<script type="text/javascript">
 			var g1Chart;
 			var g1Option;
+			var g2Chart;
+			var g2Option;
 			
 $(function () {
 	
@@ -91,7 +93,13 @@ $(function () {
     };
     
     // The speed gauge
-    $('#container-speed').highcharts(Highcharts.merge(gaugeOptions, {
+
+    
+	//generator1对应的表盘的option
+	g1Option = Highcharts.merge(gaugeOptions, {
+		chart:{
+	    	renderTo: 'g1Container'
+	    },
         yAxis: {
 	        min: 0,
 	        max: 100,
@@ -106,7 +114,7 @@ $(function () {
 	
 	    series: [{
 	        name: 'Speed',
-	        data: [50],
+	        data: [0],
 	        dataLabels: {
 	        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
                     ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span>' + 
@@ -117,14 +125,15 @@ $(function () {
 	        }
 	    }]
 	
-	}));
-    
+	});//g2Option
 
-	g1Option = Highcharts.merge
+
+	//generator2对应的表盘的option
+	g2Option = Highcharts.merge
 	(gaugeOptions, 
 	    {
 	    	chart:{
-	    		renderTo: 'g1Container'
+	    		renderTo: 'g2Container'
 	    	},
 	        yAxis:{
 	        	min: 0,
@@ -136,7 +145,7 @@ $(function () {
 		
 		    series:[{
 			        name: 'RPM',
-			        data: [90],
+			        data: [0],
 			        dataLabels:{
 			        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
 		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span>' + 
@@ -236,7 +245,7 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://localhost:8080/pimsPhone/GeneratorServlet",
+    		url:"http://192.168.137.1:8080/pimsPhone/GeneratorServlet",
     		data:$.param({"date":date,"time_span":time_span}),
     		type:"post"  		
     	})
@@ -262,8 +271,11 @@ $(function () {
     		$("#g2Min").text("最小出力:"+dataReceived.g2Min);
     		$("#g2Average").text("平均出力:"+dataReceived.g2Average);
     		
-    		g1Option.series[0].data[0] = parseFloat((dataReceived.g2Average/GENERATORVOLUME*100).toFixed(2));
+    		g1Option.series[0].data[0] = parseFloat((dataReceived.g1Average/GENERATORVOLUME*100).toFixed(2));
     		chart = new Highcharts.Chart(g1Option);
+    		
+    		g2Option.series[0].data[0] = parseFloat((dataReceived.g2Average/GENERATORVOLUME*100).toFixed(2));
+    		chart = new Highcharts.Chart(g2Option);
     	})
     	.fail(function(){
     		alert("服务器响应出错");
@@ -310,7 +322,7 @@ $(function () {
 <hr style="clear:left">
     <!--机组的统计信息(表格)-->
     <div style="margin: 0px auto 20px auto;clear:left">
-        <table id="table_id2" class="display cell-border" cellspacing="0" style="height:200px;text-align:center;">   
+        <table id="table_id2" class="display cell-border" cellspacing="0" style="height:200px;text-align:center;font-size: 5px">   
         <thead>
             <tr>
                 <td colspan="4" style="text-align:center">本厂机组统计信息  </td>
@@ -334,7 +346,7 @@ $(function () {
     <!--机组实时信息(表盘)-->
     <div style=" height: 200px; margin: 0px auto 40px auto;text-align:center;">
         <div style="text-align:center;width:50%; float: left;">
-            <div id="container-speed" style=""></div>
+            <div id="g1Container" style=""></div>
             <div style="margin:0 auto">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
                 <div style="" id="g1Volume">机组容量</div>
@@ -348,7 +360,7 @@ $(function () {
             </div>     
         </div>
         <div style="text-align:center;width: 50%;  float: left;">
-            <div id="g1Container" style=""></div>
+            <div id="g2Container" style=""></div>
             <div style="margin:0 auto;text-align:center;width:100%">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
                 <div style="" id="g2Volume">机组容量</div>
@@ -360,10 +372,10 @@ $(function () {
                 <div style="" id="g2Max">最大出力</div>
                 <div style="" id="g2RealtimePower">实时出力</div>
             </div>   
-            </div>        
+        </div>        
         </div>
     
-    </div>
+
 
 <hr>
 
@@ -373,8 +385,8 @@ $(function () {
 
 			var resize_gauge = function()
 			{
-					container_speed=document.getElementById('container-speed');
-					container_rpm=document.getElementById('g1Container');
+					container_speed=document.getElementById('g1Container');
+					container_rpm=document.getElementById('g2Container');
 					//table_width=document.getElementById('table_id2').offsetWidth;
 					table_width=window.screen.width;
 					wid=table_width/2;

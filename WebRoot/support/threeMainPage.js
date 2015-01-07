@@ -2,6 +2,7 @@ var UNITOFPOWER     = "兆瓦";
 var UNITOFENERGY    = "万千瓦时";
 var UNITOFTIMEUSE   = "小时";
 var GENERATORVOLUME = 600;
+var today;
 //日期选择框的控制
 $(function () {
 	var currYear = (new Date()).getFullYear();	
@@ -30,25 +31,29 @@ $(function() {
 	});
 });
 
+
 setDate=function () {
 	
 	var now = new Date();
 	var year = now.getYear();
-	var month = now.getMonth();
+	var month = now.getMonth()+1;
 	var day = now.getDate();
-	var date_now =(year+1900)+'-'+(month+1)+'-'+day
+	if(0 < month < 10)  month = "0"+month;
+	if(0 < day   < 10)  day   = "0"+day;
+	var date_now =(year+1900)+'-'+month+'-'+day
 	//alert(date_now);
 	document.getElementById("appDate").value=date_now;
 	//如果函数submitRequest已经被初始化了，就调用此函数
-	if(!submitRequest);
+	if(typeof(submitRequest) == "undefined");
 	else submitRequest();
 };
 $(document).ready(setDate);
 
+
 $(document).ready(function() {
 
-	
-	$('table').dataTable({
+	//$('#table_id1').DataTable();
+	$('table').DataTable({
 		paging:false,
 		searching:false,
 		info:false
@@ -56,4 +61,3 @@ $(document).ready(function() {
 
 
 });
-
