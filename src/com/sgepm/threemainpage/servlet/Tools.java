@@ -5,7 +5,6 @@ public class Tools {
 	public static String [] time_span      = {"实时","年","月","日"};
 	public static int    [] days_all_month = {31,28,31,30,31,30,31,31,30,31,30,31};
 	public static String formatDate(String date){
-		String date_format;
 		
 		String []a = date.split("-");
 		if(a[1].length()==1){
@@ -16,7 +15,7 @@ public class Tools {
 		}
 		return a[0]+"-"+a[1]+"-"+a[2];
 	}
-	public static float rong_liang = 600;
+	public static float rongLiang = 600;
 //	public static int getHours(String date,String span){
 //		int a = 0;
 //		boolean run_year = false;

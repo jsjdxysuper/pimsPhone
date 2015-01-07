@@ -99,38 +99,46 @@ public class GeneratorServlet extends HttpServlet {
 	public String getData(){
 		
 		OracleConnection oc = new OracleConnection();
-		String sqlStr="select RQ,SJ,YG from info_data_dcyg t where DCMC='沈阳康平电厂'AND RQ like ? ORDER BY RQ,SJ";
-		String para;
-		float max,min,average,energy,time_use,sum,time;
+		String plantSqlStr="select RQ,SJ,YG from info_data_dcyg t where DCMC='沈阳康平电厂'AND RQ like ? ORDER BY RQ,SJ";
+		String dataPara;
+		float max,min,average,energy,timeUse,sum,timeOfHours;
 		
-		min = Float.MAX_VALUE;
-		max = average=energy=time_use=sum=0;
-		char[]temp = date.toCharArray();
+		min             = Float.MAX_VALUE;
+		max             = 0;
+		average         = 0;
+		energy          = 0;
+		timeUse        = 0;
+		sum             = 0;
+		timeOfHours     = 0;
+		
+		char[]dateSplit = date.toCharArray();
 		if(time_span.compareTo(Tools.time_span[0])==0){//实时
 
 		}else if(time_span.compareTo(Tools.time_span[1])==0){//年
-			temp[5]='%';
-			temp[6]='%';
-			temp[8]='%';
-			temp[9]='%';
+			dateSplit[5]='%';
+			dateSplit[6]='%';
+			dateSplit[8]='%';
+			dateSplit[9]='%';
 		}else if(time_span.compareTo(Tools.time_span[2])==0){//月
-			temp[8]='%';
-			temp[9]='%';
+			dateSplit[8]='%';
+			dateSplit[9]='%';
 		}else if(time_span.compareTo(Tools.time_span[3])==0){//日
 			
 		}
-		para = String.copyValueOf(temp);
-		String []a={para};
-		System.out.println("time_span"+a[0]);
-		ResultSet rs= oc.query(sqlStr,a);
+		dataPara = String.copyValueOf(dateSplit);
+		String []dataParas={dataPara};
+		System.out.println("time_span"+dataParas[0]);
+		ResultSet rs= oc.query(plantSqlStr,dataParas);
 		JSONObject jo = new JSONObject();
 		ArrayList<String> rq = new ArrayList<String>();
 		ArrayList<String> sj = new ArrayList<String>();
 		ArrayList<String> yg = new ArrayList<String>();
 
-		
+		//recordCount与rq.size()是有区别的，某时刻有功为零不计入rqlist，单是recordCount里面会计数
+		long recordCount = 0;
 		try {
 			while(rs.next()){
+				recordCount++;
 				String aa = rs.getString(1);
 				String bb = rs.getString(2);
 				String cc = rs.getString(3);
@@ -149,13 +157,20 @@ public class GeneratorServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		//为了避免查询数据为空
-		if(yg.size()==0)
-			return null;
-		average = sum/yg.size();
-		energy   = sum/120;
-		time    = yg.size()/12;
-		time_use = energy/Tools.rong_liang*10;
-
+		if(recordCount==0)
+		{
+			average     = 0;
+			energy      = 0;
+			timeOfHours = 0;
+			timeUse     = 0;
+			max			= 0;
+			min         = 0;
+		}else{
+			average = sum/recordCount;
+			energy   = sum/120;
+			timeOfHours    = recordCount/12;
+			timeUse = energy/Tools.rongLiang*10;
+		}
 		//保留两位小数
 		DecimalFormat form = new DecimalFormat("##0.00");
 		
@@ -163,9 +178,97 @@ public class GeneratorServlet extends HttpServlet {
 		jo.put("min", form.format(min));
 		jo.put("average", form.format(average));
 		jo.put("energy",form.format(energy));
-		jo.put("time_use", form.format(time_use));
+		jo.put("timeUse", form.format(timeUse));
+		jo.put("recordCount", String.valueOf(recordCount));
+		jo.put("timeOfHours", form.format(timeOfHours));
 		
 		
+		/**
+		 * 以下代码为康平“机组”信息的查询
+		 */
+		float g1Max,g1Min,g1Average,g1Energy,g1TimeUse,g1Sum,g1TimeOfHours;
+		float g2Max,g2Min,g2Average,g2Energy,g2TimeUse,g2Sum,g2TimeOfHours;
+		
+		g1Min = Float.MAX_VALUE;
+		g2Min = Float.MAX_VALUE;
+		g1Max=g1Average=g1Energy=g1TimeUse=g1Sum=g1TimeOfHours=0;
+		g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
+		
+		String generatorSqlStr="select JZBM,YG from info_data_jzyg t WHERE JZMC IN ('沈阳康平#1机','沈阳康平#2机') AND RQ LIKE ? ORDER BY RQ,SJ";
+		rs = oc.query(generatorSqlStr,dataParas);
+
+		ArrayList<String> g1_yg = new ArrayList<String>();
+		ArrayList<String> g2_yg = new ArrayList<String>();
+		
+		long g1RecordCount = 0, g2RecordCount = 0;
+		try {
+			while(rs.next()){
+				
+				String bb = rs.getString(1);
+				String cc = rs.getString(2);
+				if(cc==null||cc.compareTo("")==0||cc.compareTo("null")==0)
+					continue;
+				float g1_yg_float,g2_yg_float;
+				if(bb.compareTo("sykppg1")==0){
+					g1RecordCount++;
+					g1_yg.add(cc);
+					g1_yg_float                =  Float.valueOf(cc);
+					if(g1_yg_float>g1Max)g1Max =  g1_yg_float;
+					if(g1_yg_float<g1Min)g1Min =  g1_yg_float;
+					g1Sum                      += g1_yg_float;
+				}
+				else if(bb.compareTo("sykppg2")==0){
+					g2RecordCount++;
+					g2_yg.add(cc);
+					g2_yg_float                =  Float.valueOf(cc);
+					if(g2_yg_float>g2Max)g2Max =  g2_yg_float;
+					if(g2_yg_float<g2Min)g2Min =  g2_yg_float;
+					g2Sum                      += g2_yg_float;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//为了避免查询数据为空
+		if(g1RecordCount==0)
+		{
+			g1Min = 0;			
+			g1Max=g1Average=g1Energy=g1TimeUse=g1Sum=g1TimeOfHours=0;
+			
+		}else
+		{
+			g1Average = g1Sum/recordCount;
+			g1Energy   = g1Sum/120;
+			g1TimeOfHours    = g1RecordCount/12;
+			g1TimeUse = g1Energy/Tools.rongLiang*10;
+		}
+		
+		if(g2RecordCount==0){
+			g2Min = 0;
+			g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
+		}else
+		{
+			g2Average = g2Sum/recordCount;
+			g2Energy   = g2Sum/120;
+			g2TimeOfHours    = g2RecordCount/12;
+			g2TimeUse = g2Energy/Tools.rongLiang*10;
+		}	
+
+		
+		jo.put("g1Max",form.format(g1Max));
+		jo.put("g1Min",form.format(g1Min));
+		jo.put("g1Average",form.format(g1Average));
+		jo.put("g1Energy",form.format(g1Energy));
+		jo.put("g1TimeOfHours",form.format(g1TimeOfHours));
+		jo.put("g1TimeUse",form.format(g1TimeUse));
+		
+		jo.put("g2Max",form.format(g2Max));
+		jo.put("g2Min",form.format(g2Min));
+		jo.put("g2Average",form.format(g2Average));
+		jo.put("g2Energy",form.format(g2Energy));
+		jo.put("g2TimeOfHours",form.format(g2TimeOfHours));
+		jo.put("g2TimeUse",form.format(g2TimeUse));
 		return jo.toString();
 	}
 	/**

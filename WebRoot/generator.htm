@@ -220,7 +220,7 @@ $(function () {
         });
     });
     
-    submit_request = function()
+    submitRequest = function()
     {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
@@ -230,20 +230,32 @@ $(function () {
     		type:"post"  		
     	})
     	.done(function(data,statusText){
-    		if(data=="")
-    			alert("您所选日期数据为空，请您尝试其他日期");
-    		var data_received = $.evalJSON(data);
-    		$("#max_power").text(data_received.max);
-    		$("#min_power").text(data_received.min);
-    		$("#average_power").text(data_received.average);
-    		$("#energy").text(data_received.energy);
-    		$("#time_use").text(data_received.time_use);
-    		//alert(data);
+
+    		var dataReceived = $.evalJSON(data);
+    		$("#maxPower").text(dataReceived.max);
+    		$("#minPower").text(dataReceived.min);
+    		$("#average_power").text(dataReceived.average);
+    		$("#energy").text(dataReceived.energy);
+    		$("#timeUse").text(dataReceived.timeUse);
+    		$("#recordCount").text("有功（兆瓦）电量（万千瓦时）,记录数："+dataReceived.recordCount+",时长："+dataReceived.timeOfHours+"小时");
+    		
+    		$("#g1Volume").text("机组容量:"+GENERATORVOLUME);
+    		$("#g1Energy").text("发电量:"+dataReceived.g1Energy);
+    		$("#g1Max").text("最大出力:"+dataReceived.g1Max);
+    		$("#g1Min").text("最小出力:"+dataReceived.g1Min);
+    		$("#g1Average").text("平均出力:"+dataReceived.g1Average);
+    		
+    		$("#g2Volume").text("机组容量:"+GENERATORVOLUME);
+    		$("#g2Energy").text("发电量:"+dataReceived.g2Energy);
+    		$("#g2Max").text("最大出力:"+dataReceived.g2Max);
+    		$("#g2Min").text("最小出力:"+dataReceived.g2Min);
+    		$("#g2Average").text("平均出力:"+dataReceived.g2Average);
     	})
     	.fail(function(){
     		alert("服务器响应出错");
     	});
     };
+
 	</script>
 	
 	<script type="text/javascript" src="./support/threeMainPage.js"></script>
@@ -254,7 +266,7 @@ $(function () {
 
 <script src="./support/highcharts/js/modules/solid-gauge.js"></script> 
 	<!--时间选择器-->
-<div style="">
+<div style="" id="time_pick">
 	<div style=";margin-left:10px;">	
         <label for="test_default" style="float:left;width:100px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
         <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
@@ -279,7 +291,7 @@ $(function () {
         </div>
 														
 	</div>
-	<button id="submit_request" onclick="submit_request()">查询</button>
+	<button id="submitRequest" onclick="submitRequest()">查询</button>
 </div>
 <hr style="clear:left">
     <!--机组的统计信息(表格)-->
@@ -287,21 +299,21 @@ $(function () {
         <table id="table_id2" class="display cell-border" cellspacing="0" style="height:200px;text-align:center;">   
         <thead>
             <tr>
-                <td colspan="4" style="text-align:center">本厂机组统计信息  有功（兆瓦）电量（万千瓦时）</td>
+                <td colspan="4" style="text-align:center">本厂机组统计信息  </td>
             </tr>
         </thead>  
             <tbody>   
                 <tr>   
-                    <td>容量</td><td>1200</td><td>最大出力</td><td id="max_power">27233</td>   
+                    <td>容量</td><td>1200</td><td>最大出力</td><td id="maxPower">0</td>   
                 </tr>   
                 <tr>   
-                    <td>平均出力</td><td id="average_power">1545</td><td>最小出力</td><td id="min_power">2323</td>   
+                    <td>平均出力</td><td id="average_power">0</td><td>最小出力</td><td id="minPower">0</td>   
                 </tr>   
                 <tr>   
-                    <td>发电量</td><td id="energy">1915</td><td>利用小时</td><td id="time_use">2323</td>   
+                    <td>发电量</td><td id="energy">0</td><td>利用小时</td><td id="timeUse">0</td>   
                 </tr>
             </tbody> 
-            <tfoot><td colspan="4"></td></tfoot>  
+            <tfoot><tr><td colspan="4" id="recordCount" style="text-align:right"></td></tr></tfoot>  
         </table>  
     </div>
 
@@ -311,28 +323,28 @@ $(function () {
             <div id="container-speed" style=""></div>
             <div style="margin:0 auto">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
-                <div style=" ">机组容量:600</div>
-                <div style="">发电量</div>
-                <div style="">最小出力</div>
+                <div style="" id="g1Volume">机组容量</div>
+                <div style="" id="g1Energy">发电量</div>
+                <div style="" id="g1Min">最小出力</div>
             </div>
             <div style="margin:0 auto;width: 50%;float:left;">                
-                <div style="">平均出力</div>
-                <div style="">最大出力</div>
-                <div style="">实时出力</div>
+                <div style="" id="g1Average">平均出力</div>
+                <div style="" id="g1Max">最大出力</div>
+                <div style="" id="g1RealtimePower">实时出力</div>
             </div>     
         </div>
         <div style="text-align:center;width: 50%;  float: left;">
             <div id="container-rpm" style=""></div>
             <div style="margin:0 auto;text-align:center;width:100%">机组运行方式</div>
             <div style="margin:0 auto;width: 50%;float:left;">
-                <div style="">机组容量:600</div>
-                <div style="">发电量</div>
-                <div style="">最小出力</div>
+                <div style="" id="g2Volume">机组容量</div>
+                <div style="" id="g2Energy">发电量</div>
+                <div style="" id="g2Min">最小出力</div>
             </div>
             <div style="margin:0 auto;width: 50%;float:left;">                
-                <div style="">平均出力</div>
-                <div style="">最大出力</div>
-                <div style="">实时出力</div>
+                <div style="" id="g2Average">平均出力</div>
+                <div style="" id="g2Max">最大出力</div>
+                <div style="" id="g2RealtimePower">实时出力</div>
             </div>   
             </div>        
         </div>
@@ -344,6 +356,7 @@ $(function () {
 
 		<div id="container" style=" height: 400px;"></div>
         <script type="text/javascript">
+
 			var resize_gauge = function()
 			{
 					container_speed=document.getElementById('container-speed');
