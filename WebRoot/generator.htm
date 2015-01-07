@@ -23,6 +23,7 @@
         <link href="./support/datepicker/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />        
 		
 		<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" />
+		<script src="./support/jquery.json.min.js" type="text/javascript"></script>
 		
 		<script type="text/javascript">
 $(function () {
@@ -229,8 +230,15 @@ $(function () {
     		type:"post"  		
     	})
     	.done(function(data,statusText){
-    		
-    		alert(data);
+    		if(data=="")
+    			alert("您所选日期数据为空，请您尝试其他日期");
+    		var data_received = $.evalJSON(data);
+    		$("#max_power").text(data_received.max);
+    		$("#min_power").text(data_received.min);
+    		$("#average_power").text(data_received.average);
+    		$("#energy").text(data_received.energy);
+    		$("#time_use").text(data_received.time_use);
+    		//alert(data);
     	})
     	.fail(function(){
     		alert("服务器响应出错");
@@ -276,21 +284,21 @@ $(function () {
 <hr style="clear:left">
     <!--机组的统计信息(表格)-->
     <div style="margin: 0px auto 20px auto;clear:left">
-        <table id="table_id2" class="display cell-border" cellspacing="0" style="height:200px"">   
+        <table id="table_id2" class="display cell-border" cellspacing="0" style="height:200px;text-align:center;">   
         <thead>
             <tr>
-                <td colspan="4" style="text-align:center">本厂机组统计信息</td>
+                <td colspan="4" style="text-align:center">本厂机组统计信息  有功（兆瓦）电量（万千瓦时）</td>
             </tr>
         </thead>  
             <tbody>   
                 <tr>   
-                    <td>容量</td><td>1200</td><td>最大出力</td><td>27233</td>   
+                    <td>容量</td><td>1200</td><td>最大出力</td><td id="max_power">27233</td>   
                 </tr>   
                 <tr>   
-                    <td>平均出力</td><td>1545</td><td>最小出力</td><td>2323</td>   
+                    <td>平均出力</td><td id="average_power">1545</td><td>最小出力</td><td id="min_power">2323</td>   
                 </tr>   
                 <tr>   
-                    <td>发电量</td><td>1915</td><td>利用小时</td><td>2323</td>   
+                    <td>发电量</td><td id="energy">1915</td><td>利用小时</td><td id="time_use">2323</td>   
                 </tr>
             </tbody> 
             <tfoot><td colspan="4"></td></tfoot>  

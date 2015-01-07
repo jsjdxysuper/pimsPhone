@@ -1,4 +1,7 @@
-//ÈÕÆÚÑ¡Ôñ¿òµÄ¿ØÖÆ
+var UNITOFPOWER   = "å…†ç“¦";
+var UNITOFENERGY  = "ä¸‡åƒç“¦æ—¶";
+var UNITOFTIMEUSE = "å°æ—¶";
+//æ—¥æœŸé€‰æ‹©æ¡†çš„æ§åˆ¶
 $(function () {
 	var currYear = (new Date()).getFullYear();	
 	var opt={};
@@ -6,17 +9,17 @@ $(function () {
 	opt.datetime = {preset : 'datetime'};
 	opt.time = {preset : 'time'};
 	opt.default = {
-		theme: 'android-ics light', //Æ¤·ôÑùÊ½
-        display: 'modal', //ÏÔÊ¾·½Ê½ 
-        mode: 'mixed', //ÈÕÆÚÑ¡ÔñÄ£Ê½
+		theme: 'android-ics light', //çš®è‚¤æ ·å¼
+        display: 'modal', //æ˜¾ç¤ºæ–¹å¼ 
+        mode: 'mixed', //æ—¥æœŸé€‰æ‹©æ¨¡å¼
 		lang:'zh',
-        startYear:currYear - 5, //¿ªÊ¼Äê·İ
-        endYear:currYear + 10 //½áÊøÄê·İ
+        startYear:currYear - 5, //å¼€å§‹å¹´ä»½
+        endYear:currYear + 1 //ç»“æŸå¹´ä»½
 	};
 	$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
 });
 
-//ÏÂÀ­²Ëµ¥µÄ¶¯×÷
+//ä¸‹æ‹‰èœå•çš„åŠ¨ä½œ
 $(function() {
 	$(".dropdown-menu li a").bind("click", function() {
 		var $this = $(this);

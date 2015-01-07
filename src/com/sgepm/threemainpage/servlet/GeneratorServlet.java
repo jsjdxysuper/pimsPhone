@@ -3,8 +3,10 @@ package com.sgepm.threemainpage.servlet;
 import java.awt.List;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import javax.servlet.ServletException;
@@ -99,10 +101,10 @@ public class GeneratorServlet extends HttpServlet {
 		OracleConnection oc = new OracleConnection();
 		String sqlStr="select RQ,SJ,YG from info_data_dcyg t where DCMC='沈阳康平电厂'AND RQ like ? ORDER BY RQ,SJ";
 		String para;
-		float max,min,average,power,time_use,sum,time;
+		float max,min,average,energy,time_use,sum,time;
 		
 		min = Float.MAX_VALUE;
-		max = average=power=time_use=sum=0;
+		max = average=energy=time_use=sum=0;
 		char[]temp = date.toCharArray();
 		if(time_span.compareTo(Tools.time_span[0])==0){//实时
 
@@ -150,15 +152,18 @@ public class GeneratorServlet extends HttpServlet {
 		if(yg.size()==0)
 			return null;
 		average = sum/yg.size();
-		power   = sum/120;
+		energy   = sum/120;
 		time    = yg.size()/12;
-		time_use = power/Tools.rong_liang*10;
+		time_use = energy/Tools.rong_liang*10;
 
-		jo.put("max", max);
-		jo.put("min", min);
-		jo.put("average", average);
-		jo.put("power",power);
-		jo.put("time_use", time_use);
+		//保留两位小数
+		DecimalFormat form = new DecimalFormat("##0.00");
+		
+		jo.put("max",form.format(max));
+		jo.put("min", form.format(min));
+		jo.put("average", form.format(average));
+		jo.put("energy",form.format(energy));
+		jo.put("time_use", form.format(time_use));
 		
 		
 		return jo.toString();
