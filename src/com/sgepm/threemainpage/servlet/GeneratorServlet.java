@@ -60,11 +60,13 @@ public class GeneratorServlet extends HttpServlet {
 		response.setContentType("text/html;charset=UTF-8") ;
 		response.setCharacterEncoding("UTF-8") ;
 		PrintWriter out = response.getWriter();
+
 		date = request.getParameter("date");
 		time_span = request.getParameter("time_span");
 		System.out.println("date:"+date+",time_span:"+time_span);
 		String returnData =  getData();
 		out.write(returnData);
+
 		out.close();
 	}
 
@@ -91,6 +93,12 @@ public class GeneratorServlet extends HttpServlet {
 		time_span = request.getParameter("time_span");
 		System.out.println("date:"+date+",time_span:"+time_span);
 		String returnData =  getData();
+//		try {
+//			Thread.currentThread().sleep(5000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		//为了避免查询数据为空
 		if(returnData!=null)
 			out.write(returnData);
@@ -160,10 +168,10 @@ public class GeneratorServlet extends HttpServlet {
 			max			= 0;
 			min         = 0;
 		}else{
-			average = sum/recordCount;
-			energy   = sum/120;
-			timeOfHours    = recordCount/12;
-			timeUse = energy/Tools.rongLiang*10;
+			average     = sum/recordCount;
+			energy      = sum/120;
+			timeOfHours = recordCount/12;
+			timeUse     = energy/Tools.rongLiang*10;
 		}
 		//保留两位小数
 		DecimalFormat form = new DecimalFormat("##0.00");

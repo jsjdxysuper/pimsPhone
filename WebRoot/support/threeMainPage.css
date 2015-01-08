@@ -23,6 +23,20 @@ label{
 hr {
 	margin-top: 20px;
 	margin-bottom: 20px;
+	margin-left:10px;
+	margin-right:10px;
 	border: 0;
-	border-top: 1px solid #eee;
+	border-top: 1px solid #ddd;
+	<!-- #eee -->
+}
+
+table {
+	margin-left:10px;
+	margin-right:10px;
+	font-size:13px;
+}
+
+button{
+	border:none;
+	background-color:blue;
 }

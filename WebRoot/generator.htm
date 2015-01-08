@@ -1,11 +1,13 @@
 
 <!DOCTYPE HTML>
-<html manifest="generator.manifest">
+<!-- <html manifest="generator.manifest">  -->
+<html>
 	<head>
     	<meta name="viewport" content="width=device-width">
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<title>Highcharts Example</title>
   		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>
+  		
          <script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>    
         <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 		<script type="text/javascript" src="./support/easyui/jquery.easyui.min.js"></script>  
@@ -21,6 +23,9 @@
         <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
         <script src="./support/datepicker/js/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
         <link href="./support/datepicker/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />        
+		
+		
+		
 		
 		<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" />
 		<script src="./support/jquery.json.min.js" type="text/javascript"></script>
@@ -43,7 +48,7 @@ $(function () {
 	    
 	    pane: {
 	    	center: ['50%', '85%'],
-	    	size: '140%',
+	    	size: '120%',//中间表盘与pane的大小对比，数值越大，表盘就越大
 	        startAngle: -90,
 	        endAngle: 90,
             background: {
@@ -73,7 +78,7 @@ $(function () {
             tickPixelInterval: 400,
             tickWidth: 0,
 	        title: {
-                y: -60//标题的位置
+                y: -50//标题的位置
 	        },
             labels: {
                 y: 10//表盘刻度位置
@@ -104,7 +109,7 @@ $(function () {
 	        min: 0,
 	        max: 100,
 	        title: {
-	            text: '机组名称#1'
+	            text: '康平电厂#1机'
 	        }       
 	    },
 
@@ -113,12 +118,12 @@ $(function () {
 	    },
 	
 	    series: [{
-	        name: 'Speed',
+	        name: 'rate',
 	        data: [0],
 	        dataLabels: {
 	        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
-                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span>' + 
-                   	'<span style="font-size:10px;color:black">%</span></div>'
+                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'gray') + '">{y}</span>' + 
+                   	'<span style="font-size:10px;color:gray">%</span></div>'
 	        },
 	        tooltip: {
 	            valueSuffix: ' km/h'
@@ -139,17 +144,17 @@ $(function () {
 	        	min: 0,
 	        	max: 100,
 		        title:{
-		            text: '机组名称#2'
+		            text: '康平电厂#2机'
 		        },    
 		    },
 		
 		    series:[{
-			        name: 'RPM',
+			        name: 'rate',
 			        data: [0],
 			        dataLabels:{
 			        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
-		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black') + '">{y}</span>' + 
-		                   	'<span style="font-size:10px;color:black">%</span></div>'
+		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'gray') + '">{y}</span>' + 
+		                   	'<span style="font-size:10px;color:gray">%</span></div>'
 			        },
 			        tooltip:{
 			            valueSuffix: ' revolutions/min'
@@ -170,7 +175,7 @@ $(function () {
                 type: 'bar'
             },
             title: {
-                text: '60万机组对标(运行小时/电量)'
+                text: '60万机组值间对标'
             },
             subtitle: {
                 text: ''
@@ -187,15 +192,15 @@ $(function () {
             yAxis: {
                 min: 0,
                 title: {
-                    text: '电量/运行小时',
-                    align: 'high'
+                    text: '电量',
+                    align: 'middle'
                 },
                 labels: {
                     overflow: 'justify'
                 }
             },
             tooltip: {
-                valueSuffix: ' millions'
+                valueSuffix: ' 万千瓦时'
             },
             plotOptions: {
                 bar: {
@@ -245,12 +250,14 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://192.168.1.102:8080/pimsPhone/GeneratorServlet",
+    		url:"http://192.168.1.105:8080/pimsPhone/GeneratorServlet",
     		data:$.param({"date":date,"time_span":time_span}),
-    		type:"post"  		
+    		type:"post"
+
     	})
     	.done(function(data,statusText){
 
+			
     		var dataReceived = $.evalJSON(data);
     		$("#maxPower").text(dataReceived.max);
     		$("#minPower").text(dataReceived.min);
@@ -258,18 +265,21 @@ $(function () {
     		$("#energy").text(dataReceived.energy);
     		$("#timeUse").text(dataReceived.timeUse);
     		$("#recordCount").text("有功（兆瓦）电量（万千瓦时）,记录数："+dataReceived.recordCount+",时长："+dataReceived.timeOfHours+"小时");
+    		$("#volume").text(GENERATORVOLUME);
     		
-    		$("#g1Volume").text("机组容量:"+GENERATORVOLUME);
-    		$("#g1Energy").text("发电量:"+dataReceived.g1Energy);
-    		$("#g1Max").text("最大出力:"+dataReceived.g1Max);
-    		$("#g1Min").text("最小出力:"+dataReceived.g1Min);
-    		$("#g1Average").text("平均出力:"+dataReceived.g1Average);
+    		$("#g1Volume").text(GENERATORVOLUME);
+    		$("#g1Energy").text(dataReceived.g1Energy);
+    		$("#g1Max").text(dataReceived.g1Max);
+    		$("#g1Min").text(dataReceived.g1Min);
+    		$("#g1Average").text(dataReceived.g1Average);
+    		$("#g1TimeUse").text(dataReceived.g1TimeUse);
     		
-    		$("#g2Volume").text("机组容量:"+GENERATORVOLUME);
-    		$("#g2Energy").text("发电量:"+dataReceived.g2Energy);
-    		$("#g2Max").text("最大出力:"+dataReceived.g2Max);
-    		$("#g2Min").text("最小出力:"+dataReceived.g2Min);
-    		$("#g2Average").text("平均出力:"+dataReceived.g2Average);
+    		$("#g2Volume").text(GENERATORVOLUME);
+    		$("#g2Energy").text(dataReceived.g2Energy);
+    		$("#g2Max").text(dataReceived.g2Max);
+    		$("#g2Min").text(dataReceived.g2Min);
+    		$("#g2Average").text(dataReceived.g2Average);
+    		$("#g2TimeUse").text(dataReceived.g2TimeUse);
     		
     		g1Option.series[0].data[0] = parseFloat((dataReceived.g1Average/GENERATORVOLUME*100).toFixed(2));
     		chart = new Highcharts.Chart(g1Option);
@@ -291,102 +301,88 @@ $(function () {
 <script src="./support/highcharts/js/highcharts-more.js"></script>
 
 <script src="./support/highcharts/js/modules/solid-gauge.js"></script> 
-	<!--时间选择器-->
+<script src="./support/ace/assets/js/spin.min.js"></script> 	
+<!--时间选择器-->
 <div style="" id="time_pick">
-	<div style=";margin-left:10px;">	
-        <label for="test_default" style="float:left;width:100px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
-        <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
-    </div>
-    <div style="clear:both;margin-left:10px;">
-
-        <label for="form-field-select-1" style="float:left;width:100px">时间跨度</label>
-
-        <!-- Single button -->
-        <div class="btn-group">
-          <button type="button" id="menu_title" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            实时 <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">实时</a></li>
-            <li class="divider"></li>
-            <li><a href="#">年</a></li>
-            <li><a href="#">月</a></li>
-            
-            <li><a href="#">日</a></li>
-          </ul>
-        </div>
-														
+	<div style="float:left">
+		<div style=";margin-left:10px;">	
+	        <label for="test_default" style="float:left;;width:100px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+	        <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
+	    </div>
+	    <div style="clear:left;margin-left:10px;">
+	
+	        <label for="form-field-select-1" style="float:left;width:100px">时间跨度</label>
+	
+	        <!-- Single button -->
+	        <div class="btn-group">
+	          <button type="button" id="menu_title" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+	            	实时 <span class="caret"></span>
+	          </button>
+	          <ul class="dropdown-menu" role="menu">
+	            <li><a href="#">实时</a></li>
+	            <li class="divider"></li>
+	            <li><a href="#">年</a></li>
+	            <li><a href="#">月</a></li>
+	            
+	            <li><a href="#">日</a></li>
+	          </ul>
+	        </div>														
+		</div>
 	</div>
-	<button id="submitRequest" onclick="submitRequest()">查询</button>
+	<button id="submitRequest" class="btn btn-primary" 
+		style="float:right;margin:20px 20px 10px 0;height:50px;width:70px"
+		 onclick="submitRequest()">查询
+	</button>
+	<div style="clear:both"></div>
 </div>
 
-
-<div id="g1Container" style="float:left"></div>
-<div id="g2Container" style="float:left"></div>
-
-
-
-
-<hr style="clear:left">
-    <!--机组的统计信息(表格)-->
-    <div style="margin: 0px auto 20px auto;clear:left">
-        <table id="table_id2" class="display cell-border" cellspacing="0" style="height:200px;text-align:center;font-size: 5px">   
-        <thead>
-            <tr>
-                <td colspan="4" style="text-align:center">本厂机组统计信息  </td>
-            </tr>
-        </thead>  
-            <tbody>   
-                <tr>   
-                    <td>容量</td><td>1200</td><td>最大出力</td><td id="maxPower">0</td>   
-                </tr>   
-                <tr>   
-                    <td>平均出力</td><td id="average_power">0</td><td>最小出力</td><td id="minPower">0</td>   
-                </tr>   
-                <tr>   
-                    <td>发电量</td><td id="energy">0</td><td>利用小时</td><td id="timeUse">0</td>   
-                </tr>
-            </tbody> 
-            <tfoot><tr><td colspan="4" id="recordCount" style="text-align:right"></td></tr></tfoot>  
-        </table>  
-    </div>
-
-    <!--机组实时信息(表盘)-->
-    <div style=" height: 200px; margin: 0px auto 40px auto;text-align:center;">
-        <div style="text-align:center;width:50%; float: left;">
-            
-            <div style="margin:0 auto">机组运行方式</div>
-            <div style="margin:0 auto;width: 50%;float:left;">
-                <div style="" id="g1Volume">机组容量</div>
-                <div style="" id="g1Energy">发电量</div>
-                <div style="" id="g1Min">最小出力</div>
-            </div>
-            <div style="margin:0 auto;width: 50%;float:left;">                
-                <div style="" id="g1Average">平均出力</div>
-                <div style="" id="g1Max">最大出力</div>
-                <div style="" id="g1RealtimePower">实时出力</div>
-            </div>     
-        </div>
-        <div style="text-align:center;width: 50%;  float: left;">
-            
-            <div style="margin:0 auto;text-align:center;width:100%">机组运行方式</div>
-            <div style="margin:0 auto;width: 50%;float:left;">
-                <div style="" id="g2Volume">机组容量</div>
-                <div style="" id="g2Energy">发电量</div>
-                <div style="" id="g2Min">最小出力</div>
-            </div>
-            <div style="margin:0 auto;width: 50%;float:left;">                
-                <div style="" id="g2Average">平均出力</div>
-                <div style="" id="g2Max">最大出力</div>
-                <div style="" id="g2RealtimePower">实时出力</div>
-            </div>   
-        </div>        
-        </div>
-    
-
-
 <hr>
+<div style="text-align:center;width:window.screen.width;">
+	<div style="margin-left:auto;margin-right:auto;" id="gaugeParent">
+		<div id="g1Container" style="float:left;"></div>
+		<div id="g2Container" style="float:left;"></div>
+	</div>
+</div>
 
+    <!--机组的统计信息(表格)-->
+
+<table id="table_id2" class="display cell-border" cellspacing="0" style="margin:0 10px 0 10px">   
+	<thead>
+	    <tr>
+	        <td colspan="4" style="text-align:center">本厂机组统计信息  </td>
+	    </tr>
+	    <tr>   
+	    	<td></td><td>#1机</td><td>#2机</td><td >电厂</td>   
+	    </tr> 
+	</thead>  
+	    <tbody>   
+	
+	        <tr>   
+	            <td>容量</td><td id="g1Volume">0</td><td id="g2Volume">0</td><td id="volume">0</td>   
+	        </tr>   
+	         <tr>   
+	            <td>当前出力</td><td id="g1RealtimePower">0</td><td id="g2RealtimePower">0</td><td id="realtimePower">0</td>   
+	        </tr> 
+	        <tr>   
+	            <td>发电量</td><td id="g1Energy">0</td><td id="g2Energy">0</td><td id="energy">0</td>   
+	        </tr> 
+	        <tr>   
+	            <td>最小有功</td><td id="g1Min">0</td><td id="g2Min">0</td><td id="minPower">0</td>   
+	        </tr> 
+	        <tr>   
+	            <td>最大有功</td><td id="g1Max">0</td><td id="g2Max">0</td><td id="maxPower">0</td>   
+	        </tr> 
+	        <tr>   
+	            <td>平均有功</td><td id="g1Average">0</td><td id="g2Average">0</td><td id="average_power">0</td>   
+	        </tr> 	                       
+	        <tr>   
+	            <td>利用小时</td><td id="g1TimeUse">0</td><td id="g2TimeUse">0</td><td id="timeUse">0</td>   
+	        </tr> 	        
+	    </tbody> 
+	<tfoot><tr><td colspan="4" id="recordCount" style="text-align:center"></td></tr></tfoot>  
+</table>  
+
+<hr style="clear:left;">
 
 		<div id="container" style=" height: 400px;"></div>
         <script type="text/javascript">
@@ -395,14 +391,17 @@ $(function () {
 			{
 					container_speed=document.getElementById('g1Container');
 					container_rpm=document.getElementById('g2Container');
+					gaugeParent = $('#gaugeParent');
 					//table_width=document.getElementById('table_id2').offsetWidth;
-					table_width=window.screen.width;
-					wid=document.body.clientWidth/2;
+					table_width=document.body.clientWidth;
+					wid=table_width/2;
 					container_speed.style.width=wid-10+'px';
 					container_rpm.style.width=wid-10+'px';
 					
 					container_speed.style.height=(container_speed.offsetWidth/9*7)+'px';
 					container_rpm.style.height=(container_rpm.offsetWidth/9*7)+'px';
+					gaugeParent.css("margin-left",(table_width-(wid-10)*2)/2);
+					
 			};
 			
 			window.onresize= resize_gauge;

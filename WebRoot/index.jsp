@@ -10,13 +10,59 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     <base href="<%=basePath%>">
   		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>
 
+        <script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>    
+        <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
         
-		<script type="text/javascript" src="./support/datatable/media/js/jquery.dataTables.min.js"></script> 
-        <link rel="stylesheet" type="text/css" href="./support/datatable/media/css/jquery.dataTables.min.css"/>
-      
+        <script type="text/javascript" src="./support/ladda/js/spin.min.js"></script>   
+        <script type="text/javascript" src="./support/ladda/js/ladda.min.js"></script> 
+<script type="text/javascript" src="./support/ladda/js/jquery.jribbble.min.js"></script> 
+
+      	<link href="./support/ladda/css/ladda-themeless.min.css" rel="stylesheet" />
+      	<link href="./support/ladda/css/gbtags.css" rel="stylesheet" />
 <script type="text/javascript">
-$(document).ready(function() {
-    $('#table_id4').DataTable();
+
+
+
+
+$(document).ready(function(){
+    //定义相关变量
+    $showmore = $('#showmore');
+    
+    function loadshots(){
+	    var l =Ladda.create(this);
+	    l.start();
+	    l.setProgress(0.1);
+	    $showmore.find('.ladda-label').text('loading...');
+	    //调用jdribbble相关API获取远程数据内容
+	    $.jribbble.getShotsByList('popular',function(data){
+	    	var items =[];
+		    $.each(data.shots,function(i, shot){
+			    items.push('<article class="col-md-2 col-sm-3 col-xs-4">');
+			    items.push('<a href="'+ shot.url +'" target="_blank" class="linkc">');
+			    items.push('<img class="img-responsive" src="'+ shot.image_teaser_url +'" alt="'+ shot.title +'">');
+			    items.push('</a>');
+			    items.push('</article>');
+			    l.setProgress(0.1+0.02*i);
+		    });
+		    var newEls = items.join(''), tmpcontent = $(newEls);
+		    l.setProgress(0.9);
+		    //以上代码生成了需要显示的dirbbble设计内容，下面代码中我们将这些内容添加到HTML容器中
+		    $wallcontent.append(tmpcontent);
+		    $showmore.find('.ladda-label').text('更多设计');
+		    l.setProgress(1);
+		    l.stop();
+    	},{page:pagenum, per_page:24}
+    	);
+    	pagenum++;
+    }
+    //绑定方法到加载更多按钮
+    $showmore.bind('click', loadshots);
+    $showmore.trigger('click');
+    });
+    $(document).ready(function() {
+    var l = Ladda.create(this);
+    l.start();
+    l.stop();
 } );
 </script>
 		
@@ -35,49 +81,10 @@ $(document).ready(function() {
   
   <body>
     This is my JSP page. <br>
-
-	<table id="table_id4" class="display cell-border"  style="width:100%;height:300px">   
-		<caption style="text-align:center"><b>当日电网发电情况</b></caption>
+<button type="button" class="btn btn-info btn-lg ladda-button center-block" id="showmore" title="显示更多前端代码回放" data-style="slide-down">	
+	<span class="ladda-label">更多设计</span>
+</button>
 	
-	    <thead>   
-	        <tr>   
-	            <th >类别</th>   
-	            <th >日发电(万)</th>   
-	            <th >月发电(亿)</th> 
-	            <th >年发电(亿)</th>   
-	            <th >月同比</th>   
-	            <th >年同比</th>    
-	        </tr>   
-	    </thead>   
-	    <tbody>   
-	        <tr>   
-	        	<td>全省发电</td><td>1245</td><td>2323</td><td>27233</td><td>1.1%</td><td>1.1%</td>   
-	        </tr>   
-	        <tr>   
-	        	<td>直调发电</td><td>1545</td><td>4612</td><td>2323</td><td>1.1%</td><td>1.1%</td>   
-	        </tr>   
-	        <tr>   
-	        	<td>直调火电</td><td>1915</td><td>4612</td><td>2323</td><td>2.1%</td><td>-1.3%</td>   
-	        </tr>
-	        <tr>   
-	            <td>直调水电</td><td>245</td><td>4612</td><td>2123</td><td>1.4%</td><td>1.1%</td>   
-	        </tr>
-	        <tr>   
-	            <td>直调风电</td><td>125</td><td>4612</td><td>1323</td><td>3.1%</td><td>-1.1%</td>   
-	        </tr>
-	        <tr>   
-	            <td>直调核电</td><td>2245</td><td>4612</td><td>2373</td><td>1.6%</td><td>1.1%</td>   
-	        </tr>
-	        <tr>   
-	            <td>其他</td><td>1735</td><td>4612</td><td>2823</td><td>4.1%</td><td>-1.1%</td>   
-	        </tr>
-	        <tr>   
-	            <td>联络线净受</td><td>1744</td><td>4612</td><td>2313</td><td>6.1%</td><td>1.1%</td>   
-	        </tr>
-	    </tbody>  
-
-	</table>  
-
 
   </body>
 </html>

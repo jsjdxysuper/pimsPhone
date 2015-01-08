@@ -40,7 +40,7 @@ setDate=function () {
 	var day = now.getDate();
 	if(0 < month < 10)  month = "0"+month;
 	if(0 < day   < 10)  day   = "0"+day;
-	var date_now =(year+1900)+'-'+month+'-'+day
+	var date_now =(year+1900)+'-'+month+'-'+day;
 	//alert(date_now);
 	document.getElementById("appDate").value=date_now;
 	//如果函数submitRequest已经被初始化了，就调用此函数
@@ -53,11 +53,14 @@ $(document).ready(setDate);
 $(document).ready(function() {
 
 	//$('#table_id1').DataTable();
-	$('table').DataTable({
-		paging:false,
-		searching:false,
-		info:false
-	});
+	if($("table").length > 0)
+	{
+		$("table").DataTable({
+			paging:false,
+			searching:false,
+			info:false
+		});
+	}
 
 
 });
