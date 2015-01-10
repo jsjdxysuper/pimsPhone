@@ -46,7 +46,7 @@ setDate=function () {
 	//$("#background").css("height",document.body.scrollHeight+document.body.scrollTop);
 	ajaxbg = $("#background,#progressBar"); 
 	//如果函数submitRequest已经被初始化了，就调用此函数
-	if(typeof(submitRequest) == "undefined");
+	if(typeof(submitRequest) == 'undefined');
 	else submitRequest();
 };
 $(document).ready(setDate);

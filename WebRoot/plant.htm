@@ -30,7 +30,7 @@ $(function () {
 			type: 'area'
 		},
 		title: {
-			text: '周边电厂平均出力',
+			text: '周边电厂月度发电量',
 		},
 		subtitle: {
 			text: ''
@@ -54,16 +54,17 @@ $(function () {
 		},
 		yAxis: {
 			title: {
-				text: '平均出力'
+				text: '电量(万千瓦时)'
 			},
 			labels: {
 				formatter: function() {
-					return this.value / 1000 +'k';
+					return this.value / 1000;
 				}
 			}
 		},
 		tooltip: {
-			pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
+			/* pointFormat: '{series.name} 电量： <b>{point.y:,.0f}</b><br/>日期 ： {point.x}' */
+			pointFormat: '{series.name} 电量： <b>{point.y:,.0f}</b><br/>'
 		},
 		plotOptions: {
 			area: {
@@ -84,121 +85,45 @@ $(function () {
 			name: '康平',
 			data: [ 27912, 28999,
 				22380, 21004, 17287, 12144, 11009, 10950,
+				10871, 10824, 10577, 10527, 10475,27912, 28999,
+				22380, 21004, 17287, 12144, 11009, 10950,
 				10871, 10824, 10577, 10527, 10475]
 		}, {
 			name: '庄河',
 			data: [660, 869, 1060, 1605, 2471, 3322,
+			4238, 5221, 6129, 7089, 8339, 24000, 23000,
+			660, 869, 1060, 1605, 2471, 3322,
 			4238, 5221, 6129, 7089, 8339, 24000, 23000
 			]
 		}, {
 			name: '营口',
 			data: [30062, 32049,
 			33952, 35804, 17431, 39197, 45000, 43000, 41000, 39000, 37000,
+			35000, 33000,30062, 32049,
+			33952, 35804, 17431, 39197, 45000, 43000, 41000, 39000, 37000,
 			35000, 33000]
 		}, {
 			name: '铁岭',
 			data: [
 			15915, 17385, 11055, 27205, 23044, 15393, 27935, 30062, 35049,
+			33952, 35804, 37431, 39197,
+			15915, 17385, 11055, 27205, 23044, 15393, 27935, 30062, 35049,
 			33952, 35804, 37431, 39197]
 		}, {
 			name: '清河',
-			data: [4238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 11478,
-			15915, 12385, 19055]
+			data: [4238, 5221, 6129, 7089, 8339, 5399, 10538, 16643, 13092, 11478,
+			15915, 12385, 19055,7238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 11478,
+			15915, 12385, 13055]
 		}, {
 			name: '燕山湖',
 			data: [
-			1115, 25, 2350, 1120, 4150, 6200, 5426, 3660, 869, 81060, 11605, 28471, 83322]
+			1115, 25, 2350, 1120, 4150, 6200, 5426, 3660, 869, 21060, 11605, 28471, 33322,
+			1115, 25, 2350, 1120, 4150, 3200, 2426, 3660, 869, 11060, 14605, 28471, 16322]
 		}]
 	});
 	
 	
-	
-	
-			$('#container_area2').highcharts({
-		chart: {
-			type: 'area'
-		},
-		title: {
-			text: '周边电厂利用小时数',
-		},
-		subtitle: {
-			text: ''
-		},
-		exporting:{
-			enabled:false
-		},
-		credits:{
-			enabled:'false',
-			text:''
-		},
-		xAxis: {
-			allowDecimals: false,
-			labels: {
-				formatter: function() {
-					return this.value; // clean, unformatted number for year
-				}
-			}
-		},
-		legend: {
-		},
-		yAxis: {
-			title: {
-				text: '小时数'
-			},
-			labels: {
-				formatter: function() {
-					return this.value / 1000 +'k';
-				}
-			}
-		},
-		tooltip: {
-			pointFormat: '{series.name} produced <b>{point.y:,.0f}</b><br/>warheads in {point.x}'
-		},
-		plotOptions: {
-			area: {
-				pointStart: 1,
-				marker: {
-					enabled: false,
-					symbol: 'circle',
-					radius: 2,
-					states: {
-						hover: {
-							enabled: true
-						}
-					}
-				}
-			}
-		},
-		series: [{
-			name: '康平',
-			data: [ 7912, 2999,
-				2230, 2004, 1727, 1144, 1109, 1050,
-				1081, 1024, 1077, 1027, 1475]
-		}, {
-			name: '庄河',
-			data: [660, 869, 1060, 1605, 2471, 3322,
-			4238, 5221, 6129, 7089, 8339, 24000, 23000
-			]
-		}, {
-			name: '营口',
-			data: [0062, 3049,
-			3352, 5804, 7431, 197, 4000, 3000, 4000, 3000, 7000,
-			3500, 3300]
-		}, {
-			name: '铁岭',
-			data: [
-			1515, 1385, 1155, 2205, 3044, 1393, 7935, 3062, 5049,
-			3392, 3584, 3431, 3919]
-		}, {
-			name: '清河',
-			data: [4238, 5221, 6129, 789, 839, 999, 0538, 1143, 1392, 1478,
-			1515, 1285, 1955]
-		}, {
-			name: '燕山湖',
-			data: [
-			1115, 25, 2350, 1120, 4150, 6200, 5426, 3660, 869, 8160, 1605, 2871, 8322]
-		}]
-	});
+
     });
 	
 
@@ -374,41 +299,23 @@ $(function () {
 <script src="./support/highcharts/js/modules/exporting.js"></script>
 <script type="text/javascript" src="./support/highcharts/js/highcharts-more.js"></script> 
 
-<div style="">
-	<div style=";margin-left:10px;">	
-        <label for="test_default" style="float:left;width:100px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+<div style="clear:both;height:10px"></div>
+<div style="margin-left:20px;margin-right:20px">
+	<div style=";float:left">	
+        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
         <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
     </div>
-    <div style="clear:left;margin-left:10px;">
-
-        <label for="form-field-select-1" style="float:left;width:100px">时间跨度</label>
-
-        <!-- Single button -->
-        <div class="btn-group">
-          <button type="button" id="menu_title" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            实时 <span class='caret'></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">实时</a></li>
-            <li class="divider"></li>
-            <li><a href="#">年</a></li>
-            <li><a href="#">月</a></li>
-            
-            <li><a href="#">日</a></li>
-          </ul>
-        </div>
-														
+	<div style="float:right;">
+		<button id="submitxx" class="btn btn-primary" 
+			style="margin:5px 0;height:30px;width:50px"
+			 onclick="submitRequest()">查询
+		</button>
 	</div>
 </div>
 
-<script  type="text/javascript">
-/* 	showMenuTitle=function()
-	{
-		alert($("#menu_title").text());
-	} */
-</script>
+
 <!--<button onclick="showMenuTitle()">haha</button>  -->
-    <div  style="width: 100%;height: 400px;clear:left">
+<!--     <div  style="width: 100%;height: 400px;clear:left">
     <div class="col-sm-6" style="width:100%;margin:20px 0;">
         <div class="tabbable">
             <ul class="nav nav-tabs padding-12 tab-color-blue background-blue smaller-10" id="myTab4" >
@@ -432,8 +339,10 @@ $(function () {
             </div>
         </div>
     </div>
-    </div>
-<hr>
+    </div> -->
+
+    <div id="container_area1" style=" height: 350px;width:95%"></div>
+	<hr>
 		<div id="container" style=" height: 400px;"></div>
         <hr>
 		<div id="container3" style=" height: 400px;"></div>

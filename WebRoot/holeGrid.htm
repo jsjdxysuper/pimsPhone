@@ -35,7 +35,8 @@ $(function () {
 			colors:['#00ff00','#0000ff','#ff0000'],
 			plotOptions:{
 				line:{
-					lineWidth:2
+					lineWidth:2,
+					pointStart:1
 				}
 			},
 			exporting:{
@@ -49,15 +50,15 @@ $(function () {
 			},
             title: {
                 text: '全网月度发电量',
-                x: -20, //center
+/*                 x: -20, //center */
             },
             subtitle: {
                 text: '',
                 x: -20
             },
             xAxis: {
-                categories: ['1', '2', '3', '4', '5', '6',
-                    '7', '8', '9', '10', '1', '12'],
+/*                 categories: ['1', '2', '3', '4', '5', '6',
+                    '7', '8', '9', '10', '1', '12'], */
             },
             yAxis: {
                 title: {
@@ -77,12 +78,12 @@ $(function () {
                 valueSuffix: '万千瓦时'
             },
             legend: {
-                layout: 'vertical',
+/*                 layout: 'vertical',
                 align: 'right',
 				verticalAlign:'top',
 				floating:'true',
 				y:50,
-                borderWidth: 0,
+                borderWidth: 0, */
             },
             series: [{
                 name: '去年同期',
@@ -116,49 +117,34 @@ $(function () {
 
 
 		
-
-<div style="">
-	<div style=";margin-left:10px;">	
-        <label for="test_default" style="float:left;width:100px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+<div style="clear:both;height:10px"></div>
+<div style="margin-left:20px;margin-right:20px">
+	<div style=";float:left">	
+        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
         <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
     </div>
-    <div style="clear:left;margin-left:10px;">
-
-        <label for="form_field_select_1" style="float:left;width:100px">时间跨度</label>
-
-        <!-- Single button -->
-        <div class="btn-group">
-          <button type="button" id="menu_title" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            实时 <span class="caret"></span>
-          </button>
-          <ul class="dropdown-menu" role="menu">
-            <li><a href="#">实时</a></li>
-            <li class="divider"></li>
-            <li><a href="#">年</a></li>
-            <li><a href="#">月</a></li>
-            
-            <li><a href="#">日</a></li>
-          </ul>
-        </div>
-
-														
+	<div style="float:right;">
+		<button id="submitxx" class="btn btn-primary" 
+			style="margin:5px 0;height:30px;width:50px"
+			 onclick="submitRequest()">查询
+		</button>
 	</div>
 </div>
-
-<div id="lineContainer" style="width: 100%;height: 400px;"></div>
-
+<div style="text-align:center">
+<div id="lineContainer" style="width: 95%;height: 400px;margin-left:auto;margin-right:auto"></div>
+</div>
 
 <br>
 <hr>
 <br>
 
-<div style="height:300px;margin-top:10px">
-	<table id="table_id1" class="display cell-border"  style="width:100%;height:300px">   
-		<caption style="text-align:center"><b>当日电网发电情况</b></caption>
+<div style="margin:0 10px 0 10px">
+	<table id="table_id1" class="display cell-border"  cellspacing="0" style="height:300px">   
+		<caption style="text-align:center;font-size:18px;color:#000000">当日电网发电情况</caption>
 	
-	    <thead>   
+	    <thead style="background-color:#30a4dd;color:#ffffff">   
 	        <tr>   
-	            <th >类别</th>   
+	            <th >&nbsp;&nbsp;&nbsp;&nbsp;</th>   
 	            <th >日发电(万)</th>   
 	            <th >月发电(亿)</th> 
 	            <th >年发电(亿)</th>   
@@ -192,9 +178,9 @@ $(function () {
 	            <td>联络线净受</td><td>1744</td><td>4612</td><td>2313</td><td>6.1%</td><td>1.1%</td>   
 	        </tr>
 	    </tbody>  
-	    <tfoot><tr><td colspan="6"></td></tr></tfoot>   
 	</table>  
 </div>
+	<div style="clear:both;height:20px"></div>
 
 </body>
 </html>
