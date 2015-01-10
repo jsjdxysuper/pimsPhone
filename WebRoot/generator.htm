@@ -35,6 +35,7 @@
 			var g1Option;
 			var g2Chart;
 			var g2Option;
+			var ajaxbg;
 			
 $(function () {
 	
@@ -48,7 +49,7 @@ $(function () {
 	    
 	    pane: {
 	    	center: ['50%', '85%'],
-	    	size: '120%',//中间表盘与pane的大小对比，数值越大，表盘就越大
+	    	size: '130%',//中间表盘与pane的大小对比，数值越大，表盘就越大
 	        startAngle: -90,
 	        endAngle: 90,
             background: {
@@ -78,7 +79,7 @@ $(function () {
             tickPixelInterval: 400,
             tickWidth: 0,
 	        title: {
-                y: -50//标题的位置
+                y: -40//标题的位置
 	        },
             labels: {
                 y: 10//表盘刻度位置
@@ -210,7 +211,7 @@ $(function () {
                 }
             },
             legend: {
-                layout: 'vertical',
+/*                 layout: 'vertical',
                 align: 'right',
                 verticalAlign: 'top',
                 x: -10,
@@ -218,7 +219,7 @@ $(function () {
                 floating: true,
                 borderWidth: 1,
                 backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-                shadow: true
+                shadow: true */
             },
             credits: {
                 enabled: false
@@ -250,14 +251,17 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://192.168.1.105:8080/pimsPhone/GeneratorServlet",
-    		data:$.param({"date":date,"time_span":time_span}),
-    		type:"post"
+    		url:"http://192.168.1.102:8080/pimsPhone/GeneratorServlet",
+    		data:$.param({"date":date}),
+    		type:"post",
+    		beforeSend:function(){
+    			ajaxbg.show(); 
+    		}
 
     	})
     	.done(function(data,statusText){
 
-			
+			ajaxbg.hide();
     		var dataReceived = $.evalJSON(data);
     		$("#maxPower").text(dataReceived.max);
     		$("#minPower").text(dataReceived.min);
@@ -302,41 +306,28 @@ $(function () {
 
 <script src="./support/highcharts/js/modules/solid-gauge.js"></script> 
 <script src="./support/ace/assets/js/spin.min.js"></script> 	
+
+
+
+<div id="background" class="background" style="display: none; min-height: 100%;_height:100%;"></div> 
+<div id="progressBar" class="progressBar" style="display: none;font-size: 12px;">数据加载中，请稍等...</div> 
 <!--时间选择器-->
-<div style="" id="time_pick">
-	<div style="float:left">
-		<div style=";margin-left:10px;">	
-	        <label for="test_default" style="float:left;;width:100px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+<div style="clear:both;height:10px"></div>
+	<div style="margin-left:20px;margin-right:20px">
+		<div style=";float:left">	
+	        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
 	        <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
 	    </div>
-	    <div style="clear:left;margin-left:10px;">
-	
-	        <label for="form-field-select-1" style="float:left;width:100px">时间跨度</label>
-	
-	        <!-- Single button -->
-	        <div class="btn-group">
-	          <button type="button" id="menu_title" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-	            	实时 <span class="caret"></span>
-	          </button>
-	          <ul class="dropdown-menu" role="menu">
-	            <li><a href="#">实时</a></li>
-	            <li class="divider"></li>
-	            <li><a href="#">年</a></li>
-	            <li><a href="#">月</a></li>
-	            
-	            <li><a href="#">日</a></li>
-	          </ul>
-	        </div>														
+		<div style="float:right;">
+			<button id="submitRequest" class="btn btn-primary" 
+				style="margin:5px 0;height:30px;width:50px"
+				 onclick="submitRequest()">查询
+			</button>
 		</div>
 	</div>
-	<button id="submitRequest" class="btn btn-primary" 
-		style="float:right;margin:20px 20px 10px 0;height:50px;width:70px"
-		 onclick="submitRequest()">查询
-	</button>
-	<div style="clear:both"></div>
-</div>
+	<div style="clear:both;height:20px"></div>
 
-<hr>
+
 <div style="text-align:center;width:window.screen.width;">
 	<div style="margin-left:auto;margin-right:auto;" id="gaugeParent">
 		<div id="g1Container" style="float:left;"></div>
@@ -345,13 +336,13 @@ $(function () {
 </div>
 
     <!--机组的统计信息(表格)-->
-
-<table id="table_id2" class="display cell-border" cellspacing="0" style="margin:0 10px 0 10px">   
+<div style="margin:0 10px 0 10px">
+<table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
 	<thead>
 	    <tr>
 	        <td colspan="4" style="text-align:center">本厂机组统计信息  </td>
 	    </tr>
-	    <tr>   
+	    <tr style="background-color:#30a4dd;color:#ffffff">   
 	    	<td></td><td>#1机</td><td>#2机</td><td >电厂</td>   
 	    </tr> 
 	</thead>  
@@ -379,11 +370,10 @@ $(function () {
 	            <td>利用小时</td><td id="g1TimeUse">0</td><td id="g2TimeUse">0</td><td id="timeUse">0</td>   
 	        </tr> 	        
 	    </tbody> 
-	<tfoot><tr><td colspan="4" id="recordCount" style="text-align:center"></td></tr></tfoot>  
 </table>  
+</div>
 
-<hr style="clear:left;">
-
+	<div style="clear:both;height:20px"></div>
 		<div id="container" style=" height: 400px;"></div>
         <script type="text/javascript">
 
@@ -410,5 +400,7 @@ $(function () {
 
         </script>
         <div id="content_my" style="clear:both"></div>
+        
+
 	</body>
 </html>

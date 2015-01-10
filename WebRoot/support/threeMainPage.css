@@ -40,3 +40,48 @@ button{
 	border:none;
 	background-color:blue;
 }
+
+html {    
+    min-height: 100%;    
+    _height:100%;    
+}    
+body {    
+    margin: 0;    
+    padding: 0;    
+    min-height: 100%;    
+    _height:100%;    
+} 
+.background { 
+	display: block; 
+	width: 100%; 
+	min-height: 100%;    
+    _height:100%;    
+	
+	opacity: 0.4; 
+	filter: alpha(opacity=40); 
+	background:while; 
+	position: absolute; 
+	top: 0; 
+	left: 0; 
+	z-index: 2000; 
+} 
+ .progressBar { 
+	border: solid 2px #86A5AD; 
+	background: white url(../support/images/indicator_medium.gif) no-repeat 10px 10px; 
+} 
+.progressBar { 
+	display: block; 
+	width: 200px; 
+	height: 58px; 
+	position: fixed; 
+	top: 50%; 
+	left: 50%; 
+	margin-left: -74px; 
+	margin-top: -14px; 
+	padding: 10px 10px 10px 50px; 
+	text-align: left; 
+	line-height: 27px; 
+	font-weight: bold; 
+	position: absolute; 
+	z-index: 2001; 
+} 

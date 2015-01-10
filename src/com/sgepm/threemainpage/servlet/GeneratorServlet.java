@@ -26,7 +26,6 @@ import net.sf.json.JSONObject;
 public class GeneratorServlet extends HttpServlet {
 
 	private String date;
-	private String time_span;
 	private String dateWildcard;
 	/**
 	 * Constructor of the object.
@@ -62,8 +61,8 @@ public class GeneratorServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 
 		date = request.getParameter("date");
-		time_span = request.getParameter("time_span");
-		System.out.println("date:"+date+",time_span:"+time_span);
+
+		System.out.println("get机组信息查询日期:"+date);
 		String returnData =  getData();
 		out.write(returnData);
 
@@ -90,8 +89,7 @@ public class GeneratorServlet extends HttpServlet {
 		date = request.getParameter("date");
 		//改变日期的格式为YYYY-MM-DD
 		date = Tools.formatDate(date);
-		time_span = request.getParameter("time_span");
-		System.out.println("date:"+date+",time_span:"+time_span);
+		System.out.println("post机组日期查询日期:"+date);
 		String returnData =  getData();
 //		try {
 //			Thread.currentThread().sleep(5000);
@@ -127,9 +125,8 @@ public class GeneratorServlet extends HttpServlet {
 		sum             = 0;
 		timeOfHours     = 0;
 		
-		dateWildcard = Tools.change2WildcardDate(date, time_span);
-		String []dataParas={dateWildcard};
-		System.out.println("time_span"+dataParas[0]);
+
+		String []dataParas={date};
 		ResultSet rs= oc.query(plantSqlStr,dataParas);
 
 		ArrayList<String> rq = new ArrayList<String>();
@@ -171,18 +168,18 @@ public class GeneratorServlet extends HttpServlet {
 			average     = sum/recordCount;
 			energy      = sum/120;
 			timeOfHours = recordCount/12;
-			timeUse     = energy/Tools.rongLiang*10;
+			timeUse     = energy/(Tools.rongLiang*2)*10;
 		}
 		//保留两位小数
-		DecimalFormat form = new DecimalFormat("##0.00");
+
 		
-		plantData.put("max",form.format(max));
-		plantData.put("min", form.format(min));
-		plantData.put("average", form.format(average));
-		plantData.put("energy",form.format(energy));
-		plantData.put("timeUse", form.format(timeUse));
+		plantData.put("max",Tools.float2Format(max));
+		plantData.put("min", Tools.float2Format(min));
+		plantData.put("average", Tools.float2Format(average));
+		plantData.put("energy",Tools.float2Format(energy));
+		plantData.put("timeUse", Tools.float2Format(timeUse));
 		plantData.put("recordCount", String.valueOf(recordCount));
-		plantData.put("timeOfHours", form.format(timeOfHours));
+		plantData.put("timeOfHours", Tools.float2Format(timeOfHours));
 		
 		return plantData;
 	}
@@ -206,8 +203,8 @@ public class GeneratorServlet extends HttpServlet {
 		g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
 		
 		String generatorSqlStr="select JZBM,YG from info_data_jzyg t WHERE JZMC IN ('沈阳康平#1机','沈阳康平#2机') AND RQ LIKE ? ORDER BY RQ,SJ";
-		dateWildcard = Tools.change2WildcardDate(date, time_span);
-		String []dataParas={dateWildcard};
+
+		String []dataParas={date};
 
 		ResultSet rs = oc.query(generatorSqlStr,dataParas);
 
@@ -268,20 +265,20 @@ public class GeneratorServlet extends HttpServlet {
 			g2TimeOfHours    = g2RecordCount/12;
 			g2TimeUse = g2Energy/Tools.rongLiang*10;
 		}	
-		DecimalFormat form = new DecimalFormat("##0.00");
-		eachGeneratorData.put("g1Max",form.format(g1Max));
-		eachGeneratorData.put("g1Min",form.format(g1Min));
-		eachGeneratorData.put("g1Average",form.format(g1Average));
-		eachGeneratorData.put("g1Energy",form.format(g1Energy));
-		eachGeneratorData.put("g1TimeOfHours",form.format(g1TimeOfHours));
-		eachGeneratorData.put("g1TimeUse",form.format(g1TimeUse));
+
+		eachGeneratorData.put("g1Max",Tools.float2Format(g1Max));
+		eachGeneratorData.put("g1Min",Tools.float2Format(g1Min));
+		eachGeneratorData.put("g1Average",Tools.float2Format(g1Average));
+		eachGeneratorData.put("g1Energy",Tools.float2Format(g1Energy));
+		eachGeneratorData.put("g1TimeOfHours",Tools.float2Format(g1TimeOfHours));
+		eachGeneratorData.put("g1TimeUse",Tools.float2Format(g1TimeUse));
 		
-		eachGeneratorData.put("g2Max",form.format(g2Max));
-		eachGeneratorData.put("g2Min",form.format(g2Min));
-		eachGeneratorData.put("g2Average",form.format(g2Average));
-		eachGeneratorData.put("g2Energy",form.format(g2Energy));
-		eachGeneratorData.put("g2TimeOfHours",form.format(g2TimeOfHours));
-		eachGeneratorData.put("g2TimeUse",form.format(g2TimeUse));
+		eachGeneratorData.put("g2Max",Tools.float2Format(g2Max));
+		eachGeneratorData.put("g2Min",Tools.float2Format(g2Min));
+		eachGeneratorData.put("g2Average",Tools.float2Format(g2Average));
+		eachGeneratorData.put("g2Energy",Tools.float2Format(g2Energy));
+		eachGeneratorData.put("g2TimeOfHours",Tools.float2Format(g2TimeOfHours));
+		eachGeneratorData.put("g2TimeUse",Tools.float2Format(g2TimeUse));
 		return eachGeneratorData;
 	}
 	public String getData(){

@@ -1,5 +1,7 @@
 package com.sgepm.threemainpage.servlet;
 
+import java.text.DecimalFormat;
+
 public class Tools {
 
 	public static String [] time_span      = {"实时","年","月","日"};
@@ -34,6 +36,18 @@ public class Tools {
 		}
 		String newDate = String.copyValueOf(dateSplit);
 		return newDate;
+	}
+	
+	public static String float2Format(float old){
+		String ret;
+		DecimalFormat form2 = new DecimalFormat("##0.00");
+		DecimalFormat form = new DecimalFormat("##0");
+		ret = ((old==0)?form.format(old):form2.format(old));
+		return ret;
+	}
+	public static void main(String[] args) {
+		float a = 0,b=2.3f;
+		System.out.println(float2Format(a)+","+float2Format(b));
 	}
 //	public static int getHours(String date,String span){
 //		int a = 0;
