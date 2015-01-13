@@ -9,7 +9,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 public class OracleConnection {
 	public static final String DRIVER="oracle.jdbc.driver.OracleDriver";
-	public static final String URL="jdbc:oracle:thin:@192.168.1.101:1521:orcl";
+	public static final String URL="jdbc:oracle:thin:@115.28.77.74:1521:orcl";
 	public static final String USER="ding";
 	public static final String PWD="880605";
 	private Connection con=null;

@@ -251,7 +251,7 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://192.168.1.102:8080/pimsPhone/GeneratorServlet",
+    		url:"http://www.sgepm.com/pimsPhone/GeneratorServlet",
     		data:$.param({"date":date}),
     		type:"post",
     		beforeSend:function(){
@@ -269,7 +269,7 @@ $(function () {
     		$("#energy").text(dataReceived.energy);
     		$("#timeUse").text(dataReceived.timeUse);
     		$("#recordCount").text("有功（兆瓦）电量（万千瓦时）,记录数："+dataReceived.recordCount+",时长："+dataReceived.timeOfHours+"小时");
-    		$("#volume").text(GENERATORVOLUME);
+    		$("#volume").text(GENERATORVOLUME*2);
     		
     		$("#g1Volume").text(GENERATORVOLUME);
     		$("#g1Energy").text(dataReceived.g1Energy);
@@ -336,7 +336,7 @@ $(function () {
 </div>
 
     <!--机组的统计信息(表格)-->
-<div style="margin:0 10px 0 10px">
+<div style="margin:0">
 <table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
 	<thead>
 	    <tr>
