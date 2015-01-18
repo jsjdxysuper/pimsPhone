@@ -137,7 +137,7 @@ $(function () {
 			table_example_id2 = $("#table_example").DataTable({
 		        "processing": true,
 		        "ajax":{
-		        	url:"http://192.168.1.105:8080/pimsPhone/HoleGridServlet",
+		        	url:"/pimsPhone/HoleGridServlet",
 		        	type:"POST",
 		        	data:function ( d ) { return $('#appDate').serialize(); },
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来
@@ -175,7 +175,7 @@ $(function () {
 		submitRequest = function(){
 
 		if(table_example_id2!=null)
-			table_example_id2.ajax.url("http://192.168.1.105:8080/pimsPhone/HoleGridServlet").load();
+			table_example_id2.ajax.url("/pimsPhone/HoleGridServlet").load();
 						
 	};
 

@@ -22,12 +22,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sgepm.Tools.Tools;
+import com.sgepm.threemainpage.entity.PlantMonthData;
 
 
 @WebServlet(name="PlantServlet",urlPatterns="/PlantServlet")
@@ -73,18 +75,20 @@ public class PlantServlet extends HttpServlet {
 		
 		
 		JSONObject jo = new JSONObject();
+		JSONArray ja = new JSONArray();
 		date = request.getParameter("date");
 		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		HashMap<String,Vector<Float>> plantLineData;
-		plantLineData = getPlantLineData();
-		jo.putAll(plantLineData);
+		ja = getPlantLineData();
+		jo.put("lineData",ja);
 		out.write(jo.toString());
 		out.close();
 	}
 	
 
-	public HashMap<String,Vector<Float>> getPlantLineData() {
+	public JSONArray getPlantLineData() {
 		
+		Vector<PlantMonthData> plantVectorData = new Vector<PlantMonthData>();
 		HashMap<String,Vector<Float>> retData = new HashMap<String,Vector<Float>>();
 		ArrayList<String> generatorList = new ArrayList<String>();
 
@@ -153,8 +157,13 @@ public class PlantServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return retData;
+		for (String key : retData.keySet()) {
+
+			plantVectorData.add(new PlantMonthData(key,retData.get(key)));
+		}
+		JSONArray ja = new JSONArray();
+		ja.addAll(plantVectorData);
+		return ja;
 	}
 	/**
 	 * The doGet method of the servlet. <br>

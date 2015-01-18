@@ -251,7 +251,7 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://192.168.1.102:8080/pimsPhone/GeneratorServlet",
+    		url:"/pimsPhone/GeneratorServlet",
     		data:$.param({"date":date}),
     		type:"post",
     		beforeSend:function(){
