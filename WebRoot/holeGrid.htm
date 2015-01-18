@@ -83,7 +83,15 @@ $(function () {
 				}
             },
             tooltip: {
-                valueSuffix: '万千瓦时'
+//                 valueSuffix: '万千瓦时',
+//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
+//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
+				formatter:function(){
+					
+					var s = ''+this.series.name+':'+(this.x)+"日"+'';
+					s += '<br/>'+this.y+'万千瓦时';
+					return s;
+				}
             },
             legend: {
 //                  layout: 'vertical',
@@ -170,43 +178,7 @@ $(function () {
 			table_example_id2.ajax.url("http://192.168.1.105:8080/pimsPhone/HoleGridServlet").load();
 						
 	};
-//     submitRequest = function()
-//     {
-//     	var date = $("#appDate").val().trim();
-//     	var time_span = $("#menu_title").text().trim();
-//     	$.ajax({
-//     		url:"http://localhost:8080/pimsPhone/HoleGridServlet",
-//     		data:$.param({"date":date}),
-//     		type:"post",
-//     		beforeSend:function(){
-//     			ajaxbg.show(); 
-//     		}
 
-//     	})
-//     	.done(function(receivedData,statusText){
-
-// 			ajaxbg.hide();
-//     		var dataReceived = $($.evalJSON(receivedData));
-
-// 			column0 = dataReceived[0].split(',');
-// 			column1 = dataReceived[1].split(',');
-// 			column2 = dataReceived[2].split(',');
-// 			column3 = dataReceived[3].split(',');
-// 			column4 = dataReceived[4].split(',');
-
-// 			var dataSet = [
-// 			column0,column1,column2,column3,column4
-// 			];
-// 			$("#table_id1").dataTable.data=dataSet;
-			
- 
-// 			alert(dataReceived);
-//     	})
-//     	.fail(function(){
-//     		alert("服务器响应出错");
-//     	});
-
-//    };
 
 
 
