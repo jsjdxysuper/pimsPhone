@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.sgepm.threemainpage.servlet.Tools;
+import com.sgepm.Tools.Tools;
 import com.sun.xml.internal.fastinfoset.util.CharArray;
 
 import net.sf.json.JSONArray;

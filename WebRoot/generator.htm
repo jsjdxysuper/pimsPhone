@@ -251,7 +251,7 @@ $(function () {
     	var date = $("#appDate").val().trim();
     	var time_span = $("#menu_title").text().trim();
     	$.ajax({
-    		url:"http://www.sgepm.com/pimsPhone/GeneratorServlet",
+    		url:"http://192.168.1.102:8080/pimsPhone/GeneratorServlet",
     		data:$.param({"date":date}),
     		type:"post",
     		beforeSend:function(){
@@ -296,6 +296,22 @@ $(function () {
     	});
     };
 
+
+	$(document).ready(function() {
+	
+		//$('#table_id1').DataTable();
+		if($("table").length > 0)
+		{
+			$("table").DataTable({
+				paging:false,
+				searching:false,
+				info:false,
+				ordering: false,
+			});
+		}
+	
+	
+	});
 	</script>
 	
 	<script type="text/javascript" src="./support/threeMainPage.js"></script>

@@ -21,15 +21,7 @@ $(function () {
 	$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
 });
 
-//下拉菜单的动作
-$(function() {
-	$(".dropdown-menu li a").bind("click", function() {
-		var $this = $(this);
-		var $a = $("#menu_title");
-		$a.text($this.text());
-		$a.append("<span class='caret'></span>");
-	});
-});
+
 
 
 setDate=function () {
@@ -52,18 +44,4 @@ setDate=function () {
 $(document).ready(setDate);
 
 
-$(document).ready(function() {
 
-	//$('#table_id1').DataTable();
-	if($("table").length > 0)
-	{
-		$("table").DataTable({
-			paging:false,
-			searching:false,
-			info:false,
-			ordering: false,
-		});
-	}
-
-
-});
