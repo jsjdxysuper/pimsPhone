@@ -1,14 +1,27 @@
 package com.sgepm.Tools;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.ResultSet;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Vector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sgepm.threemainpage.servlet.HoleGridServlet;
+import com.sgepm.threemainpage.servlet.OracleConnection;
 
 public class Tools {
 
@@ -98,8 +111,33 @@ public class Tools {
 		ret = cal1.getTime();
 		return ret;
 	}
+	/**
+	 * 获得某一个日期，这个日期所在月份的天数
+	 * @param in
+	 * @return
+	 */
+	public static int getMonthDayNum(String in){
+		String dyear = in.substring(0, 4);
+		String dmonth = in.substring(5, 7);
+
+		SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM");
+	    Calendar rightNow = Calendar.getInstance();
+
+	    try {
+			rightNow.setTime(simpleDate.parse(dyear+"/"+dmonth));
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    return rightNow.getActualMaximum(Calendar.DAY_OF_MONTH);//根据年月 获取月份天数
+
+	}
 	public static void main(String[] args) {
-		log.debug(Tools.formatDate("2012-1-8"));
+		Vector<Float> test = new Vector<Float>();
+		test.setSize(3);
+
+		System.out.println(test.get(1));
 	}
 	
 	

@@ -27,7 +27,7 @@
 $(function () {
 	$('#container_area1').highcharts({
 		chart: {
-			type: 'area'
+			type: 'line'
 		},
 		title: {
 			text: '周边电厂月度发电量',
@@ -67,18 +67,18 @@ $(function () {
 			pointFormat: '{series.name} 电量： <b>{point.y:,.0f}</b><br/>'
 		},
 		plotOptions: {
-			area: {
-				pointStart: 1,
-				marker: {
-					enabled: false,
-					symbol: 'circle',
-					radius: 2,
-					states: {
-						hover: {
-							enabled: true
-						}
-					}
-				}
+			line: {
+// 				pointStart: 1,
+// 				marker: {
+// 					enabled: false,
+// 					symbol: 'circle',
+// 					radius: 2,
+// 					states: {
+// 						hover: {
+// 							enabled: true
+// 						}
+// 					}
+// 				}
 			}
 		},
 		series: [{
