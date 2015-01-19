@@ -5,24 +5,33 @@ import java.util.Vector;
 public class PlantMonthData {
 
 	String name;
-	Vector<Float> data;
+	Float data;
 	
-	public PlantMonthData(String name, Vector<Float> data) {
+	public PlantMonthData(String name, Float data) {
 		super();
 		this.name = name;
 		this.data = data;
 	}
+
+	public PlantMonthData() {
+		super();
+	}
+
 	public String getName() {
 		return name;
 	}
+
 	public void setName(String name) {
 		this.name = name;
 	}
-	public Vector<Float> getData() {
+
+	public Float getData() {
 		return data;
 	}
-	public void setData(Vector<Float> data) {
+
+	public void setData(Float data) {
 		this.data = data;
 	}
+
 
 }

@@ -70,12 +70,13 @@ public class PlantServlet extends HttpServlet {
 		
 		
 		JSONObject jo = new JSONObject();
+		
 		JSONArray ja = new JSONArray();
 		date = request.getParameter("date");
 		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		
 		ja = getPlantLineData();
-		jo.put("lineData",ja);
+		jo.put("columnData",ja);
 		out.write(jo.toString());
 		out.close();
 	}
@@ -96,24 +97,22 @@ public class PlantServlet extends HttpServlet {
 		String plantListStr[];//折线图所要显示的电厂列表
 		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
 		Vector<PlantMonthData> plantVectorData = new Vector<PlantMonthData>();
-		//包含电厂发电量信息的Map,String为电厂名称,Vector为电厂发电量信息,其索引为所在月度的日期
-		HashMap<String,Vector<Float>> retData  = new HashMap<String,Vector<Float>>();
+
 		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
 		ArrayList<String> generatorList        = new ArrayList<String>();
 
 		
 		String plantsStr = properties.getString("pims.plant.graph1.plants");
 		plantListStr = plantsStr.split(",");
-		
-		//根据所查日期的月份包含的天数，初始化Vector的size
-		Vector<Float> tempVector = new Vector<Float>();
-		int dayNum               = Tools.getMonthDayNum(date);
-		tempVector.setSize(dayNum);
-
-		//因为是同一个月度不同电厂的发电量的对比，所以每个Vector（电厂）的size（天数）是相同的
-		for(int i=0;i<plantListStr.length;i++){			
-			retData.put(plantListStr[i],(Vector<Float>) tempVector.clone());
+		plantVectorData.setSize(plantListStr.length);
+		//都初始化为0，当有某个电厂发电量为0时，在数据中也有所体现
+		for(int i=0;i<plantVectorData.size();i++){
+			PlantMonthData temp = new PlantMonthData();
+			temp.setName(plantListStr[i]);
+			temp.setData(new Float(0));
+			plantVectorData.set(i, temp);
 		}
+
 		log.debug("PlantLineData电厂列表:"+plantsStr);
 
 
@@ -141,35 +140,36 @@ public class PlantServlet extends HttpServlet {
 		log.debug("inString:"+inString);
 		log.debug("params:");
 		String params[] = {dateWildcard};
-		String sql = "select t.rq,sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
+		String sql = "select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
 						+inString+" )"+
-						" and rq like ? and t.jzbm=b.jzbm group by ssdcmc,rq order by ssdcmc,rq";
+						" and rq like ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
 		ResultSet rs=  oc.query(sql,params);
 
-		Vector<Float> temp = new Vector<Float>();
 		try {
 			while(rs.next()){
-
-				String rq = rs.getString("rq");
+				
 				String ssdcmc = rs.getString("ssdcmc");
 				float rdl = rs.getFloat("rdl");
-				
-				temp = retData.get(ssdcmc);
-				int index = Integer.parseInt(rq.substring(8))-1;
-				temp.set(index, rdl);
-				//retData
-				log.debug(rq+","+ssdcmc+","+rdl);
+				for(int i=0;i<plantVectorData.size();i++){
+					PlantMonthData temp = plantVectorData.get(i);
+					if(temp.getName().compareTo(ssdcmc)==0)
+						temp.setData(rdl);
+				}
+
+				log.debug(ssdcmc+","+rdl);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for (String key : retData.keySet()) {
 
-			plantVectorData.add(new PlantMonthData(key,retData.get(key)));
-		}
 		JSONArray ja = new JSONArray();
-		ja.addAll(plantVectorData);
+		for(int i=0;i<plantVectorData.size();i++){
+			JSONArray temp = new JSONArray();
+			temp.add(plantVectorData.get(i).getName());
+			temp.add(plantVectorData.get(i).getData());
+			ja.add(temp);
+		}
 		return ja;
 	}
 	/**
