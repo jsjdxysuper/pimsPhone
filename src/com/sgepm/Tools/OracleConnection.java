@@ -1,17 +1,20 @@
-package com.sgepm.threemainpage.servlet;
+package com.sgepm.Tools;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
 import javax.sql.DataSource;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 public class OracleConnection {
-	public static final String DRIVER="oracle.jdbc.driver.OracleDriver";
-	public static final String URL="jdbc:oracle:thin:@192.168.1.101:1521:orcl";
-	public static final String USER="ding";
-	public static final String PWD="880605";
+	public static String DRIVER;
+	public static String URL;
+	public static String USER;
+	public static String PWD;
+	private static final String PROPERTYFILENAME = "pimsphone";
+	private ResourceBundle properties = ResourceBundle.getBundle(PROPERTYFILENAME);
 	private Connection con=null;
 	private PreparedStatement ps=null;
 	private ResultSet rs=null;
@@ -19,6 +22,14 @@ public class OracleConnection {
 	
 	public Connection getCon(){
 		try {
+			DRIVER = properties.getString("database.driver");
+			URL = properties.getString("database.url");
+			USER = properties.getString("database.user");
+			PWD = properties.getString("database.pwd");
+			System.out.println("DRIVER:"+DRIVER);
+			System.out.println("URL:"+URL);
+			System.out.println("USER:"+USER);
+			System.out.println("PWD:"+PWD);
 			Class.forName(DRIVER);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block

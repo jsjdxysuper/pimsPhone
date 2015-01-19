@@ -21,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sgepm.threemainpage.servlet.HoleGridServlet;
-import com.sgepm.threemainpage.servlet.OracleConnection;
 
 public class Tools {
 
