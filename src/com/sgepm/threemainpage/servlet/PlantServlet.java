@@ -73,19 +73,24 @@ public class PlantServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		
-		JSONObject jo = new JSONObject();
+		JSONObject joAll = new JSONObject();
 		
 		JSONArray ja = new JSONArray();
 		date = request.getParameter("date");
 		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		
 		ja = getOneMonthPowerData();
-		JSONObject joSeries = getEveryMonthPowerData();
 		
-		jo.accumulateAll(joSeries);
-		jo.put("columnData",ja);
+		JSONObject joSeries = getEveryMonthPowerData();	
+		JSONObject plantProgress = getProgressData();
+		joAll.accumulate("plantProgressData", plantProgress);
+		joAll.accumulateAll(joSeries);
+		joAll.put("columnData",ja);
 		
-		out.write(jo.toString());
+		String ret = joAll.toString();
+		ret = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
+		ret = Tools.getAbbrNameOfPlant(ret);
+		out.write(ret);
 		
 		out.close();
 	}
@@ -259,15 +264,16 @@ public class PlantServlet extends HttpServlet {
 	 * 获得电厂进度信息图的数据
 	 * @return
 	 */
-	public JSONObject getPrograss(){
+	public JSONObject getProgressData(){
 		//select substr(rq,0,7),sum(rdl) from info_dmis_zdhcdc t where dcbm='sykpp' and rq>='2014-01-01' and rq <='2014-03-12' group by substr(rq,0,7)
 		//select t.*, t.rowid from info_sdlr_njh t
 		String startDate = Tools.getFirstDateInYear(date);
 		float yearPlan = 0;
 		Vector<Float> monthPlan = new Vector<Float>();
 		Vector<Float> monthFinish = new Vector<Float>();
+		float yearAccumulate = 0;
 		
-		String sqlGetYearPlan = "select t.nf,t.njh  from info_sdlr_njh t where t.dcbm = ? and t.nf = ?";
+		String sqlGetYearPlan = "select t.nf,t.njh  from info_sdlr_dcnjh t where t.dcbm = ? and t.nf = ?";
 		String params1[] = {plantIdentity,date.substring(0,4)};
 		ResultSet rs=  oc.query(sqlGetYearPlan,params1);
 		try {
@@ -279,10 +285,7 @@ public class PlantServlet extends HttpServlet {
 		}
 		//获得每个月的计划量
 		for(int i=0;i<12;i++){
-			if(i==0)
-				monthPlan.add(new Float(0));
-			else
-				monthPlan.add(monthPlan.get(i-1)+yearPlan/12);
+			monthPlan.add((i+1)*yearPlan/12);
 		}
 		
 		
@@ -294,7 +297,9 @@ public class PlantServlet extends HttpServlet {
 			while(rs.next()){
 				String yf = rs.getString("yf");
 				float ylj = rs.getFloat("ylj");
-				monthFinish.add(ylj);
+				
+				yearAccumulate += ylj;
+				monthFinish.add(yearAccumulate);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -307,8 +312,11 @@ public class PlantServlet extends HttpServlet {
 			temp.add(monthPlan.get(i));
 			temp.add(monthFinish.get(i));
 			vector.add(temp);
+			
 		}
-		JSONObject
+		JSONObject jo = new JSONObject();
+		jo.put("plantProgressData", vector);
+		return jo;
 	}
 	/**
 	 * The doGet method of the servlet. <br>

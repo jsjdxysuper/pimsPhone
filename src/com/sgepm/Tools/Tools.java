@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
 import java.util.Vector;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -157,10 +159,55 @@ public class Tools {
 		df.format(theDay);
 		return df.format(theDay);
 	}
+	
+	/**
+	 * 获得电厂的简写名字如：
+	 * 燕山湖电厂：燕山湖
+	 * 康平厂：康平
+	 * @param longName
+	 * @return
+	 */
+	public static String getAbbrNameOfPlant(String longName){
+		String newName = longName;
+        Pattern pat = Pattern.compile("\"[\\u4e00-\\u9fa5]{3,}电厂\"");
+        Matcher mat = pat.matcher(longName);
+        while (mat.find()) {
+        	String bingo = mat.group();
+        	String replaceStr = bingo.replaceAll("电厂", "");
+        	//System.out.println(bingo);
+            newName = longName.replace(bingo, replaceStr);
+            
+        }
+        
+//        String newName1 = newName;
+//        Pattern pat1 = Pattern.compile("\"[\\u4e00-\\u9fa5]{4,}厂\"");
+//        Matcher mat1 = pat1.matcher(newName);
+//        while(mat1.find()){
+//        	String bingo = mat1.group();
+//        	String replaceStr = bingo.replaceAll("厂", "");
+//        	newName1 = newName.replace(bingo, replaceStr);
+//        }
+		return newName;
+	}
+	/**
+	 * 利用查字典的方法简写电厂
+	 * @param oldStr
+	 * @param dic
+	 * @return
+	 */
+	public static String replacePlantName(String oldStr,Map<String,String> dic){
+		String newStr = oldStr;
+		for(String key:dic.keySet()){
+			newStr = newStr.replaceAll(key, dic.get(key));
+		}
+		return newStr;
+	}
+	
 	public static void main(String[] args) {
 
-		String a = getFirstDateInYear("2014-12-01");
-		System.out.print(a);
+		String a = "\"康的的啊厂\"";
+		String b = getAbbrNameOfPlant(a);
+		System.out.println(b);
 	}
 	
 	
