@@ -2,6 +2,11 @@ package com.sgepm.threemainpage.entity;
 
 import java.util.Vector;
 
+/**
+ * 用以表示plant页面第一个图（柱图：某一个月各个电厂的月累计电量）
+ * @author Administrator
+ *
+ */
 public class PlantMonthData {
 
 	String name;

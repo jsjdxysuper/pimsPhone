@@ -132,11 +132,35 @@ public class Tools {
 	    return rightNow.getActualMaximum(Calendar.DAY_OF_MONTH);//根据年月 获取月份天数
 
 	}
+	
+	/**
+	 * 获得给定年份的第一天
+	 * @param theDay
+	 * @return
+	 */
+	public static java.sql.Date getFirstDateInYear(java.sql.Date theDay){
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd"); 
+		String theDate = df.format(theDay);
+		String year = theDate.substring(0, 4);
+		String monthAndDay = "01-01";
+		String dateStr = year+"-"+monthAndDay;
+		return java.sql.Date.valueOf(dateStr);
+	}
+	/**
+	 * 获得给定年份的第一天
+	 * @param theDay
+	 * @return
+	 */
+	public static String getFirstDateInYear(String theDayStr){
+		java.sql.Date theDay = getFirstDateInYear(java.sql.Date.valueOf(theDayStr));
+		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd"); 
+		df.format(theDay);
+		return df.format(theDay);
+	}
 	public static void main(String[] args) {
-		Vector<Float> test = new Vector<Float>();
-		test.setSize(3);
 
-		System.out.println(test.get(1));
+		String a = getFirstDateInYear("2014-12-01");
+		System.out.print(a);
 	}
 	
 	

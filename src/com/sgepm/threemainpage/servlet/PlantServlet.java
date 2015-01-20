@@ -22,7 +22,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.sgepm.Tools.OracleConnection;
+import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
+import com.sgepm.threemainpage.entity.PlantMonthAccumulateData;
+import com.sgepm.threemainpage.entity.PlantMonthAccumulateDataSeries;
 import com.sgepm.threemainpage.entity.PlantMonthData;
 
 
@@ -31,6 +34,7 @@ public class PlantServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
+	private String plantIdentity = "sykpp";
 	
 	private ResourceBundle properties = ResourceBundle.getBundle("pimsphone");
 	//机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
@@ -75,9 +79,14 @@ public class PlantServlet extends HttpServlet {
 		date = request.getParameter("date");
 		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		
-		ja = getPlantLineData();
+		ja = getOneMonthPowerData();
+		JSONObject joSeries = getEveryMonthPowerData();
+		
+		jo.accumulateAll(joSeries);
 		jo.put("columnData",ja);
+		
 		out.write(jo.toString());
+		
 		out.close();
 	}
 	
@@ -92,7 +101,7 @@ public class PlantServlet extends HttpServlet {
 	 * {}....
 	 * ]
 	 */
-	public JSONArray getPlantLineData() {
+	public JSONArray getOneMonthPowerData() {
 		
 		String plantListStr[];//折线图所要显示的电厂列表
 		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
@@ -117,14 +126,8 @@ public class PlantServlet extends HttpServlet {
 
 
 		//获得每个电厂所配置的机组列表		
-		for(int i=0;i<plantListStr.length;i++){
-				String generators = properties.getString("pims.plant.graph1."+plantListStr[i]);
-				
-				String gArray[] = generators.split(",");
-				for(int j=0;j<gArray.length;j++){
-					generatorList.add(gArray[j]);
-				}
-		}
+		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph1");
+
 		
 		
 		//装配sql语句,in子句的最大数目为1000,足够了
@@ -171,6 +174,141 @@ public class PlantServlet extends HttpServlet {
 			ja.add(temp);
 		}
 		return ja;
+	}
+	
+	public JSONObject getEveryMonthPowerData(){
+//		select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in (
+//				'sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2')
+//				and rq <= '2014-10-11' and rq >= '2014-01-01' and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc
+		//分段柱图所要显示的电厂列表
+		int numPlant = 0;
+		int monthNum = Integer.parseInt(date.substring(5, 7));
+		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
+		Vector<PlantMonthAccumulateDataSeries> plantVectorDataseries = new Vector<PlantMonthAccumulateDataSeries>();
+
+		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
+		ArrayList<String> generatorList        = new ArrayList<String>();
+		
+		String plantsStr = properties.getString("pims.plant.graph2.plants");
+		String plantListStr[] = plantsStr.split(",");
+		numPlant = plantListStr.length;
+		plantVectorDataseries.setSize(monthNum);
+
+		for(int i=0;i<plantVectorDataseries.size();i++){
+			PlantMonthAccumulateDataSeries temp = new PlantMonthAccumulateDataSeries();
+			Vector<Float> dataTemp = new Vector<Float>();
+			dataTemp.setSize(numPlant);
+			temp.setData(dataTemp);
+			temp.setName(i+1);
+			plantVectorDataseries.set(i, temp);
+		}
+
+		log.debug("PlantLineData电厂列表:"+plantsStr);
+		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph2");
+
+		
+		
+		//装配sql语句,in子句的最大数目为1000,足够了
+		String inString="";
+		for(int i=0;i<generatorList.size();i++){
+		    if(i>0){
+		        inString+=",";
+		    }
+		    inString+="'"+generatorList.get(i)+"'";
+		}
+
+		
+		log.debug("inString:"+inString);
+		log.debug("params:");
+		
+		String startDate = Tools.getFirstDateInYear(date);
+		String params[] = {startDate,date};
+		String sql = "select substr(t.rq,0,7) as yf,sum(t.rdl) as ydl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
+						+inString+" )"+
+						" and rq >= ? and rq <= ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
+		ResultSet rs=  oc.query(sql,params);
+		
+		try {
+			while(rs.next()){
+				String yf = rs.getString("yf");
+				int yfInt = Integer.parseInt(yf.substring(5, 7));
+				float ydl = rs.getFloat("ydl");
+				String ssdcmc = rs.getString("ssdcmc");
+				
+				PlantMonthAccumulateDataSeries temp = plantVectorDataseries.get(yfInt-1);
+				for(int i=0;i<numPlant;i++){
+					if(plantListStr[i].compareTo(ssdcmc)==0){
+						temp.getData().set(i, ydl);
+					}
+				}
+				log.debug("yf:"+yf+",ydl:"+ydl+",ssdcmc:"+ssdcmc);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		JSONObject jo = new JSONObject();
+		jo.put("seriesPlantName", plantListStr);
+		jo.put("everyMonthPowerSeries", plantVectorDataseries);
+		
+		return jo;
+	}
+	
+	/**
+	 * 获得电厂进度信息图的数据
+	 * @return
+	 */
+	public JSONObject getPrograss(){
+		//select substr(rq,0,7),sum(rdl) from info_dmis_zdhcdc t where dcbm='sykpp' and rq>='2014-01-01' and rq <='2014-03-12' group by substr(rq,0,7)
+		//select t.*, t.rowid from info_sdlr_njh t
+		String startDate = Tools.getFirstDateInYear(date);
+		float yearPlan = 0;
+		Vector<Float> monthPlan = new Vector<Float>();
+		Vector<Float> monthFinish = new Vector<Float>();
+		
+		String sqlGetYearPlan = "select t.nf,t.njh  from info_sdlr_njh t where t.dcbm = ? and t.nf = ?";
+		String params1[] = {plantIdentity,date.substring(0,4)};
+		ResultSet rs=  oc.query(sqlGetYearPlan,params1);
+		try {
+			while(rs.next())
+				yearPlan = rs.getFloat("njh");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//获得每个月的计划量
+		for(int i=0;i<12;i++){
+			if(i==0)
+				monthPlan.add(new Float(0));
+			else
+				monthPlan.add(monthPlan.get(i-1)+yearPlan/12);
+		}
+		
+		
+		String sqlGetMonthPower = "select substr(rq,0,7) as yf,sum(rdl) as ylj from info_dmis_zdhcdc t "+
+				"where dcbm='sykpp' and rq >= ? and rq <= ? group by substr(rq,0,7) order by yf";
+		String params2[] = {startDate,date};
+		rs=  oc.query(sqlGetMonthPower,params2);
+		try {
+			while(rs.next()){
+				String yf = rs.getString("yf");
+				float ylj = rs.getFloat("ylj");
+				monthFinish.add(ylj);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//plantIdentity
+		Vector<Vector<Float>> vector = new Vector<Vector<Float>>();
+		for(int i=0;i<monthFinish.size();i++){
+			Vector<Float> temp = new Vector<Float>();
+			temp.add(monthPlan.get(i));
+			temp.add(monthFinish.get(i));
+			vector.add(temp);
+		}
+		JSONObject
 	}
 	/**
 	 * The doGet method of the servlet. <br>

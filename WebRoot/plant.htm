@@ -68,28 +68,28 @@ $(function () {
             },
             series: [{
                 name: 'Population',
-                data: [
-                    ['Shanghai', 23.7],
-                    ['Lagos', 16,1],
-                    ['Instanbul', 14.2],
-                    ['Karachi', 14.0],
-                    ['Mumbai', 12.5],
-                    ['Moscow', 12.1],
-                    ['São Paulo', 11.8],
-                    ['Beijing', 11.7],
-                    ['Guangzhou', 11.1],
-                    ['Delhi', 11.1],
-                    ['Shenzhen', 10.5],
-                    ['Seoul', 10.4],
-                    ['Jakarta', 10.0],
-                    ['Kinshasa', 9.3],
-                    ['Tianjin', 9.3],
-                    ['Tokyo', 9.0],
-                    ['Cairo', 8.9],
-                    ['Dhaka', 8.9],
-                    ['Mexico City', 8.9],
-                    ['Lima', 8.9]
-                ],
+//                 data: [
+//                     ['Shanghai', 23.7],
+//                     ['Lagos', 16,1],
+//                     ['Instanbul', 14.2],
+//                     ['Karachi', 14.0],
+//                     ['Mumbai', 12.5],
+//                     ['Moscow', 12.1],
+//                     ['São Paulo', 11.8],
+//                     ['Beijing', 11.7],
+//                     ['Guangzhou', 11.1],
+//                     ['Delhi', 11.1],
+//                     ['Shenzhen', 10.5],
+//                     ['Seoul', 10.4],
+//                     ['Jakarta', 10.0],
+//                     ['Kinshasa', 9.3],
+//                     ['Tianjin', 9.3],
+//                     ['Tokyo', 9.0],
+//                     ['Cairo', 8.9],
+//                     ['Dhaka', 8.9],
+//                     ['Mexico City', 8.9],
+//                     ['Lima', 8.9]
+//                 ],
                 dataLabels: {
                     enabled: true,
                     rotation: -90,
@@ -107,118 +107,17 @@ $(function () {
         };
         chart = new Highcharts.Chart(columnOption);
     });
-// $(function () {
-	
-// 	lineOption = {
-// 		chart: {
-// 			type: 'line',
-// 			renderTo: 'lineContainer'
-// 		},
-// 		title: {
-// 			text: '周边电厂月度发电量',
-// 		},
-// 		subtitle: {
-// 			text: ''
-// 		},
-// 		exporting:{
-// 			enabled:false
-// 		},
-// 		credits:{
-// 			enabled:'false',
-// 			text:''
-// 		},
-// 		xAxis: {
-// 			allowDecimals: false,
-// 			labels: {
-// 				formatter: function() {
-// 					return this.value; // clean, unformatted number for year
-// 				}
-// 			}
-// 		},
-// 		legend: {
-// 		},
-// 		yAxis: {
-// 			title: {
-// 				text: '电量(万千瓦时)'
-// 			},
-// 			labels: {
-// 				formatter: function() {
-// 					return this.value;
-// 				}
-// 			}
-// 		},
-// 		tooltip: {
-// 			/* pointFormat: '{series.name} 电量： <b>{point.y:,.0f}</b><br/>日期 ： {point.x}' */
-// 			pointFormat: '{series.name} 电量： <b>{point.y:,.0f}</b><br/>'
-// 		},
-// 		plotOptions: {
-// 			line: {
-// 				pointStart: 1,
-// 				marker: {
-// 					enabled: false,
-// 					symbol: 'circle',
-// 					radius: 2,
-// 					states: {
-// 						hover: {
-// 							enabled: true
-// 						}
-// 					}
-// 				}
-// 			}
-// 		},
-// 		series: [{
-// 			name: '康平',
-// 			data: [ 27912, 28999,
-// 				22380, 21004, 17287, 12144, 11009, 10950,
-// 				10871, 10824, 10577, 10527, 10475,27912, 28999,
-// 				22380, 21004, 17287, 12144, 11009, 10950,
-// 				10871, 10824, 10577, 10527, 10475]
-// 		}, {
-// 			name: '庄河',
-// 			data: [660, 869, 1060, 1605, 2471, 3322,
-// 			4238, 5221, 6129, 7089, 8339, 24000, 23000,
-// 			660, 869, 1060, 1605, 2471, 3322,
-// 			4238, 5221, 6129, 7089, 8339, 24000, 23000
-// 			]
-// 		}, {
-// 			name: '营口',
-// 			data: [30062, 32049,
-// 			33952, 35804, 17431, 39197, 45000, 43000, 41000, 39000, 37000,
-// 			35000, 33000,30062, 32049,
-// 			33952, 35804, 17431, 39197, 45000, 43000, 41000, 39000, 37000,
-// 			35000, 33000]
-// 		}, {
-// 			name: '铁岭',
-// 			data: [
-// 			15915, 17385, 11055, 27205, 23044, 15393, 27935, 30062, 35049,
-// 			33952, 35804, 37431, 39197,
-// 			15915, 17385, 11055, 27205, 23044, 15393, 27935, 30062, 35049,
-// 			33952, 35804, 37431, 39197]
-// 		}, {
-// 			name: '清河',
-// 			data: [4238, 5221, 6129, 7089, 8339, 5399, 10538, 16643, 13092, 11478,
-// 			15915, 12385, 19055,7238, 5221, 6129, 7089, 8339, 9399, 10538, 11643, 13092, 11478,
-// 			15915, 12385, 13055]
-// 		}, {
-// 			name: '燕山湖',
-// 			data: [
-// 			1115, 25, 2350, 1120, 4150, 6200, 5426, 3660, 869, 21060, 11605, 28471, 33322,
-// 			1115, 25, 2350, 1120, 4150, 3200, 2426, 3660, 869, 11060, 14605, 28471, 16322]
-// 		}]
-// 	};
-	
-	
-// 	chart = new Highcharts.Chart(columnOption);
-//     });
+
 	
 
 $(function () {
-        $('#container').highcharts({
+        containerOption ={
             chart: {
-                type: 'bar'
+                type: 'bar',
+                renderTo:'container'
             },
             title: {
-                text: '周边电厂累积发电量对标'
+                text: '相关电厂累积发电量对标'
             },
 			exporting:{
 				enabled:false
@@ -239,7 +138,7 @@ $(function () {
             yAxis: {
                 min: 0,
                 title: {
-                    text: '每月发电量'
+                    text: null
                 },
 				labels:{
 				}
@@ -290,7 +189,9 @@ $(function () {
                 data: [3, 4, 4, 2, 5, 4]
             }
 			]
-        });
+        };
+        
+       chart = new Highcharts.Chart(containerOption);
     });
 
 
@@ -361,7 +262,7 @@ $(function () {
 				[200, 245],
 				[300, 313],
 				[380, 400],
-				[500, 513],
+				[500, 501],
 				[600, 613],
 				[700, 765],
 				[800, 812],
@@ -388,14 +289,18 @@ submitRequest= function(){
 		}
 	
 	})
-	.done(function(data,statusText){
+	.done(function(data1,statusText){
 	
 		ajaxbg.hide();
-		var dataReceived = $.evalJSON(data);
+		var dataReceived = $.evalJSON(data1);
 		
 
      	columnOption.series[0].data=dataReceived.columnData;
      	chart = new Highcharts.Chart(columnOption);
+     	
+     	containerOption.xAxis.categories = dataReceived.seriesPlantName;
+     	containerOption.series=dataReceived.everyMonthPowerSeries;
+     	chart = new Highcharts.Chart(containerOption);
 	})
 	.fail(function(){
 		alert("服务器响应出错");
