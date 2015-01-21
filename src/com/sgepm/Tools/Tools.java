@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -26,6 +27,8 @@ import com.sgepm.threemainpage.servlet.HoleGridServlet;
 
 public class Tools {
 
+	public static float FLOAT_MIN = 1e-6f;
+	public static final int RealTimePointADay = 288;
 	public static String [] time_span      = {"实时","年","月","日"};
 	public static int    [] days_all_month = {31,28,31,30,31,30,31,31,30,31,30,31};
 	public static Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
@@ -76,12 +79,48 @@ public class Tools {
 		String newDate = String.copyValueOf(dateSplit);
 		return newDate;
 	}
-	//浮点数保留两位小数
+	/**
+	 * 浮点数保留两位小数
+	 * @param old
+	 * @return
+	 */
 	public static String float2Format(float old){
 		String ret;
 		DecimalFormat form2 = new DecimalFormat("##0.00");
 		DecimalFormat form = new DecimalFormat("##0");
 		ret = ((old==0)?form.format(old):form2.format(old));
+		return ret;
+	}
+	
+	public static float float2Format(float old,int dotNum){
+		BigDecimal b = new BigDecimal(old);
+		float ret ;
+		if(Math.abs(old-0)<FLOAT_MIN)			
+			ret= b.setScale(0, BigDecimal.ROUND_HALF_UP).floatValue();
+		else
+			ret= b.setScale(dotNum, BigDecimal.ROUND_HALF_UP).floatValue();
+		return ret;
+	}
+	
+	/**
+	 * 获得给定日期前一天
+	 * @param theDay
+	 * @return
+	 */
+	public static Date getForeDay(Date theDay){
+		if(theDay == null)
+			return null;
+		Date ret = null;
+		Calendar cal1 = Calendar.getInstance();
+		cal1.set(theDay.getYear()+1900, theDay.getMonth(), theDay.getDate()-1);
+		ret = cal1.getTime();
+		return ret;
+	}
+	public static String getForeDay(String theDay){
+		if(theDay == null)
+			return null;
+		String ret = null;
+		ret = formatDate(getForeDay(java.sql.Date.valueOf(theDay)));
 		return ret;
 	}
 	/**
@@ -205,8 +244,9 @@ public class Tools {
 	
 	public static void main(String[] args) {
 
-		String a = "\"康的的啊厂\"";
-		String b = getAbbrNameOfPlant(a);
+
+		String a = "2014-12-01";
+		String b = getForeDay(a);
 		System.out.println(b);
 	}
 	

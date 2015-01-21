@@ -183,7 +183,7 @@ public class HoleGridServlet extends HttpServlet {
 		jo.put("data", jsArray);
 		return jo;
 	}
-	
+
 	/**
 	 * 获得需要返回客户端的字符串
 	 * @return

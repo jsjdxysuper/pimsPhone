@@ -80,12 +80,15 @@ public class PlantServlet extends HttpServlet {
 		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		
 		ja = getOneMonthPowerData();
-		
+		//60万机组多月电量对比数据
 		JSONObject joSeries = getEveryMonthPowerData();	
+		//本电厂日历进度曲线
 		JSONObject plantProgress = getProgressData();
+		JSONObject realTimeData = getRealTimeDayData();
 		joAll.accumulate("plantProgressData", plantProgress);
 		joAll.accumulateAll(joSeries);
 		joAll.put("columnData",ja);
+		joAll.accumulateAll(realTimeData);
 		
 		String ret = joAll.toString();
 		ret = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
@@ -279,13 +282,18 @@ public class PlantServlet extends HttpServlet {
 		try {
 			while(rs.next())
 				yearPlan = rs.getFloat("njh");
+				
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		float oneMonthPlan = yearPlan/12/10000;
 		//获得每个月的计划量
 		for(int i=0;i<12;i++){
-			monthPlan.add((i+1)*yearPlan/12);
+			
+			
+			monthPlan.add(Tools.float2Format(oneMonthPlan*(i+1), 2));
 		}
 		
 		
@@ -297,9 +305,9 @@ public class PlantServlet extends HttpServlet {
 			while(rs.next()){
 				String yf = rs.getString("yf");
 				float ylj = rs.getFloat("ylj");
-				
+				ylj = ylj/10000;//由万千瓦时改为亿千瓦时
 				yearAccumulate += ylj;
-				monthFinish.add(yearAccumulate);
+				monthFinish.add(Tools.float2Format(yearAccumulate, 2));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -316,6 +324,40 @@ public class PlantServlet extends HttpServlet {
 		}
 		JSONObject jo = new JSONObject();
 		jo.put("plantProgressData", vector);
+		return jo;
+	}
+	/**
+	 * 获得电厂日实时信息
+	 * @return
+	 */
+	public JSONObject getRealTimeDayData(){
+		//select yg from info_data_dcyg t where dcbm='sykpp' and (rq='2014-12-25' or rq = '2014-12-24') order by rq,sj
+		
+		String sql = "select rq,yg from info_data_dcyg t where dcbm='sykpp' and (rq= ? or rq = ?) order by rq,sj";
+		String foreDay = Tools.getForeDay(date);
+		String params[] = {foreDay,date};
+		ResultSet rs =  oc.query(sql,params);
+		Vector<Float>foreData = new Vector<Float>();
+		Vector<Float>theData = new Vector<Float>();
+		try {
+			while(rs.next()){
+				float yg = rs.getFloat("yg");
+				String rq = rs.getString("rq");
+				if(rq.compareTo(date)==0)
+					theData.add(Tools.float2Format(yg, 2));
+				if(rq.compareTo(foreDay)==0)
+					foreData.add(Tools.float2Format(yg, 2));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//if(data.size()<1)return null;
+		JSONObject jo = new JSONObject();
+		jo.put("realTimeForeDay", theData);
+		jo.put("realTimeTheDay",foreData);
+		jo.put("theDate", date);
+		jo.put("foreDate", foreDay);
 		return jo;
 	}
 	/**
