@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
+import com.sgepm.threemainpage.entity.RealTimeGeneratorData;
 import com.sun.xml.internal.fastinfoset.util.CharArray;
 
 import net.sf.json.JSONArray;
@@ -28,6 +30,8 @@ public class GeneratorServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
+	private String dcbm = "sykpp";
+	private OracleConnection oc = new OracleConnection();
 	/**
 	 * Constructor of the object.
 	 */
@@ -194,7 +198,7 @@ public class GeneratorServlet extends HttpServlet {
 
 		HashMap<String,String> eachGeneratorData = new HashMap<String,String>();
 
-		OracleConnection oc = new OracleConnection();
+		
 		float g1Max,g1Min,g1Average,g1Energy,g1TimeUse,g1Sum,g1TimeOfHours;
 		float g2Max,g2Min,g2Average,g2Energy,g2TimeUse,g2Sum,g2TimeOfHours;
 		
@@ -284,10 +288,36 @@ public class GeneratorServlet extends HttpServlet {
 	}
 	
 	
-//	public JSONObject getRealTimeData(){
-		//select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-21' order by t.jzbm,t.sj
-		//select jzbm,jzmc from base_jzbm t where ssdcbm='sykpp'
-//	}
+	public JSONObject getRealTimeData(){
+//		select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-21' order by t.jzbm,t.sj
+		
+		
+		Vector<RealTimeGeneratorData> realTimeData = new Vector<RealTimeGeneratorData>();
+		Vector<String> genNameVector = new Vector<String>();
+		
+		String genListSql = "select jzbm,jzmc from base_jzbm t where ssdcbm= ?";
+		String paras1[] = {dcbm};
+		ResultSet rs = oc.query(genListSql,paras1);
+		
+		try {
+			while(rs.next()){
+				genNameVector.add(rs.getString("jzmc"));
+				
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String realTimeSql = "select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm "+
+								"and b.ssdcbm= ? and rq= ? order by t.jzbm,t.sj";
+		String paras2[] = {dcbm,date};
+		rs = oc.query(realTimeSql, paras2);
+		while(rs.next()){
+			
+		}
+		
+	}
 	public String getData(){
 		
 		JSONObject jo = new JSONObject();
