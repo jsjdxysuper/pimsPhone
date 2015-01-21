@@ -183,7 +183,37 @@ public class HoleGridServlet extends HttpServlet {
 		jo.put("data", jsArray);
 		return jo;
 	}
+	//select rq,yg from info_data_fhyg t where  (rq = '2014-12-20' or rq='2014-12-21') and fhbm = 'lnzddcfdzj' order by rq,sj
+	public JSONObject getRealTimeData(){
+		String foreDay = Tools.getForeDay(date);
+		String sql = "select rq,yg from info_data_fhyg t where  (rq = ? or rq= ?) and fhbm = 'lnzddcfdzj' order by rq,sj";
 
+
+		String params[] = {foreDay,date};
+		ResultSet rs =  oc.query(sql,params);
+		Vector<Float>foreData = new Vector<Float>();
+		Vector<Float>theData = new Vector<Float>();
+		try {
+			while(rs.next()){
+				float yg = rs.getFloat("yg");
+				String rq = rs.getString("rq");
+				if(rq.compareTo(date)==0)
+					theData.add(Tools.float2Format(yg, 2));
+				if(rq.compareTo(foreDay)==0)
+					foreData.add(Tools.float2Format(yg, 2));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//if(data.size()<1)return null;
+		JSONObject jo = new JSONObject();
+		jo.put("realTimeForeDay", theData);
+		jo.put("realTimeTheDay",foreData);
+		jo.put("theDate", date);
+		jo.put("foreDate", foreDay);
+		return jo;
+	}
 	/**
 	 * 获得需要返回客户端的字符串
 	 * @return
@@ -194,9 +224,11 @@ public class HoleGridServlet extends HttpServlet {
 		
 		JSONObject lineJO = getHoleGridLineData();
 		JSONObject tableJO = getHoleGridTableData();
-
+		JSONObject realTimeData = getRealTimeData();
+		
 		jo.putAll(lineJO);
 		jo.putAll(tableJO);
+		jo.putAll(realTimeData);
 		return jo.toString();
 	}
 	/**

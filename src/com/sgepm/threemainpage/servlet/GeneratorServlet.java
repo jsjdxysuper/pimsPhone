@@ -282,6 +282,12 @@ public class GeneratorServlet extends HttpServlet {
 		eachGeneratorData.put("g2TimeUse",Tools.float2Format(g2TimeUse));
 		return eachGeneratorData;
 	}
+	
+	
+//	public JSONObject getRealTimeData(){
+		//select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-21' order by t.jzbm,t.sj
+		//select jzbm,jzmc from base_jzbm t where ssdcbm='sykpp'
+//	}
 	public String getData(){
 		
 		JSONObject jo = new JSONObject();
