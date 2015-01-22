@@ -27,6 +27,7 @@
     var columnOption = null;
     var rangeOption =null;
     var stackColumnOption = null;
+    var columnRangeDataFlag = new Array();
     
     
     $(function () {
@@ -309,7 +310,17 @@ $(function () {
 	    chart: {
 	        type: 'columnrange',
 	        inverted: true,
-	        renderTo:'rangeContainer'
+	        renderTo:'rangeContainer',
+// 	        events:{
+// 	        	click: function(e) {
+// 				console.log(
+// 					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', e.xAxis[0].value), 
+// 					e.yAxis[0].value,e.xAxis[0].value
+// 				);
+// 			}
+// 	        },
+// 	        zoomType:'xy'
+
 	    },
 	    
 	    title: {
@@ -339,7 +350,19 @@ $(function () {
 	    },
 	
 	    tooltip: {
-	        valueSuffix: '亿千瓦时'
+	       // valueSuffix: '亿千瓦时',
+	        formatter:function(){
+	        		var high = this.point.high;
+					var low  = this.point.low;
+					var diff = (high - low).toFixed(2);
+					if(columnRangeDataFlag[this.x-1]==1){
+
+					var s = '目标电量：'+high+"<br/>"+'完成电量：'+low+'<br/>'+'差额：'+diff;
+					}
+					else
+					{var s = '目标电量：'+low+"<br/>"+'完成电量：'+high+'<br/>'+'超额：'+diff;}
+					return s;
+			}
 	    },
 	    
 	    plotOptions: {
@@ -422,13 +445,17 @@ submitRequest= function(){
       			rangeData[i][0] = rangeData[i][1];
       			rangeData[i][1] = temp;
       			rangeOption.plotOptions.columnrange.colors[i] = '#f15c80';
+      			columnRangeDataFlag[i] = 1;
       		}
+      		else
+      			columnRangeDataFlag[i] = 0;
       	}
      	rangeOption.series[0].data = rangeData;
      	var len = rangeData.length;
      	var min = rangeData[0][0];
      	var max = rangeData[len-1][1];
-     	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/17;
+     	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/12;
+     	rangeOption.yAxis.max = rangeOption.series[0].data[len-1][1]+(max-min)/10;
      	chart = new Highcharts.Chart(rangeOption);
 	})
 	.fail(function(){
