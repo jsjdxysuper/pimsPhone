@@ -34,7 +34,6 @@ public class GeneratorServlet extends HttpServlet {
 	private String date;
 	private String dateWildcard;
 	private String dcbm = "sykpp";
-	private OracleConnection oc = new OracleConnection();
 	private Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
 	/**
 	 * Constructor of the object.
@@ -189,7 +188,7 @@ public class GeneratorServlet extends HttpServlet {
 		plantData.put("timeUse", Tools.float2Format(timeUse));
 		plantData.put("recordCount", String.valueOf(recordCount));
 		plantData.put("timeOfHours", Tools.float2Format(timeOfHours));
-		
+		oc.closeAll();
 		return plantData;
 	}
 	
@@ -199,7 +198,7 @@ public class GeneratorServlet extends HttpServlet {
 	 */
 	public HashMap<String,String> getEachGenerator(){
 		
-
+		OracleConnection oc = new OracleConnection();
 		HashMap<String,String> eachGeneratorData = new HashMap<String,String>();
 
 		
@@ -288,6 +287,7 @@ public class GeneratorServlet extends HttpServlet {
 		eachGeneratorData.put("g2Energy",Tools.float2Format(g2Energy));
 		eachGeneratorData.put("g2TimeOfHours",Tools.float2Format(g2TimeOfHours));
 		eachGeneratorData.put("g2TimeUse",Tools.float2Format(g2TimeUse));
+		oc.closeAll();
 		return eachGeneratorData;
 	}
 	
@@ -295,7 +295,7 @@ public class GeneratorServlet extends HttpServlet {
 	public JSONObject getRealTimeData(){
 //		select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-21' order by t.jzbm,t.sj
 		
-		
+		OracleConnection oc = new OracleConnection();
 		Vector<RealTimeGeneratorData> realTimeData = new Vector<RealTimeGeneratorData>();
 		Vector<String> genNameVector = new Vector<String>();
 		Vector<String> genIdentity = new Vector<String>();
@@ -363,6 +363,7 @@ public class GeneratorServlet extends HttpServlet {
 		}
 		JSONObject jo = new JSONObject();
 		jo.put("realtimeData", realTimeData);
+		oc.closeAll();
 		return jo;
 	}
 	public String getData(){

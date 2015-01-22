@@ -40,8 +40,6 @@ public class PlantServlet extends HttpServlet {
 	//机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
 	private HashMap<String,String> JZBM2DCMCDictionary = new HashMap<String,String>();
 	
-	
-	private OracleConnection oc = new OracleConnection();
 	private Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
 	/**
 	 * Constructor of the object.
@@ -111,6 +109,7 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public JSONArray getOneMonthPowerData() {
 		
+		OracleConnection oc = new OracleConnection();
 		String plantListStr[];//折线图所要显示的电厂列表
 		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
 		Vector<PlantMonthData> plantVectorData = new Vector<PlantMonthData>();
@@ -181,6 +180,7 @@ public class PlantServlet extends HttpServlet {
 			temp.add(plantVectorData.get(i).getData());
 			ja.add(temp);
 		}
+		oc.closeAll();
 		return ja;
 	}
 	
@@ -188,6 +188,7 @@ public class PlantServlet extends HttpServlet {
 //		select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in (
 //				'sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2')
 //				and rq <= '2014-10-11' and rq >= '2014-01-01' and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc
+		OracleConnection oc = new OracleConnection();
 		//分段柱图所要显示的电厂列表
 		int numPlant = 0;
 		int monthNum = Integer.parseInt(date.substring(5, 7));
@@ -260,6 +261,8 @@ public class PlantServlet extends HttpServlet {
 		jo.put("seriesPlantName", plantListStr);
 		jo.put("everyMonthPowerSeries", plantVectorDataseries);
 		
+		
+		oc.closeAll();
 		return jo;
 	}
 	
@@ -268,6 +271,8 @@ public class PlantServlet extends HttpServlet {
 	 * @return
 	 */
 	public JSONObject getProgressData(){
+		
+		OracleConnection oc = new OracleConnection();
 		//select substr(rq,0,7),sum(rdl) from info_dmis_zdhcdc t where dcbm='sykpp' and rq>='2014-01-01' and rq <='2014-03-12' group by substr(rq,0,7)
 		//select t.*, t.rowid from info_sdlr_njh t
 		String startDate = Tools.getFirstDateInYear(date);
@@ -324,6 +329,7 @@ public class PlantServlet extends HttpServlet {
 		}
 		JSONObject jo = new JSONObject();
 		jo.put("plantProgressData", vector);
+		oc.closeAll();
 		return jo;
 	}
 	/**
@@ -332,7 +338,7 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public JSONObject getRealTimeDayData(){
 		//select yg from info_data_dcyg t where dcbm='sykpp' and (rq='2014-12-25' or rq = '2014-12-24') order by rq,sj
-		
+		OracleConnection oc = new OracleConnection();
 		String sql = "select rq,yg from info_data_dcyg t where dcbm='sykpp' and (rq= ? or rq = ?) order by rq,sj";
 		String foreDay = Tools.getForeDay(date);
 		String params[] = {foreDay,date};
@@ -358,6 +364,8 @@ public class PlantServlet extends HttpServlet {
 		jo.put("realTimeTheDay",foreData);
 		jo.put("theDate", date);
 		jo.put("foreDate", foreDay);
+		
+		oc.closeAll();
 		return jo;
 	}
 	/**
@@ -399,6 +407,7 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public void init() throws ServletException {
 
+		OracleConnection oc = new OracleConnection();
 		//建立机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
 		String sqlGenerator2Plant = "select jzbm,ssdcmc from base_jzbm t";
 		ResultSet rs= oc.query(sqlGenerator2Plant,null);		
@@ -410,6 +419,7 @@ public class PlantServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		oc.closeAll();
 	}
 
 }

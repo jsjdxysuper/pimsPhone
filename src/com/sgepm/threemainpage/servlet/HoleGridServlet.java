@@ -30,7 +30,6 @@ public class HoleGridServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
-	private OracleConnection oc = new OracleConnection();
 	private Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
 	private HashMap<String,Integer> sequence =new HashMap<String,Integer>();
 	/**
@@ -72,6 +71,9 @@ public class HoleGridServlet extends HttpServlet {
 	}
 	
 	public JSONObject getHoleGridLineData(){
+		
+		
+		OracleConnection oc = new OracleConnection();
 		JSONObject jo = new JSONObject();
 		
 		//获得上个月的全省发电量数据
@@ -135,6 +137,7 @@ public class HoleGridServlet extends HttpServlet {
 		}
 		jo.put("lastYear",lastYearAl);
 		
+		oc.closeAll();
 		return jo;
 	}
 	
@@ -143,6 +146,7 @@ public class HoleGridServlet extends HttpServlet {
 	 * @return
 	 */
 	public JSONObject getHoleGridTableData(){
+		OracleConnection oc = new OracleConnection();
 		String projectSqlStr="select xmmc,sj,ylj,nlj,ytb,ntb from info_dmis_fdqk t where rq like ? order by xmmc desc";
 		HashMap<String,JSONArray> projectData = new HashMap<String,JSONArray>();
 		JSONArray jsArray = new JSONArray();
@@ -181,10 +185,14 @@ public class HoleGridServlet extends HttpServlet {
 
 		jsArray.addAll(vector);
 		jo.put("data", jsArray);
+		
+		oc.closeAll();
 		return jo;
 	}
 	//select rq,yg from info_data_fhyg t where  (rq = '2014-12-20' or rq='2014-12-21') and fhbm = 'lnzddcfdzj' order by rq,sj
 	public JSONObject getRealTimeData(){
+		
+		OracleConnection oc = new OracleConnection();
 		String foreDay = Tools.getForeDay(date);
 		String sql = "select rq,yg from info_data_fhyg t where  (rq = ? or rq= ?) and fhbm = 'lnzddcfdzj' order by rq,sj";
 
@@ -212,6 +220,7 @@ public class HoleGridServlet extends HttpServlet {
 		jo.put("realTimeTheDay",foreData);
 		jo.put("theDate", date);
 		jo.put("foreDate", foreDay);
+		oc.closeAll();
 		return jo;
 	}
 	/**
