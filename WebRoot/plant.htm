@@ -27,6 +27,7 @@
     var columnOption = null;
     var rangeOption =null;
     var stackColumnOption = null;
+    //用来提示差额、超额
     var columnRangeDataFlag = new Array();
     
     
@@ -247,6 +248,14 @@ $(function () {
                     text: null
                 },
 				labels:{
+				}
+            },
+            tooltip:{
+            	formatter:function(){
+					
+					var s = this.x+this.series.name+'月份'+'<br/>';
+					s += this.y+'兆瓦';
+					return s;
 				}
             },
             legend: {
