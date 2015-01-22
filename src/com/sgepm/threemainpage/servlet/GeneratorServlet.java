@@ -17,6 +17,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.RealTimeGeneratorData;
@@ -32,6 +35,7 @@ public class GeneratorServlet extends HttpServlet {
 	private String dateWildcard;
 	private String dcbm = "sykpp";
 	private OracleConnection oc = new OracleConnection();
+	private Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
 	/**
 	 * Constructor of the object.
 	 */
@@ -67,7 +71,7 @@ public class GeneratorServlet extends HttpServlet {
 
 		date = request.getParameter("date");
 
-		System.out.println("get机组信息查询日期:"+date);
+		log.debug("get机组信息查询日期:"+date);
 		String returnData =  getData();
 		out.write(returnData);
 
@@ -94,7 +98,7 @@ public class GeneratorServlet extends HttpServlet {
 		date = request.getParameter("date");
 		//改变日期的格式为YYYY-MM-DD
 		date = Tools.formatDate(date);
-		System.out.println("post机组日期查询日期:"+date);
+		log.debug("post机组日期查询日期:"+date);
 		String returnData =  getData();
 //		try {
 //			Thread.currentThread().sleep(5000);
@@ -294,6 +298,7 @@ public class GeneratorServlet extends HttpServlet {
 		
 		Vector<RealTimeGeneratorData> realTimeData = new Vector<RealTimeGeneratorData>();
 		Vector<String> genNameVector = new Vector<String>();
+		Vector<String> genIdentity = new Vector<String>();
 		
 		String genListSql = "select jzbm,jzmc from base_jzbm t where ssdcbm= ?";
 		String paras1[] = {dcbm};
@@ -302,21 +307,63 @@ public class GeneratorServlet extends HttpServlet {
 		try {
 			while(rs.next()){
 				genNameVector.add(rs.getString("jzmc"));
-				
+				genIdentity.add(rs.getString("jzbm"));		
+				RealTimeGeneratorData g = new RealTimeGeneratorData();
+				Vector<Float> data = new Vector<Float>();
+				g.setName(rs.getString("jzmc"));
+				g.setData(data);
+				realTimeData.add(g);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		String realTimeSql = "select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm "+
-								"and b.ssdcbm= ? and rq= ? order by t.jzbm,t.sj";
+		
+		String realTimeSql ="select t.sj, "+
+		"sum(case "+
+		       "when t.jzmc = '沈阳康平#1机' then nvl(t.yg,0) "+
+		       "else 0 "+
+		    "end) as 沈阳康平#1机, "+
+		"sum(case "+
+		       "when t.jzmc = '沈阳康平#2机' then nvl(t.yg,0) "+
+		       "else 0 "+
+		    "end) as 沈阳康平#2机 "+
+		 "from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm= ? and rq= ? group by t.sj order by t.sj";
+//					select t.sj,
+//					sum(case
+//					       when t.jzmc = '沈阳康平#1机' then nvl(t.yg,0)
+//					       else 0
+//					    end) as 沈阳康平#1机,
+//					sum(case
+//					       when t.jzmc = '沈阳康平#2机' then nvl(t.yg,0)
+//					       else 0
+//					    end) as 沈阳康平#2机
+
+//					 from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-23' group by t.sj order by t.sj
+
 		String paras2[] = {dcbm,date};
 		rs = oc.query(realTimeSql, paras2);
-		while(rs.next()){
-			
+		try {
+			while(rs.next()){
+				String sj = rs.getString("sj");
+				float g1 = Tools.float2Format(rs.getFloat("沈阳康平#1机"),2);
+				float g2= Tools.float2Format(rs.getFloat("沈阳康平#2机"),2);
+				for(int i=0;i<realTimeData.size();i++){
+					RealTimeGeneratorData temp = realTimeData.get(i);
+					if(temp.getName().compareTo("沈阳康平#1机")==0)
+						temp.getData().add(g1);
+					if(temp.getName().compareTo("沈阳康平#2机")==0)
+						temp.getData().add(g2);
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
+		JSONObject jo = new JSONObject();
+		jo.put("realtimeData", realTimeData);
+		return jo;
 	}
 	public String getData(){
 		
@@ -324,6 +371,8 @@ public class GeneratorServlet extends HttpServlet {
 
 		HashMap<String,String> plantMap = getPlantData();
 		HashMap<String,String> generatorMap = getEachGenerator();
+		JSONObject realtimeData = getRealTimeData();
+		jo.put("realTimeData",realtimeData);
 		jo.putAll(plantMap);
 		jo.putAll(generatorMap);
 		return jo.toString();

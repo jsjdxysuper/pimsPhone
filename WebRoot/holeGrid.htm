@@ -29,7 +29,7 @@
 		
 				<script type="text/javascript" src="./support/threeMainPage.js"></script>
 		<script type="text/javascript">
-		var optionContainer;
+		var optionContainer =null;
 		var realTimeOption = null;
 		var tableColumnName = ["全省发电","直调火电","直调水电","直调风电","直调核电","联络线净受"];
 		
@@ -45,7 +45,7 @@
 			plotOptions:{
 				line:{
 					lineWidth:2,
-					pointStart:1,
+					pointStart:0,
 					marker:{
 						enabled:false
 					}
@@ -92,7 +92,7 @@
 //                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
 				formatter:function(){
 					
-					var s = ''+this.series.name+""+'';
+					var s = '时间：'+timeStrArray[this.x]+""+'';
 					s += '<br/>'+this.y+'兆瓦';
 					return s;
 				}
@@ -106,12 +106,6 @@
 //                 borderWidth: 0, 
             },
             series: [
-//             {
-//                 name: '同期',
-//                 data: [12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
-//                 		12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
-//                 		12.0, 12.9, 12.5, 14.5, 18.2]
-//             },
              {
                 name: '今天',
                 data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,

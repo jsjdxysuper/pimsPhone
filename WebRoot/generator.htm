@@ -36,215 +36,307 @@
 			var g2Chart;
 			var g2Option;
 			var ajaxbg;
+			var realTimeOption = null;
 			
-$(function () {
+			
+			$(function () {
+	    		realTimeOption = {
+				chart:{
+					spacingLeft:0,
+					renderTo: 'realTimeContainer'
+				},
+				colors:['#ff0000','#0000ff','#00ff00'],
+				plotOptions:{
+					line:{
+						lineWidth:2,
+						pointStart:0,
+						marker:{
+							enabled:false
+						}
+					}
+				},
+				exporting:{
+					enabled:false
+				},
+				credits:{
+					enabled:'false',
+					text:''
+				},
+				labels:{
+				},
+	            title: {
+	                text: '康平电厂机组有功',
+	//                  x: -20, //center 
+	            },
+	            subtitle: {
+	                text: '',
+	                x: -20
+	            },
+	            xAxis: {
+	//                  categories: ['1', '2', '3', '4', '5', '6',
+	//                     '7', '8', '9', '10', '1', '12'], 
+	            },
+	            yAxis: {
+	                title: {
+	                    text: '有功 (兆瓦)',
+	                },
+	                plotLines: [{
+	                    value: 0,
+	                    width: 1,
+	                    color: '#808080'
+						
+	                }],
+					labels:{
 	
-    var gaugeOptions = {
-	
-	    chart: {
-	        type: 'solidgauge'
-	    },
-	    
-	    title: null,
-	    
-	    pane: {
-	    	center: ['50%', '85%'],
-	    	size: '130%',//中间表盘与pane的大小对比，数值越大，表盘就越大
-	        startAngle: -90,
-	        endAngle: 90,
-            background: {
-                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
-                innerRadius: '60%',
-                outerRadius: '100%',
-                shape: 'arc'
-            }
-	    },
-
-	    tooltip: {
-	    	enabled: false
-	    },
-	    credits:{
-			enabled:'false',
-			text:''
-		}, 
-	    // the value axis
-	    yAxis: {
-			stops: [
-				[0.1, '#55BF3B'], // green
-	        	[0.5, '#DDDF0D'], // yellow
-	        	[0.9, '#DF5353'] // red
-			],
-			lineWidth: 0,
-            minorTickInterval: null,
-            tickPixelInterval: 400,
-            tickWidth: 0,
-	        title: {
-                y: -40//标题的位置
-	        },
-            labels: {
-                y: 10//表盘刻度位置
-
-            }   
-	    },
-        
-        plotOptions: {
-            solidgauge: {
-                dataLabels: {
-                    y: 5,
-                    borderWidth: 0,
-                    useHTML: true
-                }
-            }
-        }
-    };
+					}
+	            },
+	            tooltip: {
+	//                 valueSuffix: '万千瓦时',
+	//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
+	//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
+					formatter:function(){
+						
+						var s = '时间：'+timeStrArray[this.x]+""+'';
+						s += '<br/>'+this.y+'兆瓦';
+						return s;
+					}
+	            },
+	            legend: {
+	//                  layout: 'vertical',
+	//                 align: 'right',
+	// 				verticalAlign:'top',
+	// 				floating:'true',
+	// 				y:50,
+	//                 borderWidth: 0, 
+	            },
+	            series: [
+	             {
+	                name: '今天',
+	                data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,
+	                		17.0, 15.9, 15.5, 15.5, 15.2, 23.5, 22.2, 15.5, 13.3, 14.3, 17.9, 15.6,
+	                		16.0, 12.9, 14.5, 13.5, 11.2]
+	            }, {
+	                name: '昨天',
+	                data:  [12.0, 13.9, 14.5, 14.9, 19.2, 26.5, 23.2, 18.5, 19.3, 19.3, 15.9, 12.6,
+	                		19.0, 10.9, 14.5, 17.5, 19.2, 24.5, 24.2, 18.5, 19.3, 19.3, 15.9, 12.6,
+	                		14.0, 15.9, 15.5, 16.5, 15.2]
+	            }]
+	        	};//全网线图
+	        	chart = new Highcharts.Chart(realTimeOption);
     
-    // The speed gauge
+    		});//function
+			
+			
+			
+			
+			$(function () {
+					
+			    var gaugeOptions = {
+				
+				    chart: {
+				        type: 'solidgauge'
+				    },
+				    
+				    title: null,
+				    
+				    pane: {
+				    	center: ['50%', '85%'],
+				    	size: '130%',//中间表盘与pane的大小对比，数值越大，表盘就越大
+				        startAngle: -90,
+				        endAngle: 90,
+			            background: {
+			                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || '#EEE',
+			                innerRadius: '60%',
+			                outerRadius: '100%',
+			                shape: 'arc'
+			            }
+				    },
+			
+				    tooltip: {
+				    	enabled: false
+				    },
+				    credits:{
+						enabled:'false',
+						text:''
+					}, 
+				    // the value axis
+				    yAxis: {
+						stops: [
+							[0.1, '#55BF3B'], // green
+				        	[0.5, '#DDDF0D'], // yellow
+				        	[0.9, '#DF5353'] // red
+						],
+						lineWidth: 0,
+			            minorTickInterval: null,
+			            tickPixelInterval: 400,
+			            tickWidth: 0,
+				        title: {
+			                y: -40//标题的位置
+				        },
+			            labels: {
+			                y: 10//表盘刻度位置
+			
+			            }   
+				    },
+			        
+			        plotOptions: {
+			            solidgauge: {
+			                dataLabels: {
+			                    y: 5,
+			                    borderWidth: 0,
+			                    useHTML: true
+			                }
+			            }
+			        }
+			    };
+			    
+			    // The speed gauge
+			
+			    
+				//generator1对应的表盘的option
+				g1Option = Highcharts.merge(gaugeOptions, {
+					chart:{
+				    	renderTo: 'g1Container'
+				    },
+			        yAxis: {
+				        min: 0,
+				        max: 100,
+				        title: {
+				            text: '康平电厂#1机'
+				        }       
+				    },
+			
+				    credits: {
+				    	enabled: false
+				    },
+				
+				    series: [{
+				        name: 'rate',
+				        data: [0],
+				        dataLabels: {
+				        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
+			                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'gray') + '">{y}</span>' + 
+			                   	'<span style="font-size:10px;color:gray">%</span></div>'
+				        },
+				        tooltip: {
+				            valueSuffix: ' km/h'
+				        }
+				    }]
+				
+				});//g2Option
+			
+			
+				//generator2对应的表盘的option
+				g2Option = Highcharts.merge
+				(gaugeOptions, 
+				    {
+				    	chart:{
+				    		renderTo: 'g2Container'
+				    	},
+				        yAxis:{
+				        	min: 0,
+				        	max: 100,
+					        title:{
+					            text: '康平电厂#2机'
+					        },    
+					    },
+					
+					    series:[{
+						        name: 'rate',
+						        data: [0],
+						        dataLabels:{
+						        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
+					                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'gray') + '">{y}</span>' + 
+					                   	'<span style="font-size:10px;color:gray">%</span></div>'
+						        },
+						        tooltip:{
+						            valueSuffix: ' revolutions/min'
+						        }      
+						    }
+					    ]
+					
+					}
+				);//g1Option			
+			});//function
 
-    
-	//generator1对应的表盘的option
-	g1Option = Highcharts.merge(gaugeOptions, {
-		chart:{
-	    	renderTo: 'g1Container'
-	    },
-        yAxis: {
-	        min: 0,
-	        max: 100,
-	        title: {
-	            text: '康平电厂#1机'
-	        }       
-	    },
-
-	    credits: {
-	    	enabled: false
-	    },
-	
-	    series: [{
-	        name: 'rate',
-	        data: [0],
-	        dataLabels: {
-	        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
-                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'gray') + '">{y}</span>' + 
-                   	'<span style="font-size:10px;color:gray">%</span></div>'
-	        },
-	        tooltip: {
-	            valueSuffix: ' km/h'
-	        }
-	    }]
-	
-	});//g2Option
-
-
-	//generator2对应的表盘的option
-	g2Option = Highcharts.merge
-	(gaugeOptions, 
-	    {
-	    	chart:{
-	    		renderTo: 'g2Container'
-	    	},
-	        yAxis:{
-	        	min: 0,
-	        	max: 100,
-		        title:{
-		            text: '康平电厂#2机'
-		        },    
-		    },
-		
-		    series:[{
-			        name: 'rate',
-			        data: [0],
-			        dataLabels:{
-			        	format: '<div style="text-align:center"><span style="font-size:14px;color:' + 
-		                    ((Highcharts.theme && Highcharts.theme.contrastTextColor) || 'gray') + '">{y}</span>' + 
-		                   	'<span style="font-size:10px;color:gray">%</span></div>'
-			        },
-			        tooltip:{
-			            valueSuffix: ' revolutions/min'
-			        }      
-			    }
-		    ]
-		
-		}
-	);//g1Option
-	
-	
-});
-
-//值间对比图
-$(function () {
-        $('#container').highcharts({
-            chart: {
-                type: 'bar'
-            },
-            title: {
-                text: '60万机组值间对标'
-            },
-            subtitle: {
-                text: ''
-            },
-            xAxis: {
-                categories: ['白班', '前夜', '后夜'],
-                title: {
-                    text: null			
-                },
-				labels: {
-                    overflow: 'justify'
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: '电量',
-                    align: 'middle'
-                },
-                labels: {
-                    overflow: 'justify'
-                }
-            },
-            tooltip: {
-                valueSuffix: ' 万千瓦时'
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        enabled: true
-                    }
-                }
-            },
-            legend: {
-/*                 layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -10,
-                y: 80,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-                shadow: true */
-            },
-            credits: {
-                enabled: false
-            },
-            series: [{
-                name: '康平',
-                data: [107, 31, 635]
-            }, {
-                name: '庄河',
-                data: [133, 156, 947]
-            }, {
-                name: '营口',
-                data: [973, 514, 505]
-            }, {
-                name: '铁岭',
-                data: [373, 964, 205]
-            }, {
-                name: '清河',
-                data: [273, 414, 405]
-            }, {
-                name: '燕山湖',
-                data: [373, 814, 805]
-            }]
-        });
-    });
+			//值间对比图
+			$(function () {
+				
+			        
+		        $('#container').highcharts({
+		            chart: {
+		                type: 'bar'
+		            },
+		            title: {
+		                text: '60万机组值间对标'
+		            },
+		            subtitle: {
+		                text: ''
+		            },
+		            xAxis: {
+		                categories: ['白班', '前夜', '后夜'],
+		                title: {
+		                    text: null			
+		                },
+						labels: {
+		                    overflow: 'justify'
+		                }
+		            },
+		            yAxis: {
+		                min: 0,
+		                title: {
+		                    text: '电量',
+		                    align: 'middle'
+		                },
+		                labels: {
+		                    overflow: 'justify'
+		                }
+		            },
+		            tooltip: {
+		                valueSuffix: ' 万千瓦时'
+		            },
+		            plotOptions: {
+		                bar: {
+		                    dataLabels: {
+		                        enabled: true
+		                    }
+		                }
+		            },
+		            legend: {
+		/*                 layout: 'vertical',
+		                align: 'right',
+		                verticalAlign: 'top',
+		                x: -10,
+		                y: 80,
+		                floating: true,
+		                borderWidth: 1,
+		                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+		                shadow: true */
+		            },
+		            credits: {
+		                enabled: false
+		            },
+		            series: [{
+		                name: '康平',
+		                data: [107, 31, 635]
+		            }, {
+		                name: '庄河',
+		                data: [133, 156, 947]
+		            }, {
+		                name: '营口',
+		                data: [973, 514, 505]
+		            }, {
+		                name: '铁岭',
+		                data: [373, 964, 205]
+		            }, {
+		                name: '清河',
+		                data: [273, 414, 405]
+		            }, {
+		                name: '燕山湖',
+		                data: [373, 814, 805]
+		            }]
+		        });//option
+		    });//function
     
     submitRequest = function()
     {
@@ -263,6 +355,12 @@ $(function () {
 
 			ajaxbg.hide();
     		var dataReceived = $.evalJSON(data);
+    		
+    		realTimeOption.series = dataReceived.realTimeData;
+    		realTimeOption.series = realTimeOption.series.realtimeData;
+    		chart = new Highcharts.Chart(realTimeOption);
+    		
+    		
     		$("#maxPower").text(dataReceived.max);
     		$("#minPower").text(dataReceived.min);
     		$("#average_power").text(dataReceived.average);
@@ -344,6 +442,8 @@ $(function () {
 <div style="clear:both;height:20px"></div>
 
 
+<div id="realTimeContainer" style=" height: auto;"></div>
+<hr>
 <div style="text-align:center;width:window.screen.width;">
 	<div style="margin-left:auto;margin-right:auto;" id="gaugeParent">
 		<div id="g1Container" style="float:left;"></div>
@@ -367,9 +467,6 @@ $(function () {
 	        <tr>   
 	            <td>容量</td><td id="g1Volume">0</td><td id="g2Volume">0</td><td id="volume">0</td>   
 	        </tr>   
-	         <tr>   
-	            <td>当前出力</td><td id="g1RealtimePower">0</td><td id="g2RealtimePower">0</td><td id="realtimePower">0</td>   
-	        </tr> 
 	        <tr>   
 	            <td>发电量</td><td id="g1Energy">0</td><td id="g2Energy">0</td><td id="energy">0</td>   
 	        </tr> 

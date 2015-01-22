@@ -31,7 +31,13 @@ public class Tools {
 	public static final int RealTimePointADay = 288;
 	public static String [] time_span      = {"实时","年","月","日"};
 	public static int    [] days_all_month = {31,28,31,30,31,30,31,31,30,31,30,31};
-	public static Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
+	
+	
+	/**
+	 * 对日期进行格式化
+	 * @param date
+	 * @return
+	 */
 	public static String formatDate(String date){
 		if(date==null||(date.compareTo("")==0))
 			return null;
@@ -247,7 +253,7 @@ public class Tools {
 
 		String a = "2014-12-01";
 		String b = getForeDay(a);
-		System.out.println(b);
+		log.debug(b);
 	}
 	
 	

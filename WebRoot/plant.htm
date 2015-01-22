@@ -40,6 +40,7 @@
 				line:{
 					lineWidth:2,
 					pointStart:1,
+					pointStart:0,
 					marker:{
 						enabled:false
 					}
@@ -86,7 +87,7 @@
 //                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
 				formatter:function(){
 					
-					var s = ''+this.series.name+""+'';
+					var s = '时间：'+timeStrArray[this.x]+""+'';
 					s += '<br/>'+this.y+'兆瓦';
 					return s;
 				}
@@ -162,7 +163,13 @@ $(function () {
                 enabled: false
             },
             tooltip: {
-                pointFormat: '月度发电量<b>{point.y:.1f} (万千瓦时)</b>',
+                //pointFormat: '月度发电量<b>{point.y:.1f} (万千瓦时)</b>',
+                formatter:function(){
+					var month = $("#appDate").val().substr(5,2);
+					var s = this.series.data[this.x].name+month+'月份';
+					s += '<br/>'+this.y+'兆瓦';
+					return s;
+				}
             },
             series: [{
                 name: 'Population',
