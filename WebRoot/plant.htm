@@ -425,6 +425,10 @@ submitRequest= function(){
       		}
       	}
      	rangeOption.series[0].data = rangeData;
+     	var len = rangeData.length;
+     	var min = rangeData[0][0];
+     	var max = rangeData[len-1][1];
+     	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/17;
      	chart = new Highcharts.Chart(rangeOption);
 	})
 	.fail(function(){
