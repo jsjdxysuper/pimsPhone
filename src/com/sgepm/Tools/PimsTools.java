@@ -41,13 +41,13 @@ public class PimsTools {
 	 * @param graph 页面中的图表
 	 * @return
 	 */
-	public static ArrayList<String> getGeneratorsList(String plant,String page,String graph){
+	public static ArrayList<String> getGeneratorsList(String plantName,String page,String graph){
 		
 		String plantListStr[];//折线图所要显示的电厂列表
 		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
 		ArrayList<String> generatorList        = new ArrayList<String>();
 		
-		String plantDotStr = plant+"."+page+"."+graph;
+		String plantDotStr = plantName+"."+page+"."+graph;
 		String plantsStr = properties.getString(plantDotStr+".plants");
 		plantListStr = plantsStr.split(",");
 

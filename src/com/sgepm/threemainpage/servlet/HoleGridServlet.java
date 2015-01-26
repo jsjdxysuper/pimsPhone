@@ -2,7 +2,6 @@ package com.sgepm.threemainpage.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,8 +29,8 @@ public class HoleGridServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
-	private Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
-	private HashMap<String,Integer> sequence =new HashMap<String,Integer>();
+	private Logger log                       = LoggerFactory.getLogger(HoleGridServlet.class);
+	private HashMap<String,Integer> sequence = new HashMap<String,Integer>();
 	/**
 	 * Constructor of the object.
 	 */
@@ -70,6 +69,11 @@ public class HoleGridServlet extends HttpServlet {
 		out.close();
 	}
 	
+	
+	/**
+	 * 获取全网月度发电量信息
+	 * @return
+	 */
 	public JSONObject getHoleGridLineData(){
 		
 		
@@ -77,7 +81,7 @@ public class HoleGridServlet extends HttpServlet {
 		JSONObject jo = new JSONObject();
 		
 		//获得上个月的全省发电量数据
-		ArrayList<Float> lastMonthal = new ArrayList<Float>();
+		ArrayList<Float> lastMonthAL = new ArrayList<Float>();
 		String projectSqlStr="select rq,sj from info_dmis_fdqk t where xmmc='全省发电' and rq like ? order by rq";
 		java.sql.Date nowDate;
 		try {
@@ -95,13 +99,13 @@ public class HoleGridServlet extends HttpServlet {
 		log.debug("查询上个月的全省发电信息,日期:"+lastMonthDateWildStr);
 		try {
 			while(rs.next()){
-				lastMonthal.add(rs.getFloat("sj"));
+				lastMonthAL.add(rs.getFloat("sj"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		jo.put("lastMonth",lastMonthal);
+		jo.put("lastMonth",lastMonthAL);
 		
 		//获得这个月的全省发电量数据
 		ArrayList<Float> thisMonthAl = new ArrayList<Float>();
@@ -143,7 +147,13 @@ public class HoleGridServlet extends HttpServlet {
 	
 	/**
 	 * 获得全省发电信息的表格数据
-	 * @return
+	 * @return返回值格式如下:
+	 * "data":[["全省发电","43143.00","50.33","1344.65","4.84","6.35"],
+	 * ["直调火电","31179.00","37.66","988.59","6.28","4.50"],
+	 * ["直调水电","79.00","0.07","8.59","-33.87","-52.81"],
+	 * ["直调风电","2568.00","2.19","48.85","70.26","4.21"],
+	 * ["直调核电","2667.00","3.13","114.57","-11.65","96.13"],
+	 * ["联络线净受电","16893.00","20.66","559.10","-4.19","-7.17"]]
 	 */
 	public JSONObject getHoleGridTableData(){
 		OracleConnection oc = new OracleConnection();
@@ -189,40 +199,7 @@ public class HoleGridServlet extends HttpServlet {
 		oc.closeAll();
 		return jo;
 	}
-	//select rq,yg from info_data_fhyg t where  (rq = '2014-12-20' or rq='2014-12-21') and fhbm = 'lnzddcfdzj' order by rq,sj
-	public JSONObject getRealTimeData(){
-		
-		OracleConnection oc = new OracleConnection();
-		String foreDay = Tools.getForeDay(date);
-		String sql = "select rq,yg from info_data_fhyg t where  (rq = ? or rq= ?) and fhbm = 'lnzddcfdzj' order by rq,sj";
 
-
-		String params[] = {foreDay,date};
-		ResultSet rs =  oc.query(sql,params);
-		Vector<Float>foreData = new Vector<Float>();
-		Vector<Float>theData = new Vector<Float>();
-		try {
-			while(rs.next()){
-				float yg = rs.getFloat("yg");
-				String rq = rs.getString("rq");
-				if(rq.compareTo(date)==0)
-					theData.add(Tools.float2Format(yg, 2));
-				if(rq.compareTo(foreDay)==0)
-					foreData.add(Tools.float2Format(yg, 2));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//if(data.size()<1)return null;
-		JSONObject jo = new JSONObject();
-		jo.put("realTimeForeDay", theData);
-		jo.put("realTimeTheDay",foreData);
-		jo.put("theDate", date);
-		jo.put("foreDate", foreDay);
-		oc.closeAll();
-		return jo;
-	}
 	/**
 	 * 获得需要返回客户端的字符串
 	 * @return
@@ -233,11 +210,10 @@ public class HoleGridServlet extends HttpServlet {
 		
 		JSONObject lineJO = getHoleGridLineData();
 		JSONObject tableJO = getHoleGridTableData();
-		JSONObject realTimeData = getRealTimeData();
+		
 		
 		jo.putAll(lineJO);
 		jo.putAll(tableJO);
-		jo.putAll(realTimeData);
 		return jo.toString();
 	}
 	/**

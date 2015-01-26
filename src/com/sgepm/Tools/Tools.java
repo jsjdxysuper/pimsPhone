@@ -253,7 +253,7 @@ public class Tools {
 
 		String a = "2014-12-01";
 		String b = getForeDay(a);
-		log.debug(b);
+		System.out.println(b);
 	}
 	
 	

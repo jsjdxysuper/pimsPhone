@@ -35,98 +35,7 @@
 			var g1Option;
 			var g2Chart;
 			var g2Option;
-			var ajaxbg;
-			var realTimeOption = null;
-			
-			
-			$(function () {
-	    		realTimeOption = {
-				chart:{
-					spacingLeft:0,
-					renderTo: 'realTimeContainer'
-				},
-				colors:['#ff0000','#0000ff','#00ff00'],
-				plotOptions:{
-					line:{
-						lineWidth:2,
-						pointStart:0,
-						marker:{
-							enabled:false
-						}
-					}
-				},
-				exporting:{
-					enabled:false
-				},
-				credits:{
-					enabled:'false',
-					text:''
-				},
-				labels:{
-				},
-	            title: {
-	                text: '康平电厂机组有功',
-	//                  x: -20, //center 
-	            },
-	            subtitle: {
-	                text: '',
-	                x: -20
-	            },
-	            xAxis: {
-	//                  categories: ['1', '2', '3', '4', '5', '6',
-	//                     '7', '8', '9', '10', '1', '12'], 
-	            },
-	            yAxis: {
-	                title: {
-	                    text: '有功 (兆瓦)',
-	                },
-	                plotLines: [{
-	                    value: 0,
-	                    width: 1,
-	                    color: '#808080'
-						
-	                }],
-					labels:{
-	
-					}
-	            },
-	            tooltip: {
-	//                 valueSuffix: '万千瓦时',
-	//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
-	//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
-					formatter:function(){
-						
-						var s = '时间：'+timeStrArray[this.x]+""+'';
-						s += '<br/>'+this.y+'兆瓦';
-						return s;
-					}
-	            },
-	            legend: {
-	//                  layout: 'vertical',
-	//                 align: 'right',
-	// 				verticalAlign:'top',
-	// 				floating:'true',
-	// 				y:50,
-	//                 borderWidth: 0, 
-	            },
-	            series: [
-	             {
-	                name: '今天',
-	                data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,
-	                		17.0, 15.9, 15.5, 15.5, 15.2, 23.5, 22.2, 15.5, 13.3, 14.3, 17.9, 15.6,
-	                		16.0, 12.9, 14.5, 13.5, 11.2]
-	            }, {
-	                name: '昨天',
-	                data:  [12.0, 13.9, 14.5, 14.9, 19.2, 26.5, 23.2, 18.5, 19.3, 19.3, 15.9, 12.6,
-	                		19.0, 10.9, 14.5, 17.5, 19.2, 24.5, 24.2, 18.5, 19.3, 19.3, 15.9, 12.6,
-	                		14.0, 15.9, 15.5, 16.5, 15.2]
-	            }]
-	        	};//全网线图
-	        	chart = new Highcharts.Chart(realTimeOption);
-    
-    		});//function
-			
-			
+			var ajaxbg;						
 			
 			
 			$(function () {
@@ -202,7 +111,7 @@
 				        min: 0,
 				        max: 100,
 				        title: {
-				            text: '康平电厂#1机'
+				            text: '#1机'
 				        }       
 				    },
 			
@@ -237,7 +146,7 @@
 				        	min: 0,
 				        	max: 100,
 					        title:{
-					            text: '康平电厂#2机'
+					            text: '#2机'
 					        },    
 					    },
 					
@@ -268,7 +177,7 @@
 		                type: 'bar'
 		            },
 		            title: {
-		                text: '60万机组值间对标'
+		                text: '值间月度负荷率对比'
 		            },
 		            subtitle: {
 		                text: ''
@@ -356,30 +265,20 @@
 			ajaxbg.hide();
     		var dataReceived = $.evalJSON(data);
     		
-    		realTimeOption.series = dataReceived.realTimeData;
-    		realTimeOption.series = realTimeOption.series.realtimeData;
-    		chart = new Highcharts.Chart(realTimeOption);
     		
-    		
-    		$("#maxPower").text(dataReceived.max);
-    		$("#minPower").text(dataReceived.min);
+
     		$("#average_power").text(dataReceived.average);
     		$("#energy").text(dataReceived.energy);
     		$("#timeUse").text(dataReceived.timeUse);
-    		$("#recordCount").text("有功（兆瓦）电量（万千瓦时）,记录数："+dataReceived.recordCount+",时长："+dataReceived.timeOfHours+"小时");
     		$("#volume").text(GENERATORVOLUME*2);
     		
     		$("#g1Volume").text(GENERATORVOLUME);
     		$("#g1Energy").text(dataReceived.g1Energy);
-    		$("#g1Max").text(dataReceived.g1Max);
-    		$("#g1Min").text(dataReceived.g1Min);
     		$("#g1Average").text(dataReceived.g1Average);
     		$("#g1TimeUse").text(dataReceived.g1TimeUse);
     		
     		$("#g2Volume").text(GENERATORVOLUME);
     		$("#g2Energy").text(dataReceived.g2Energy);
-    		$("#g2Max").text(dataReceived.g2Max);
-    		$("#g2Min").text(dataReceived.g2Min);
     		$("#g2Average").text(dataReceived.g2Average);
     		$("#g2TimeUse").text(dataReceived.g2TimeUse);
     		
@@ -400,7 +299,7 @@
 		//$('#table_id1').DataTable();
 		if($("table").length > 0)
 		{
-			$("table").DataTable({
+			$("table").dataTable({
 				paging:false,
 				searching:false,
 				info:false,
@@ -441,8 +340,6 @@
 	</div>
 <div style="clear:both;height:20px"></div>
 
-
-<div id="realTimeContainer" style=" height: auto;"></div>
 <hr>
 <div style="text-align:center;width:window.screen.width;">
 	<div style="margin-left:auto;margin-right:auto;" id="gaugeParent">
@@ -469,12 +366,6 @@
 	        </tr>   
 	        <tr>   
 	            <td>发电量</td><td id="g1Energy">0</td><td id="g2Energy">0</td><td id="energy">0</td>   
-	        </tr> 
-	        <tr>   
-	            <td>最小有功</td><td id="g1Min">0</td><td id="g2Min">0</td><td id="minPower">0</td>   
-	        </tr> 
-	        <tr>   
-	            <td>最大有功</td><td id="g1Max">0</td><td id="g2Max">0</td><td id="maxPower">0</td>   
 	        </tr> 
 	        <tr>   
 	            <td>平均有功</td><td id="g1Average">0</td><td id="g2Average">0</td><td id="average_power">0</td>   

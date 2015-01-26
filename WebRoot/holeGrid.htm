@@ -30,97 +30,9 @@
 				<script type="text/javascript" src="./support/threeMainPage.js"></script>
 		<script type="text/javascript">
 		var optionContainer =null;
-		var realTimeOption = null;
 		var tableColumnName = ["全省发电","直调火电","直调水电","直调风电","直调核电","联络线净受"];
 		
 		
-		
-		 $(function () {
-    realTimeOption = {
-			chart:{
-				spacingLeft:0,
-				renderTo: 'realTimeContainer'
-			},
-			colors:['#ff0000','#0000ff','#00ff00'],
-			plotOptions:{
-				line:{
-					lineWidth:2,
-					pointStart:0,
-					marker:{
-						enabled:false
-					}
-				}
-			},
-			exporting:{
-				enabled:false
-			},
-			credits:{
-				enabled:'false',
-				text:''
-			},
-			labels:{
-			},
-            title: {
-                text: '辽宁直调电厂发电总加',
-//                  x: -20, //center 
-            },
-            subtitle: {
-                text: '',
-                x: -20
-            },
-            xAxis: {
-//                  categories: ['1', '2', '3', '4', '5', '6',
-//                     '7', '8', '9', '10', '1', '12'], 
-            },
-            yAxis: {
-                title: {
-                    text: '有功 (兆瓦)',
-                },
-                plotLines: [{
-                    value: 0,
-                    width: 1,
-                    color: '#808080'
-					
-                }],
-				labels:{
-
-				}
-            },
-            tooltip: {
-//                 valueSuffix: '万千瓦时',
-//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
-//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
-				formatter:function(){
-					
-					var s = '时间：'+timeStrArray[this.x]+""+'';
-					s += '<br/>'+this.y+'兆瓦';
-					return s;
-				}
-            },
-            legend: {
-//                  layout: 'vertical',
-//                 align: 'right',
-// 				verticalAlign:'top',
-// 				floating:'true',
-// 				y:50,
-//                 borderWidth: 0, 
-            },
-            series: [
-             {
-                name: '今天',
-                data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,
-                		17.0, 15.9, 15.5, 15.5, 15.2, 23.5, 22.2, 15.5, 13.3, 14.3, 17.9, 15.6,
-                		16.0, 12.9, 14.5, 13.5, 11.2]
-            }, {
-                name: '昨天',
-                data:  [12.0, 13.9, 14.5, 14.9, 19.2, 26.5, 23.2, 18.5, 19.3, 19.3, 15.9, 12.6,
-                		19.0, 10.9, 14.5, 17.5, 19.2, 24.5, 24.2, 18.5, 19.3, 19.3, 15.9, 12.6,
-                		14.0, 15.9, 15.5, 16.5, 15.2]
-            }]
-        };//全网线图
-        chart = new Highcharts.Chart(realTimeOption);
-    
-    });
 		
 $(function () {
 
@@ -247,11 +159,6 @@ $(function () {
 			      	}];
 			      	chart = new Highcharts.Chart(optionContainer);
 			      	
-			      	realTimeOption.series[0].name=json.theDate;
-					realTimeOption.series[0].data = json.realTimeTheDay;
-					realTimeOption.series[1].name=json.foreDate;
-					realTimeOption.series[1].data = json.realTimeForeDay;
-					chart = new Highcharts.Chart(realTimeOption);
 			      	
 			      	
 			      	return json.data;
@@ -304,10 +211,7 @@ $(function () {
 	</div>
 </div>
 
-<div style="text-align:center">
-<div id="realTimeContainer" style="width: 95%;height: 400px;margin-left:auto;margin-right:auto"></div>
-</div>
-<hr>
+
 <div style="text-align:center">
 <div id="lineContainer" style="width: 95%;height: 400px;margin-left:auto;margin-right:auto"></div>
 </div>

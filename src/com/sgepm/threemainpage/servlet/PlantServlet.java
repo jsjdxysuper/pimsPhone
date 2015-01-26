@@ -24,9 +24,8 @@ import org.slf4j.LoggerFactory;
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
-import com.sgepm.threemainpage.entity.PlantMonthAccumulateData;
-import com.sgepm.threemainpage.entity.PlantMonthAccumulateDataSeries;
-import com.sgepm.threemainpage.entity.PlantMonthData;
+import com.sgepm.threemainpage.entity.PlantYearAccumulateDataSeries;
+import com.sgepm.threemainpage.entity.PlantMonthPowerOrRealTimeData;
 
 
 @WebServlet(name="PlantServlet",urlPatterns="/PlantServlet")
@@ -34,13 +33,13 @@ public class PlantServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
-	private String plantIdentity = "sykpp";
+	private String jzbm = "sykpp";
 	
-	private ResourceBundle properties = ResourceBundle.getBundle("pimsphone");
+	private ResourceBundle properties                  = ResourceBundle.getBundle("pimsphone");
 	//机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
 	private HashMap<String,String> JZBM2DCMCDictionary = new HashMap<String,String>();
 	
-	private Logger log = LoggerFactory.getLogger(HoleGridServlet.class);
+	private Logger log                                 = LoggerFactory.getLogger(HoleGridServlet.class);
 	/**
 	 * Constructor of the object.
 	 */
@@ -70,27 +69,23 @@ public class PlantServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		
+		date                     = request.getParameter("date");
+		dateWildcard             = Tools.change2WildcardDate(date, Tools.time_span[2]);	
+		JSONObject joAll         = new JSONObject();//要返回的电厂页面的全部数据	
+		JSONArray ja             = new JSONArray();//各电厂月度发电量	
+		ja                       = getOneMonthPowerData();
 		
-		JSONObject joAll = new JSONObject();
-		
-		JSONArray ja = new JSONArray();
-		date = request.getParameter("date");
-		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
-		
-		ja = getOneMonthPowerData();
-		//60万机组多月电量对比数据
-		JSONObject joSeries = getEveryMonthPowerData();	
-		//本电厂日历进度曲线
-		JSONObject plantProgress = getProgressData();
-		JSONObject realTimeData = getRealTimeDayData();
-		joAll.accumulate("plantProgressData", plantProgress);
+		JSONObject joSeries      = getYearAccumulatePowerData();//相关电厂60万机组年累计电量对比数据		
+		JSONObject plantProgress = getProgressData();//本电厂日历进度曲线
+		JSONObject realTimeData  = getRealTimeData();//相关电厂实时出力数据
+		joAll.accumulateAll(plantProgress);
 		joAll.accumulateAll(joSeries);
 		joAll.put("columnData",ja);
 		joAll.accumulateAll(realTimeData);
 		
 		String ret = joAll.toString();
-		ret = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
-		ret = Tools.getAbbrNameOfPlant(ret);
+		ret        = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
+		ret        = Tools.getAbbrNameOfPlant(ret);
 		out.write(ret);
 		
 		out.close();
@@ -98,21 +93,17 @@ public class PlantServlet extends HttpServlet {
 	
 
 	/**
-	 * 获得电厂页面折线图的数据
+	 * 获得电厂页面某月累计电量柱图的数据
 	 * @return 返回包含PlantMonthData对象的JSON数组
 	 * 结构如下
-	 * [
-	 * {name:"铁岭厂",data:[21,123,213.....]},
-	 * {name:"沈阳康平电厂",data:[...]},
-	 * {}....
-	 * ]
+	 * "columnData":[["康平厂",26242],["铁岭厂",26434],["营口厂",22435],["庄河厂",25299],["清河厂",36604],["燕山湖",27705]]
 	 */
 	public JSONArray getOneMonthPowerData() {
 		
 		OracleConnection oc = new OracleConnection();
-		String plantListStr[];//折线图所要显示的电厂列表
+		String plantListStr[];//柱图所要显示的电厂列表
 		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
-		Vector<PlantMonthData> plantVectorData = new Vector<PlantMonthData>();
+		Vector<PlantMonthPowerOrRealTimeData> plantVectorData = new Vector<PlantMonthPowerOrRealTimeData>();
 
 		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
 		ArrayList<String> generatorList        = new ArrayList<String>();
@@ -123,13 +114,13 @@ public class PlantServlet extends HttpServlet {
 		plantVectorData.setSize(plantListStr.length);
 		//都初始化为0，当有某个电厂发电量为0时，在数据中也有所体现
 		for(int i=0;i<plantVectorData.size();i++){
-			PlantMonthData temp = new PlantMonthData();
+			PlantMonthPowerOrRealTimeData temp = new PlantMonthPowerOrRealTimeData();
 			temp.setName(plantListStr[i]);
 			temp.setData(new Float(0));
 			plantVectorData.set(i, temp);
 		}
 
-		log.debug("PlantLineData电厂列表:"+plantsStr);
+		log.debug("PlantsOneMonthPowerData电厂列表:"+plantsStr);
 
 
 		//获得每个电厂所配置的机组列表		
@@ -137,7 +128,7 @@ public class PlantServlet extends HttpServlet {
 
 		
 		
-		//装配sql语句,in子句的最大数目为1000,足够了
+		//装配sql语句中机组列表,以逗号分隔,in子句的最大数目为1000,足够了
 		String inString="";
 		for(int i=0;i<generatorList.size();i++){
 		    if(i>0){
@@ -161,7 +152,7 @@ public class PlantServlet extends HttpServlet {
 				String ssdcmc = rs.getString("ssdcmc");
 				float rdl = rs.getFloat("rdl");
 				for(int i=0;i<plantVectorData.size();i++){
-					PlantMonthData temp = plantVectorData.get(i);
+					PlantMonthPowerOrRealTimeData temp = plantVectorData.get(i);
 					if(temp.getName().compareTo(ssdcmc)==0)
 						temp.setData(rdl);
 				}
@@ -184,7 +175,14 @@ public class PlantServlet extends HttpServlet {
 		return ja;
 	}
 	
-	public JSONObject getEveryMonthPowerData(){
+	
+	/**
+	 * 查询相关电厂年累计发电量（每月一个颜色,每个电厂一个柱）
+	 * @return
+	 * 返回值的格式如下：
+	 * {"seriesPlantName":[name1,name2,name3...],}
+	 */
+	public JSONObject getYearAccumulatePowerData(){
 //		select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in (
 //				'sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2')
 //				and rq <= '2014-10-11' and rq >= '2014-01-01' and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc
@@ -193,31 +191,32 @@ public class PlantServlet extends HttpServlet {
 		int numPlant = 0;
 		int monthNum = Integer.parseInt(date.substring(5, 7));
 		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
-		Vector<PlantMonthAccumulateDataSeries> plantVectorDataseries = new Vector<PlantMonthAccumulateDataSeries>();
+		Vector<PlantYearAccumulateDataSeries> plantVectorDataseries = new Vector<PlantYearAccumulateDataSeries>();
 
 		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
 		ArrayList<String> generatorList        = new ArrayList<String>();
 		
-		String plantsStr = properties.getString("pims.plant.graph2.plants");
+		//获得电厂列表
+		String plantsStr = properties.getString("pims.plant.graph1.plants");
 		String plantListStr[] = plantsStr.split(",");
 		numPlant = plantListStr.length;
 		plantVectorDataseries.setSize(monthNum);
 
 		for(int i=0;i<plantVectorDataseries.size();i++){
-			PlantMonthAccumulateDataSeries temp = new PlantMonthAccumulateDataSeries();
+			PlantYearAccumulateDataSeries temp = new PlantYearAccumulateDataSeries();
 			Vector<Float> dataTemp = new Vector<Float>();
 			dataTemp.setSize(numPlant);
 			temp.setData(dataTemp);
-			temp.setName(i+1);
+			temp.setName((i+1)+"月");
 			plantVectorDataseries.set(i, temp);
 		}
 
-		log.debug("PlantLineData电厂列表:"+plantsStr);
-		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph2");
+		log.debug("YearAccumulatePlantData电厂列表:"+plantsStr);
+		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph1");
 
 		
 		
-		//装配sql语句,in子句的最大数目为1000,足够了
+		//装配sql语句,机组列表,用逗号分隔,in子句的最大数目为1000,足够了
 		String inString="";
 		for(int i=0;i<generatorList.size();i++){
 		    if(i>0){
@@ -235,6 +234,7 @@ public class PlantServlet extends HttpServlet {
 		String sql = "select substr(t.rq,0,7) as yf,sum(t.rdl) as ydl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
 						+inString+" )"+
 						" and rq >= ? and rq <= ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
+		log.debug(sql);
 		ResultSet rs=  oc.query(sql,params);
 		
 		try {
@@ -244,7 +244,7 @@ public class PlantServlet extends HttpServlet {
 				float ydl = rs.getFloat("ydl");
 				String ssdcmc = rs.getString("ssdcmc");
 				
-				PlantMonthAccumulateDataSeries temp = plantVectorDataseries.get(yfInt-1);
+				PlantYearAccumulateDataSeries temp = plantVectorDataseries.get(yfInt-1);
 				for(int i=0;i<numPlant;i++){
 					if(plantListStr[i].compareTo(ssdcmc)==0){
 						temp.getData().set(i, ydl);
@@ -259,8 +259,7 @@ public class PlantServlet extends HttpServlet {
 		
 		JSONObject jo = new JSONObject();
 		jo.put("seriesPlantName", plantListStr);
-		jo.put("everyMonthPowerSeries", plantVectorDataseries);
-		
+		jo.put("yearAccumulatePlantPowerSeries", plantVectorDataseries);
 		
 		oc.closeAll();
 		return jo;
@@ -268,7 +267,12 @@ public class PlantServlet extends HttpServlet {
 	
 	/**
 	 * 获得电厂进度信息图的数据
-	 * @return
+	 * @return返回数据结构如下
+	 * "plantProgressData":[[3.98,2.76],[7.97,5.15],[11.95,8.1],[15.93,11.01],
+	 * 						[19.92,17.03],[23.9,23.15],[27.88,27.18],[31.87,32.31],
+	 * 						[35.85,37.92],[39.83,41.6],[43.82,43.9],[47.8,44.9]]
+	 * 数组的第一个数为计划值，第二个值为完成值，传到前端
+	 * 在前端,因为范围图约束(第一个值必须比第二个值小),所以要把计划值>完成值的交换,统一成[小值,大值]格式,为了区分,交换后的柱为红色,没有交换的为蓝色
 	 */
 	public JSONObject getProgressData(){
 		
@@ -282,7 +286,7 @@ public class PlantServlet extends HttpServlet {
 		float yearAccumulate = 0;
 		
 		String sqlGetYearPlan = "select t.nf,t.njh  from info_sdlr_dcnjh t where t.dcbm = ? and t.nf = ?";
-		String params1[] = {plantIdentity,date.substring(0,4)};
+		String params1[] = {jzbm,date.substring(0,4)};
 		ResultSet rs=  oc.query(sqlGetYearPlan,params1);
 		try {
 			while(rs.next())
@@ -333,26 +337,64 @@ public class PlantServlet extends HttpServlet {
 		return jo;
 	}
 	/**
-	 * 获得电厂日实时信息
-	 * @return
+	 * 获得相关电厂实时处理值,由配置文件指定要显示哪些电厂,每个电厂包含哪些机组
+	 * @return返回值的格式如下:
+	 * "realTimeData":[{"data":338.57,"name":"康平厂"},{"data":269.03,"name":"铁岭厂"},
+	 * 					{"data":281.2,"name":"营口厂"},{"data":296.15,"name":"庄河厂"},
+	 * 					{"data":619.7,"name":"清河厂"},{"data":714.62,"name":"燕山湖"}]
 	 */
-	public JSONObject getRealTimeDayData(){
-		//select yg from info_data_dcyg t where dcbm='sykpp' and (rq='2014-12-25' or rq = '2014-12-24') order by rq,sj
+	public JSONObject getRealTimeData(){
+//		select a.sj,sum(a.yg),b.ssdcbm,b.ssdcmc from info_data_jzyg a,base_jzbm b where a.sj =(
+//				select max(t.sj) as sj from info_data_jzyg t where rq = '2014-12-20' and t.jzbm in ('sykppg1') group by jzbm) and a.rq='2014-12-20' and a.jzbm in 
+//				('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2') and 
+//				a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj
+		Vector<PlantMonthPowerOrRealTimeData> plantVectorData = new Vector<PlantMonthPowerOrRealTimeData>();
+		String plantListStr[];//所要显示的电厂列表
+		String plantsStr = properties.getString("pims.plant.graph1.plants");
+		plantListStr = plantsStr.split(",");
+		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
+		ArrayList<String> generatorList        = new ArrayList<String>();
+		//获得每个电厂所配置的机组列表		
+		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph1");
+		
+		plantVectorData.setSize(plantListStr.length);
+		//都初始化为0，当有某个电厂发电量为0时，在数据中也有所体现
+		for(int i=0;i<plantVectorData.size();i++){
+			PlantMonthPowerOrRealTimeData temp = new PlantMonthPowerOrRealTimeData();
+			temp.setName(plantListStr[i]);
+			temp.setData(new Float(0));
+			plantVectorData.set(i, temp);
+		}
+		
+		//装配sql语句,in子句的最大数目为1000,足够了
+		String inString="";
+		for(int i=0;i<generatorList.size();i++){
+		    if(i>0){
+		        inString+=",";
+		    }
+		    inString+="'"+generatorList.get(i)+"'";
+		}
 		OracleConnection oc = new OracleConnection();
-		String sql = "select rq,yg from info_data_dcyg t where dcbm='sykpp' and (rq= ? or rq = ?) order by rq,sj";
-		String foreDay = Tools.getForeDay(date);
-		String params[] = {foreDay,date};
+		String sql = "select a.sj,sum(a.yg) yg,b.ssdcbm,b.ssdcmc from info_data_jzyg a,base_jzbm b where a.sj =( "+
+			"select max(t.sj) as sj from info_data_jzyg t where rq = ?) and a.rq= ? and a.jzbm in "+
+			"("+inString+") and "+
+			"a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj";
+		
+		String params[] = {date,date};
 		ResultSet rs =  oc.query(sql,params);
-		Vector<Float>foreData = new Vector<Float>();
-		Vector<Float>theData = new Vector<Float>();
+
 		try {
 			while(rs.next()){
-				float yg = rs.getFloat("yg");
-				String rq = rs.getString("rq");
-				if(rq.compareTo(date)==0)
-					theData.add(Tools.float2Format(yg, 2));
-				if(rq.compareTo(foreDay)==0)
-					foreData.add(Tools.float2Format(yg, 2));
+				String sj = rs.getString("sj");
+				float  yg = rs.getFloat("yg");
+				String ssdcmc = rs.getString("ssdcmc");
+				String ssdcbm = rs.getString("ssdcbm");
+				
+				for(int i=0;i<plantListStr.length;i++){
+					if(plantListStr[i].compareTo(ssdcmc)==0){
+						plantVectorData.get(i).setData(Tools.float2Format(yg, 2));
+					}
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -360,10 +402,8 @@ public class PlantServlet extends HttpServlet {
 		}
 		//if(data.size()<1)return null;
 		JSONObject jo = new JSONObject();
-		jo.put("realTimeForeDay", theData);
-		jo.put("realTimeTheDay",foreData);
-		jo.put("theDate", date);
-		jo.put("foreDate", foreDay);
+		jo.put("realTimeData", plantVectorData);
+
 		
 		oc.closeAll();
 		return jo;

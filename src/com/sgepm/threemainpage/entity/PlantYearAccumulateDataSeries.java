@@ -2,9 +2,15 @@ package com.sgepm.threemainpage.entity;
 
 import java.util.Vector;
 
-public class PlantMonthAccumulateDataSeries {
+/**
+ * name为月份名字
+ * data为一个series的数据，为一个月各个电厂的发电量
+ * @author Administrator
+ *
+ */
+public class PlantYearAccumulateDataSeries {
 
-	private int name;
+	private String name;
 	private Vector<Float>data;
 
 	
@@ -14,12 +20,13 @@ public class PlantMonthAccumulateDataSeries {
 	public void setData(Vector<Float> data) {
 		this.data = data;
 	}
-	public int getName() {
+	public String getName() {
 		return name;
 	}
-	public void setName(int name) {
+	public void setName(String name) {
 		this.name = name;
 	}
+
 
 	
 }

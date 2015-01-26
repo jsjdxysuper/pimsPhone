@@ -1,31 +1,19 @@
 package com.sgepm.threemainpage.servlet;
 
-import java.awt.List;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Vector;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
-import com.sgepm.threemainpage.entity.RealTimeGeneratorData;
-import com.sun.xml.internal.fastinfoset.util.CharArray;
-
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @WebServlet(name="GeneratorServlet",urlPatterns="/GeneratorServlet")
@@ -50,6 +38,34 @@ public class GeneratorServlet extends HttpServlet {
 		// Put your code here
 	}
 
+
+	/**
+	 * 在此处统一处理get和post请求
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	public void doRequest(HttpServletRequest request, HttpServletResponse response) throws IOException{
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=UTF-8") ;
+		response.setCharacterEncoding("UTF-8") ;
+		PrintWriter out = response.getWriter();
+		
+		
+		date = request.getParameter("date");		
+		date = Tools.formatDate(date);//改变日期的格式为YYYY-MM-DD
+		log.debug("post机组日期查询日期:"+date);
+		String returnData =  getData();
+//		try {
+//			Thread.currentThread().sleep(5000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		if(returnData!=null)
+			out.write(returnData);
+		out.close();
+	}
 	/**
 	 * The doGet method of the servlet. <br>
 	 *
@@ -62,19 +78,7 @@ public class GeneratorServlet extends HttpServlet {
 	 */
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=UTF-8") ;
-		response.setCharacterEncoding("UTF-8") ;
-		PrintWriter out = response.getWriter();
-
-		date = request.getParameter("date");
-
-		log.debug("get机组信息查询日期:"+date);
-		String returnData =  getData();
-		out.write(returnData);
-
-		out.close();
+		doRequest(request,response);
 	}
 
 	/**
@@ -90,291 +94,88 @@ public class GeneratorServlet extends HttpServlet {
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=UTF-8") ;
-		response.setCharacterEncoding("UTF-8") ;
-		PrintWriter out = response.getWriter();
-		date = request.getParameter("date");
-		//改变日期的格式为YYYY-MM-DD
-		date = Tools.formatDate(date);
-		log.debug("post机组日期查询日期:"+date);
-		String returnData =  getData();
-//		try {
-//			Thread.currentThread().sleep(5000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		//为了避免查询数据为空
-		if(returnData!=null)
-			out.write(returnData);
-		out.close();
-	}
-
-	
-
-	/**
-	 * 获得电厂的总体运行数据
-	 * @return 含有康平电厂信息的MAP
-	 */
-	public HashMap<String,String> getPlantData(){
-		
-		HashMap<String,String> plantData = new HashMap<String,String>();
-		OracleConnection oc = new OracleConnection();
-		String plantSqlStr="select RQ,SJ,YG from info_data_dcyg t where DCMC='沈阳康平电厂'AND RQ like ? ORDER BY RQ,SJ";
-
-		float max,min,average,energy,timeUse,sum,timeOfHours;
-		
-		min             = Float.MAX_VALUE;
-		max             = 0;
-		average         = 0;
-		energy          = 0;
-		timeUse         = 0;
-		sum             = 0;
-		timeOfHours     = 0;
-		
-
-		String []dataParas={date};
-		ResultSet rs= oc.query(plantSqlStr,dataParas);
-
-		ArrayList<String> rq = new ArrayList<String>();
-		ArrayList<String> sj = new ArrayList<String>();
-		ArrayList<String> yg = new ArrayList<String>();
-
-		//recordCount与rq.size()是有区别的，某时刻有功为零不计入rqlist，单是recordCount里面会计数
-		long recordCount = 0;
-		try {
-			while(rs.next()){
-				recordCount++;
-				String aa = rs.getString(1);
-				String bb = rs.getString(2);
-				String cc = rs.getString(3);
-				if(cc==null||cc.compareTo("")==0||cc.compareTo("null")==0)
-					continue;
-				rq.add(aa);
-				sj.add(bb);
-				yg.add(cc);
-				float yg_float = Float.valueOf(cc);
-				if(yg_float>max)max=yg_float;
-				if(yg_float<min)min=yg_float;
-				sum=sum+yg_float;
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		//为了避免查询数据为空
-		if(recordCount==0)
-		{
-			average     = 0;
-			energy      = 0;
-			timeOfHours = 0;
-			timeUse     = 0;
-			max			= 0;
-			min         = 0;
-		}else{
-			average     = sum/recordCount;
-			energy      = sum/120;
-			timeOfHours = recordCount/12;
-			timeUse     = energy/(Tools.rongLiang*2)*10;
-		}
-		//保留两位小数
-
-		
-		plantData.put("max",Tools.float2Format(max));
-		plantData.put("min", Tools.float2Format(min));
-		plantData.put("average", Tools.float2Format(average));
-		plantData.put("energy",Tools.float2Format(energy));
-		plantData.put("timeUse", Tools.float2Format(timeUse));
-		plantData.put("recordCount", String.valueOf(recordCount));
-		plantData.put("timeOfHours", Tools.float2Format(timeOfHours));
-		oc.closeAll();
-		return plantData;
+		doRequest(request,response);
 	}
 	
 	/**
-	 *  以下代码为康平“机组”信息的查询
+	 *  获取机组日电量信息,由日电量信息计算利用小时数,平均有功,负荷率
 	 * @return 康平机组信息的Map
 	 */
-	public HashMap<String,String> getEachGenerator(){
+	public JSONObject getEachGenerator(){
 		
 		OracleConnection oc = new OracleConnection();
-		HashMap<String,String> eachGeneratorData = new HashMap<String,String>();
+		JSONObject eachGeneratorData = new JSONObject();
 
 		
-		float g1Max,g1Min,g1Average,g1Energy,g1TimeUse,g1Sum,g1TimeOfHours;
-		float g2Max,g2Min,g2Average,g2Energy,g2TimeUse,g2Sum,g2TimeOfHours;
+		float g1Average,g1Energy,g1TimeUse;
+		float g2Average,g2Energy,g2TimeUse;
 		
-		g1Min = Float.MAX_VALUE;
-		g2Min = Float.MAX_VALUE;
-		g1Max=g1Average=g1Energy=g1TimeUse=g1Sum=g1TimeOfHours=0;
-		g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
-		
-		String generatorSqlStr="select JZBM,YG from info_data_jzyg t WHERE JZMC IN ('沈阳康平#1机','沈阳康平#2机') AND RQ LIKE ? ORDER BY RQ,SJ";
 
-		String []dataParas={date};
+		g1Average=g1Energy=g1TimeUse=0;
+		g2Average=g2Energy=g2TimeUse=0;
+		
+		String generatorSqlStr="select t.jzbm,t.jzmc,t.rdl from info_dmis_zdhcjz t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm= ? and t.rq= ? order by jzbm,rq";
+
+		String []dataParas={dcbm,date};
 
 		ResultSet rs = oc.query(generatorSqlStr,dataParas);
 
-		ArrayList<String> g1_yg = new ArrayList<String>();
-		ArrayList<String> g2_yg = new ArrayList<String>();
 		
-		long g1RecordCount = 0, g2RecordCount = 0;
 		try {
 			while(rs.next()){
 				
-				String bb = rs.getString(1);
-				String cc = rs.getString(2);
-				if(cc==null||cc.compareTo("")==0||cc.compareTo("null")==0)
-					continue;
-				float g1_yg_float,g2_yg_float;
-				if(bb.compareTo("sykppg1")==0){
-					g1RecordCount++;
-					g1_yg.add(cc);
-					g1_yg_float                =  Float.valueOf(cc);
-					if(g1_yg_float>g1Max)g1Max =  g1_yg_float;
-					if(g1_yg_float<g1Min)g1Min =  g1_yg_float;
-					g1Sum                      += g1_yg_float;
+				String jzbm = rs.getString("jzbm");
+				String jzmc = rs.getString("jzmc");
+				float  rdl  = rs.getFloat("rdl");
+
+				if(jzbm.compareTo("sykppg1")==0){
+					g1Energy = rdl;
 				}
-				else if(bb.compareTo("sykppg2")==0){
-					g2RecordCount++;
-					g2_yg.add(cc);
-					g2_yg_float                =  Float.valueOf(cc);
-					if(g2_yg_float>g2Max)g2Max =  g2_yg_float;
-					if(g2_yg_float<g2Min)g2Min =  g2_yg_float;
-					g2Sum                      += g2_yg_float;
+				else if(jzbm.compareTo("sykppg2")==0){
+					g2Energy = rdl;
 				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//为了避免查询数据为空
-		if(g1RecordCount==0)
-		{
-			g1Min = 0;			
-			g1Max=g1Average=g1Energy=g1TimeUse=g1Sum=g1TimeOfHours=0;
-			
-		}else
-		{
-			g1Average = g1Sum/g1RecordCount;
-			g1Energy   = g1Sum/120;
-			g1TimeOfHours    = g1RecordCount/12;
-			g1TimeUse = g1Energy/Tools.rongLiang*10;
-		}
 		
-		if(g2RecordCount==0){
-			g2Min = 0;
-			g2Max=g2Average=g2Energy=g2TimeUse=g2Sum=g2TimeOfHours=0;
-		}else
-		{
-			g2Average = g2Sum/g2RecordCount;
-			g2Energy   = g2Sum/120;
-			g2TimeOfHours    = g2RecordCount/12;
-			g2TimeUse = g2Energy/Tools.rongLiang*10;
-		}	
+		float energy  = g1Energy+g2Energy;
+		float average = (energy)*10/24;
+		float timeUse = energy*24/(Tools.rongLiang*2);
+		eachGeneratorData.put("energy", Tools.float2Format(energy, 2));
+		eachGeneratorData.put("average", Tools.float2Format(average, 2));
+		eachGeneratorData.put("timeUse", Tools.float2Format(timeUse, 2));
+		
+		
+		g1Average = g1Energy*10/24;
+		g1TimeUse = g1Energy*24/Tools.rongLiang;
+		
+		g2Average = g2Energy*10/24;
+		g2TimeUse = g2Energy*24/Tools.rongLiang;
 
-		eachGeneratorData.put("g1Max",Tools.float2Format(g1Max));
-		eachGeneratorData.put("g1Min",Tools.float2Format(g1Min));
-		eachGeneratorData.put("g1Average",Tools.float2Format(g1Average));
-		eachGeneratorData.put("g1Energy",Tools.float2Format(g1Energy));
-		eachGeneratorData.put("g1TimeOfHours",Tools.float2Format(g1TimeOfHours));
-		eachGeneratorData.put("g1TimeUse",Tools.float2Format(g1TimeUse));
+		eachGeneratorData.put("g1Average",Tools.float2Format(g1Average,2));
+		eachGeneratorData.put("g1Energy",Tools.float2Format(g1Energy,2));
+		eachGeneratorData.put("g1TimeUse",Tools.float2Format(g1TimeUse,2));
 		
-		eachGeneratorData.put("g2Max",Tools.float2Format(g2Max));
-		eachGeneratorData.put("g2Min",Tools.float2Format(g2Min));
-		eachGeneratorData.put("g2Average",Tools.float2Format(g2Average));
-		eachGeneratorData.put("g2Energy",Tools.float2Format(g2Energy));
-		eachGeneratorData.put("g2TimeOfHours",Tools.float2Format(g2TimeOfHours));
-		eachGeneratorData.put("g2TimeUse",Tools.float2Format(g2TimeUse));
+
+		eachGeneratorData.put("g2Average",Tools.float2Format(g2Average,2));
+		eachGeneratorData.put("g2Energy",Tools.float2Format(g2Energy,2));
+		eachGeneratorData.put("g2TimeUse",Tools.float2Format(g2TimeUse,2));
 		oc.closeAll();
 		return eachGeneratorData;
 	}
 	
 	
-	public JSONObject getRealTimeData(){
-//		select t.jzbm,t.jzmc,yg from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-21' order by t.jzbm,t.sj
-		
-		OracleConnection oc = new OracleConnection();
-		Vector<RealTimeGeneratorData> realTimeData = new Vector<RealTimeGeneratorData>();
-		Vector<String> genNameVector = new Vector<String>();
-		Vector<String> genIdentity = new Vector<String>();
-		
-		String genListSql = "select jzbm,jzmc from base_jzbm t where ssdcbm= ?";
-		String paras1[] = {dcbm};
-		ResultSet rs = oc.query(genListSql,paras1);
-		
-		try {
-			while(rs.next()){
-				genNameVector.add(rs.getString("jzmc"));
-				genIdentity.add(rs.getString("jzbm"));		
-				RealTimeGeneratorData g = new RealTimeGeneratorData();
-				Vector<Float> data = new Vector<Float>();
-				g.setName(rs.getString("jzmc"));
-				g.setData(data);
-				realTimeData.add(g);
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		String realTimeSql ="select t.sj, "+
-		"sum(case "+
-		       "when t.jzmc = '沈阳康平#1机' then nvl(t.yg,0) "+
-		       "else 0 "+
-		    "end) as 沈阳康平#1机, "+
-		"sum(case "+
-		       "when t.jzmc = '沈阳康平#2机' then nvl(t.yg,0) "+
-		       "else 0 "+
-		    "end) as 沈阳康平#2机 "+
-		 "from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm= ? and rq= ? group by t.sj order by t.sj";
-//					select t.sj,
-//					sum(case
-//					       when t.jzmc = '沈阳康平#1机' then nvl(t.yg,0)
-//					       else 0
-//					    end) as 沈阳康平#1机,
-//					sum(case
-//					       when t.jzmc = '沈阳康平#2机' then nvl(t.yg,0)
-//					       else 0
-//					    end) as 沈阳康平#2机
 
-//					 from info_data_jzyg t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm='sykpp' and rq='2014-12-23' group by t.sj order by t.sj
-
-		String paras2[] = {dcbm,date};
-		rs = oc.query(realTimeSql, paras2);
-		try {
-			while(rs.next()){
-				String sj = rs.getString("sj");
-				float g1 = Tools.float2Format(rs.getFloat("沈阳康平#1机"),2);
-				float g2= Tools.float2Format(rs.getFloat("沈阳康平#2机"),2);
-				for(int i=0;i<realTimeData.size();i++){
-					RealTimeGeneratorData temp = realTimeData.get(i);
-					if(temp.getName().compareTo("沈阳康平#1机")==0)
-						temp.getData().add(g1);
-					if(temp.getName().compareTo("沈阳康平#2机")==0)
-						temp.getData().add(g2);
-				}
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		JSONObject jo = new JSONObject();
-		jo.put("realtimeData", realTimeData);
-		oc.closeAll();
-		return jo;
-	}
 	public String getData(){
 		
 		JSONObject jo = new JSONObject();
 
-		HashMap<String,String> plantMap = getPlantData();
-		HashMap<String,String> generatorMap = getEachGenerator();
-		JSONObject realtimeData = getRealTimeData();
-		jo.put("realTimeData",realtimeData);
-		jo.putAll(plantMap);
+		
+		JSONObject generatorMap = getEachGenerator();
+		
+
 		jo.putAll(generatorMap);
 		return jo.toString();
 		
