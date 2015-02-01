@@ -31,7 +31,7 @@ public class Tools {
 	public static final int RealTimePointADay = 288;
 	public static String [] time_span      = {"实时","年","月","日"};
 	public static int    [] days_all_month = {31,28,31,30,31,30,31,31,30,31,30,31};
-	
+	public static float rongLiang = 600;
 	
 	/**
 	 * 对日期进行格式化
@@ -44,7 +44,7 @@ public class Tools {
 		SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd"); 
 		return df.format(java.sql.Date.valueOf(date));
 	}
-	public static float rongLiang = 600;
+	
 	
 	/**
 	 * 对日期进行格式化，为YYYY-MM-DD
@@ -106,6 +106,22 @@ public class Tools {
 		else
 			ret= b.setScale(dotNum, BigDecimal.ROUND_HALF_UP).floatValue();
 		return ret;
+	}
+	
+	/**
+	 * 获得系统当前日期
+	 * @return
+	 */
+	public static Date getTodayDate(){
+		Date dt = new Date();
+//		SimpleDateFormat matter = new SimpleDateFormat("yyyy-MM-dd");
+		return new Date();
+	}
+	
+	public static String getTodayStr(){
+		Date dt = new Date();
+		SimpleDateFormat matter = new SimpleDateFormat("yyyy-MM-dd");
+		return matter.format(dt);
 	}
 	
 	/**
@@ -250,10 +266,12 @@ public class Tools {
 	
 	public static void main(String[] args) {
 
-
-		String a = "2014-12-01";
-		String b = getForeDay(a);
-		System.out.println(b);
+//		Logger log = LoggerFactory.getLogger(Tools.class);
+//		Date dt = new Date();
+//		SimpleDateFormat matter = new SimpleDateFormat("yyyy-MM-dd");
+//
+//		System.out.println(matter.format(dt));
+//		log.debug(matter.format(dt));
 	}
 	
 	

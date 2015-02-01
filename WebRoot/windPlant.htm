@@ -375,15 +375,7 @@ submitRequest= function(){
 		ajaxbg.hide();
 		var dataReceived = $.evalJSON(data1);
 		
-		realTimeData = dataReceived.realTimeData;
-		document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[0].data;
-		document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[1].data;
-		document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[2].data;
-		document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[3].data;
-		document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data;
-		document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[5].data;
-// 		dataReceived.realTimeData
-// 		dataReceived.realtimeTime
+
 
      	columnOption.series[0].data=dataReceived.columnData;
      	chart = new Highcharts.Chart(columnOption);
@@ -463,29 +455,8 @@ submitRequest= function(){
 		</button>
 	</div>
 </div>
-<div style="text-align:center">
-<table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
-	<thead>
-	    <tr>
-	        <td colspan="2" style="text-align:center;font-size:18px;color:#000000"></td>
-	    </tr>
+ 
 
-	</thead>  
-	    <tbody>   
-	
-	        <tr>   
-	            <td>11</td><td id="g1Volume">12</td>
-	        </tr>   
-	        <tr>   
-	            <td>21</td><td id="g1Energy">22</td>
-	        </tr> 
-	        <tr>   
-	            <td>31</td><td id="g1Average">32</td>
-	        </tr> 	                               
-	    </tbody> 
-	    <tfoot><tr><td></td><td></td></tr></tfoot>
-</table> 
-</div>
 <div id="columnContainer" style=" height: 350px;width:95%"></div>
 <hr>
 <div id="stackColumnContainer" style=" height: 400px;"></div>

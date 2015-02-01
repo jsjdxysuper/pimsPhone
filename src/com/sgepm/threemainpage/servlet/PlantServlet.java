@@ -69,25 +69,30 @@ public class PlantServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		
-		date                     = request.getParameter("date");
-		dateWildcard             = Tools.change2WildcardDate(date, Tools.time_span[2]);	
-		JSONObject joAll         = new JSONObject();//要返回的电厂页面的全部数据	
-		JSONArray ja             = new JSONArray();//各电厂月度发电量	
-		ja                       = getOneMonthPowerData();
-		
-		JSONObject joSeries      = getYearAccumulatePowerData();//相关电厂60万机组年累计电量对比数据		
-		JSONObject plantProgress = getProgressData();//本电厂日历进度曲线
-		JSONObject realTimeData  = getRealTimeData();//相关电厂实时出力数据
-		joAll.accumulateAll(plantProgress);
-		joAll.accumulateAll(joSeries);
-		joAll.put("columnData",ja);
-		joAll.accumulateAll(realTimeData);
-		
-		String ret = joAll.toString();
-		ret        = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
-		ret        = Tools.getAbbrNameOfPlant(ret);
-		out.write(ret);
-		
+		if(request.getParameter("realtime")==null){
+			date                     = request.getParameter("date");
+			dateWildcard             = Tools.change2WildcardDate(date, Tools.time_span[2]);	
+			JSONObject joAll         = new JSONObject();//要返回的电厂页面的全部数据	
+			JSONArray ja             = new JSONArray();//各电厂月度发电量	
+			ja                       = getOneMonthPowerData();
+			
+			JSONObject joSeries      = getYearAccumulatePowerData();//相关电厂60万机组年累计电量对比数据		
+			JSONObject plantProgress = getProgressData();//本电厂日历进度曲线
+			JSONObject realTimeData  = getRealTimeData();//相关电厂实时出力数据
+			joAll.accumulateAll(plantProgress);
+			joAll.accumulateAll(joSeries);
+			joAll.put("columnData",ja);
+			joAll.accumulateAll(realTimeData);
+			
+			String ret = joAll.toString();
+			ret        = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
+			ret        = Tools.getAbbrNameOfPlant(ret);
+			out.write(ret);
+		}else if(request.getParameter("realtime").compareTo("true")==0){
+			log.debug("realtime request");
+			JSONObject jo = getRealTimeData();
+			out.write(jo.toString());
+		}
 		out.close();
 	}
 	
@@ -348,6 +353,8 @@ public class PlantServlet extends HttpServlet {
 //				select max(t.sj) as sj from info_data_jzyg t where rq = '2014-12-20' and t.jzbm in ('sykppg1') group by jzbm) and a.rq='2014-12-20' and a.jzbm in 
 //				('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2') and 
 //				a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj
+		String today = Tools.getTodayStr();
+		String realtimeTime    = "";
 		Vector<PlantMonthPowerOrRealTimeData> plantVectorData = new Vector<PlantMonthPowerOrRealTimeData>();
 		String plantListStr[];//所要显示的电厂列表
 		String plantsStr = properties.getString("pims.plant.graph1.plants");
@@ -375,21 +382,26 @@ public class PlantServlet extends HttpServlet {
 		    inString+="'"+generatorList.get(i)+"'";
 		}
 		OracleConnection oc = new OracleConnection();
-		String sql = "select a.sj,sum(a.yg) yg,b.ssdcbm,b.ssdcmc from info_data_jzyg a,base_jzbm b where a.sj =( "+
-			"select max(t.sj) as sj from info_data_jzyg t where rq = ?) and a.rq= ? and a.jzbm in "+
+		String sql = "select a.sj,sum(a.yg) as yg,b.ssdcbm,b.ssdcmc,a.rq from info_data_jzyg a,base_jzbm b where a.sj =( "+
+			"select max(t.sj) as sj from info_data_jzyg t where rq = (select max(rq) from info_data_jzyg) "+
+				"and t.jzbm in ('sykppg1') group by jzbm) and a.rq=(select max(rq) from info_data_jzyg) and a.jzbm in "+
 			"("+inString+") and "+
-			"a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj";
+			"a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj,a.rq";
 		
-		String params[] = {date,date};
-		ResultSet rs =  oc.query(sql,params);
+		String params[] = {today,today};
+		ResultSet rs =  oc.query(sql,null);
 
 		try {
 			while(rs.next()){
-				String sj = rs.getString("sj");
-				float  yg = rs.getFloat("yg");
+				String sj     = rs.getString("sj");
+				float  yg     = rs.getFloat("yg");
 				String ssdcmc = rs.getString("ssdcmc");
 				String ssdcbm = rs.getString("ssdcbm");
+				String rq     = rs.getString("rq");
+				realtimeTime  = rq+" "+sj;
 				
+				
+				realtimeTime  = sj;
 				for(int i=0;i<plantListStr.length;i++){
 					if(plantListStr[i].compareTo(ssdcmc)==0){
 						plantVectorData.get(i).setData(Tools.float2Format(yg, 2));
@@ -403,7 +415,7 @@ public class PlantServlet extends HttpServlet {
 		//if(data.size()<1)return null;
 		JSONObject jo = new JSONObject();
 		jo.put("realTimeData", plantVectorData);
-
+		jo.put("realtimeTime", realtimeTime);
 		
 		oc.closeAll();
 		return jo;

@@ -31,6 +31,9 @@ public class HoleGridServlet extends HttpServlet {
 	private String dateWildcard;
 	private Logger log                       = LoggerFactory.getLogger(HoleGridServlet.class);
 	private HashMap<String,Integer> sequence = new HashMap<String,Integer>();
+	private int tableRows                    = 6;
+	private int tableColumns                 = 6;
+	private Vector<String> tableFirstColumn  = new Vector<String>();
 	/**
 	 * Constructor of the object.
 	 */
@@ -161,13 +164,25 @@ public class HoleGridServlet extends HttpServlet {
 		HashMap<String,JSONArray> projectData = new HashMap<String,JSONArray>();
 		JSONArray jsArray = new JSONArray();
 		JSONObject jo = new JSONObject();
-		Vector<ArrayList<String>> vector = new Vector<ArrayList<String>>();
-		vector.setSize(6);
+		Vector<Vector<String>> vector = new Vector<Vector<String>>();
+		vector.setSize(tableRows);
+
+		for(int i=0;i<tableRows;i++){
+			Vector<String>temp = new Vector<String>();
+			temp.setSize(tableColumns);
+			temp.set(0,tableFirstColumn.get(i));
+			for(int j=1;j<tableColumns;j++){
+				temp.set(j,String.valueOf(Tools.float2Format(0, 2)));
+			}
+			vector.set(i,temp);
+		}
+		
+		
 		String []dataParas = {date};
 		ResultSet rs= oc.query(projectSqlStr,dataParas);
 		try {
 			while(rs.next()){
-				ArrayList<String>temp = new ArrayList<String>();
+				
 				String xmmc = rs.getString("xmmc");
 				String sj = Tools.float2Format(rs.getFloat("sj"));
 				String ylj = Tools.float2Format(rs.getFloat("ylj"));
@@ -175,15 +190,21 @@ public class HoleGridServlet extends HttpServlet {
 				String ytb = Tools.float2Format(rs.getFloat("ytb"));
 				String ntb = Tools.float2Format(rs.getFloat("ntb"));
 
-				temp.add(xmmc);
-				temp.add(sj);
-				temp.add(ylj);
-				temp.add(nlj);
-				temp.add(ytb);
-				temp.add(ntb);
+
 				if(sequence.get(xmmc)!=null){
+					
 					int i = sequence.get(xmmc).intValue();
-					vector.set(i,temp);
+					for(int j=0;j<tableFirstColumn.size();j++){
+						if(tableFirstColumn.get(j).compareTo(xmmc)==0){
+							Vector<String>temp = vector.get(j);
+							temp.set(0,xmmc);
+							temp.set(1,sj);
+							temp.set(2,ylj);
+							temp.set(3,nlj);
+							temp.set(4,ytb);
+							temp.set(5,ntb);
+						}
+					}
 					//jsArray.add(i,value);
 				}
 			}
@@ -258,6 +279,14 @@ public class HoleGridServlet extends HttpServlet {
 	public void init() throws ServletException {
 		// Put your code here
 		//= {"全省发电","直调火电","直调水电","直调风电","直调核电","联络线净受"};
+
+		tableFirstColumn.add("全省发电");
+		tableFirstColumn.add("直调火电");
+		tableFirstColumn.add("直调水电");
+		tableFirstColumn.add("直调风电");
+		tableFirstColumn.add("直调核电");
+		tableFirstColumn.add("联络线净受电");
+		
 		sequence.put("全省发电", new Integer(0));
 		sequence.put("直调火电", new Integer(1));
 		sequence.put("直调水电", new Integer(2));

@@ -1,0 +1,19 @@
+    select a.sj,sum(a.yg) as yg,b.ssdcbm,b.ssdcmc,a.rq from info_data_jzyg a,base_jzbm b
+     where a.sj =
+        '09:50:00'
+          and a.rq='2014-12-29' and a.jzbm in 
+        ('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2') and 
+        a.jzbm = b.jzbm  group by b.ssdcmc,b.ssdcbm,a.sj,a.rq
+        
+        
+        
+(select max(sj) from info_data_jzyg where rq = '2014-12-29' 
+and jzbm in ('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2') and yg is not null )
+
+
+select max(rq) from info_data_jzyg where yg is not null and jzbm in ('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2')
+
+
+
+
+select * from info_data_jzyg where rq='2014-12-29' and jzbm in ('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2') and sj='09:50:00'
