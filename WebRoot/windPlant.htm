@@ -35,9 +35,184 @@
     //用来提示差额、超额
     var columnRangeDataFlag = new Array();
     
+$(function () {
 
+		
+		
+		optionContainer={
+			chart:{
+				spacingLeft:0,
+				renderTo: 'lineContainer1'
+			},
+			colors:['#ff0000','#00ff00','#0000ff'],
+			plotOptions:{
+				line:{
+					lineWidth:2,
+					pointStart:1
+				}
+			},
+			exporting:{
+				enabled:false
+			},
+			credits:{
+				enabled:'false',
+				text:''
+			},
+			labels:{
+			},
+            title: {
+                text: '风场A实时有功',
+//                  x: -20, //center 
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+//                  categories: ['1', '2', '3', '4', '5', '6',
+//                     '7', '8', '9', '10', '1', '12'], 
+            },
+            yAxis: {
+                title: {
+                    text: '有功 (兆瓦)',
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+					
+                }],
+				labels:{
+
+				}
+            },
+            tooltip: {
+//                 valueSuffix: '万千瓦时',
+//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
+//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
+				formatter:function(){
+					
+					var s = ''+this.series.name+':'+(timeStrArray[this.x*9])+'';
+					s += '<br/>'+this.y+'兆瓦';
+					return s;
+				}
+            },
+            legend: {
+//                  layout: 'vertical',
+//                 align: 'right',
+// 				verticalAlign:'top',
+// 				floating:'true',
+// 				y:50,
+//                 borderWidth: 0, 
+            },
+            series: [{
+                name: '实际',
+                data: [12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
+                		12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
+                		12.0, 12.9, 12.5, 14.5, 18.2]
+            }, {
+                name: '预测',
+                data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,
+                		17.0, 15.9, 15.5, 15.5, 15.2, 23.5, 22.2, 15.5, 13.3, 14.3, 17.9, 15.6,
+                		16.0, 12.9, 14.5, 13.5, 11.2]
+            }]
+        };//全网线图
+        
+        chart = new Highcharts.Chart(optionContainer);
+        
+    });	
   
-    
+  $(function () {
+
+		
+		
+		optionContainer={
+			chart:{
+				spacingLeft:0,
+				renderTo: 'lineContainer2'
+			},
+			colors:['#ff0000','#00ff00','#0000ff'],
+			plotOptions:{
+				line:{
+					lineWidth:2,
+					pointStart:1
+				}
+			},
+			exporting:{
+				enabled:false
+			},
+			credits:{
+				enabled:'false',
+				text:''
+			},
+			labels:{
+			},
+            title: {
+                text: '风场B实时有功',
+//                  x: -20, //center 
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+//                  categories: ['1', '2', '3', '4', '5', '6',
+//                     '7', '8', '9', '10', '1', '12'], 
+            },
+            yAxis: {
+                title: {
+                    text: '有功 (兆瓦)',
+                },
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+					
+                }],
+				labels:{
+
+				}
+            },
+            tooltip: {
+//                 valueSuffix: '万千瓦时',
+//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
+//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
+				formatter:function(){
+					
+					var s = ''+this.series.name+':'+(timeStrArray[this.x*9])+'';
+					s += '<br/>'+this.y+'兆瓦';
+					return s;
+				}
+            },
+            legend: {
+//                  layout: 'vertical',
+//                 align: 'right',
+// 				verticalAlign:'top',
+// 				floating:'true',
+// 				y:50,
+//                 borderWidth: 0, 
+            },
+            series: [{
+                name: '实际',
+                data: [12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
+                		12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
+                		12.0, 12.9, 12.5, 14.5, 18.2]
+            }, {
+                name: '预测',
+                data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,
+                		17.0, 15.9, 15.5, 15.5, 15.2, 23.5, 22.2, 15.5, 13.3, 14.3, 17.9, 15.6,
+                		16.0, 12.9, 14.5, 13.5, 11.2]
+            }]
+        };//全网线图
+        
+        chart = new Highcharts.Chart(optionContainer);
+        
+    });	
+  
+  
+  
+  
+//月度发电量  
 $(function () {
        columnOption ={
             chart: {
@@ -45,7 +220,7 @@ $(function () {
                 renderTo: 'columnContainer'
             },
             title: {
-                text: '相关电厂月度发电量'
+                text: '公司月度累计发电量'
             },
             subtitle: {
                 text: ''
@@ -81,34 +256,18 @@ $(function () {
                 formatter:function(){
 					var month = $("#appDate").val().substr(5,2);
 					var s = this.series.data[this.x].name+month+'月份';
-					s += '<br/>'+this.y+'兆瓦';
+					s += '<br/>'+this.y+'万千瓦时';
 					return s;
 				}
             },
             series: [{
                 name: 'Population',
-//                 data: [
-//                     ['Shanghai', 23.7],
-//                     ['Lagos', 16,1],
-//                     ['Instanbul', 14.2],
-//                     ['Karachi', 14.0],
-//                     ['Mumbai', 12.5],
-//                     ['Moscow', 12.1],
-//                     ['São Paulo', 11.8],
-//                     ['Beijing', 11.7],
-//                     ['Guangzhou', 11.1],
-//                     ['Delhi', 11.1],
-//                     ['Shenzhen', 10.5],
-//                     ['Seoul', 10.4],
-//                     ['Jakarta', 10.0],
-//                     ['Kinshasa', 9.3],
-//                     ['Tianjin', 9.3],
-//                     ['Tokyo', 9.0],
-//                     ['Cairo', 8.9],
-//                     ['Dhaka', 8.9],
-//                     ['Mexico City', 8.9],
-//                     ['Lima', 8.9]
-//                 ],
+                data: [
+                    ['风场A', 23.7],
+                    ['风场B', 16,1],
+                    ['风场C', 14.2],
+                    ['风场D', 14.0]
+                ],
                 dataLabels: {
                     enabled: true,
                     rotation: -90,
@@ -136,7 +295,7 @@ $(function () {
                 renderTo:'stackColumnContainer'
             },
             title: {
-                text: '相关电厂年累积发电量对标'
+                text: '公司年累积发电量'
             },
 			exporting:{
 				enabled:false
@@ -150,7 +309,7 @@ $(function () {
 			tooltip: {
 	    	},
             xAxis: {
-                categories: ['康平', '庄河', '营口', '铁岭', '清河','燕山湖'],
+                categories: ['风场A', '风场B', '风场C', '风场D'],
 				labels:{
 				}
             },
@@ -166,7 +325,7 @@ $(function () {
             	formatter:function(){
 					
 					var s = this.x+this.series.name+'份'+'<br/>';
-					s += this.y+'兆瓦';
+					s += this.y+'万千瓦时';
 					return s;
 				}
             },
@@ -177,45 +336,21 @@ $(function () {
                 series: {
                     stacking: 'normal'
                 }
+            },
+                series: [{
+                name: '1月',
+                data: [5, 3, 4, 7]
+            }, {
+                name: '2月',
+                data: [2, 2, 3, 2]
+            }, {
+                name: '3月',
+                data: [3, 4, 4, 2]
+            }, {
+                name: '4月',
+                data: [3, 4, 4, 2]
             }
-//                 series: [{
-//                 name: '1',
-//                 data: [5, 3, 4, 7, 2,7]
-//             }, {
-//                 name: '2',
-//                 data: [2, 2, 3, 2, 1, 3]
-//             }, {
-//                 name: '3',
-//                 data: [3, 4, 4, 2, 5, 2]
-//             }, {
-//                 name: '4',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '5',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '6',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '7',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '8',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '9',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '10',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '11',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }, {
-//                 name: '12',
-//                 data: [3, 4, 4, 2, 5, 4]
-//             }
-// 			]
+			]
         };
         
        chart = new Highcharts.Chart(stackColumnOption);
@@ -231,21 +366,11 @@ $(function () {
 	    chart: {
 	        type: 'columnrange',
 	        inverted: true,
-	        renderTo:'rangeContainer',
-// 	        events:{
-// 	        	click: function(e) {
-// 				console.log(
-// 					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', e.xAxis[0].value), 
-// 					e.yAxis[0].value,e.xAxis[0].value
-// 				);
-// 			}
-// 	        },
-// 	        zoomType:'xy'
-
+	        renderTo:'rangeContainer'
 	    },
 	    
 	    title: {
-	        text: '本厂发电量日历进度'
+	        text: '公司发电量日历进度'
 	    },
 	    exporting:{
 			enabled:false
@@ -264,7 +389,7 @@ $(function () {
 	    
 	    yAxis: {
 	        title: {
-	            text: '发电量(亿千瓦时)'
+	            text: '发电量(万千瓦时)'
 	        },
 			labels:{
 			}
@@ -295,8 +420,8 @@ $(function () {
 	        		}             
 	        	},
                 colorByPoint:true,//f15c80
-                colors:['#8085e9','#8085e9','#8085e9', '#8085e9',
-   '#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9']
+                colors:['#8085e9','#f15c80','#8085e9', '#8085e9',
+   '#8085e9','#f15c80','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9']
 	        } 
 	    },
 	    
@@ -308,18 +433,12 @@ $(function () {
 	    series: [{
 	        name: '发电量',
 	        data: [
-				[50, 110],
 				[200, 245],
 				[300, 313],
 				[380, 400],
-				[500, 501],
-				[600, 613],
-				[700, 765],
-				[800, 812],
-				[876, 900],
-				[1000, 1023],
-				[1100, 1134],
-				[1200, 1243]
+				[500, 550],
+				[600, 653],
+				[700, 790]
 			]
 	    }]
 	
@@ -327,110 +446,87 @@ $(function () {
     chart = new Highcharts.Chart(rangeOption);
 });	
 
-	var sss = 1;
-	setInterval(function(){
-		$.ajax({
-			url:"/pimsPhone/PlantServlet",
-			data:$.param({"realtime":true}),
-			type:"post",
-			beforeSend:function(){
-				ajaxbg.show(); 
-			}
+// 	var sss = 1;
+// 	setInterval(function(){
+// 		$.ajax({
+// 			url:"/pimsPhone/PlantServlet",
+// 			data:$.param({"realtime":true}),
+// 			type:"post",
+// 			beforeSend:function(){
+// 				ajaxbg.show(); 
+// 			}
 		
-		})
-		.done(function(data1,statusText){
+// 		})
+// 		.done(function(data1,statusText){
 		
-			ajaxbg.hide();
-			var dataReceived = $.evalJSON(data1);
-			realTimeData = dataReceived.realTimeData;
-			document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[0].data+sss;
-			document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[1].data+sss;
-			document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[2].data+sss;
-			document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[3].data+sss;
-			document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data+sss;
-			document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[5].data+sss;
-			sss++;
-		})
-		.fail(function(){
-			alert("服务器响应出错");
-		});
-	},60000);
+// 			ajaxbg.hide();
+// 			var dataReceived = $.evalJSON(data1);
+
+// 		})
+// 		.fail(function(){
+// 			alert("服务器响应出错");
+// 		});
+// 	},60000);
 
 submitRequest= function(){
 	var date = $("#appDate").val().trim();
 
 
 	//取历史数据,捎带把实时数据取回来
-	$.ajax({
-		url:"/pimsPhone/PlantServlet",
-		data:$.param({"date":date}),
-		type:"post",
-		beforeSend:function(){
-			ajaxbg.show(); 
-		}
+// 	$.ajax({
+// 		url:"/pimsPhone/PlantServlet",
+// 		data:$.param({"date":date}),
+// 		type:"post",
+// 		beforeSend:function(){
+// 			ajaxbg.show(); 
+// 		}
 	
-	})
-	.done(function(data1,statusText){
+// 	})
+// 	.done(function(data1,statusText){
 	
-		ajaxbg.hide();
-		var dataReceived = $.evalJSON(data1);
+// 		ajaxbg.hide();
+// 		var dataReceived = $.evalJSON(data1);
 		
 
 
-     	columnOption.series[0].data=dataReceived.columnData;
-     	chart = new Highcharts.Chart(columnOption);
+//      	columnOption.series[0].data=dataReceived.columnData;
+//      	chart = new Highcharts.Chart(columnOption);
      	
-     	stackColumnOption.xAxis.categories = dataReceived.seriesPlantName;
-     	stackColumnOption.series=dataReceived.yearAccumulatePlantPowerSeries;
-     	chart = new Highcharts.Chart(stackColumnOption);
+//      	stackColumnOption.xAxis.categories = dataReceived.seriesPlantName;
+//      	stackColumnOption.series=dataReceived.yearAccumulatePlantPowerSeries;
+//      	chart = new Highcharts.Chart(stackColumnOption);
      	
-     	var rangeData = dataReceived.plantProgressData;
-      	for(i=0;i<rangeData.length;i++){
-      		if(rangeData[i][0]>rangeData[i][1]){
-      			var temp = rangeData[i][0];
-      			rangeData[i][0] = rangeData[i][1];
-      			rangeData[i][1] = temp;
-      			rangeOption.plotOptions.columnrange.colors[i] = '#f15c80';
-      			columnRangeDataFlag[i] = 1;
-      		}
-      		else
-      			columnRangeDataFlag[i] = 0;
-      	}
-     	rangeOption.series[0].data = rangeData;
-     	var len = rangeData.length;
-     	var min = rangeData[0][0];
-     	var max = rangeData[len-1][1];
-     	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/12;
-     	rangeOption.yAxis.max = rangeOption.series[0].data[len-1][1]+(max-min)/10;
-     	chart = new Highcharts.Chart(rangeOption);
+//      	var rangeData = dataReceived.plantProgressData;
+//       	for(i=0;i<rangeData.length;i++){
+//       		if(rangeData[i][0]>rangeData[i][1]){
+//       			var temp = rangeData[i][0];
+//       			rangeData[i][0] = rangeData[i][1];
+//       			rangeData[i][1] = temp;
+//       			rangeOption.plotOptions.columnrange.colors[i] = '#f15c80';
+//       			columnRangeDataFlag[i] = 1;
+//       		}
+//       		else
+//       			columnRangeDataFlag[i] = 0;
+//       	}
+//      	rangeOption.series[0].data = rangeData;
+//      	var len = rangeData.length;
+//      	var min = rangeData[0][0];
+//      	var max = rangeData[len-1][1];
+//      	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/12;
+//      	rangeOption.yAxis.max = rangeOption.series[0].data[len-1][1]+(max-min)/10;
+//      	chart = new Highcharts.Chart(rangeOption);
      	
      	
-	})
-	.fail(function(){
-		alert("服务器响应出错");
-	});
+// 	})
+// 	.fail(function(){
+// 		alert("服务器响应出错");
+// 	});
 	
 // 	var i = 0;
 // 	setInterval(function(){
 // 		console.log("来了"+(i++));
 // 	},2000);
 	
-	
-	$(document).ready(function() {
-	
-		//$('#table_id1').DataTable();
-		if($("table").length > 0)
-		{
-			$("table").dataTable({
-				paging:false,
-				searching:false,
-				info:false,
-				ordering: false,
-			});
-		}
-	
-	
-	});
 };
 
 
@@ -456,7 +552,13 @@ submitRequest= function(){
 	</div>
 </div>
  
-
+<div style="text-align:center">
+<div id="lineContainer1" style="width: 95%;height: 400px;margin-left:auto;margin-right:auto"></div>
+</div>
+<hr>
+<div style="text-align:center">
+<div id="lineContainer2" style="width: 95%;height: 400px;margin-left:auto;margin-right:auto"></div>
+</div>
 <div id="columnContainer" style=" height: 350px;width:95%"></div>
 <hr>
 <div id="stackColumnContainer" style=" height: 400px;"></div>

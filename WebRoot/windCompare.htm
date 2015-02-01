@@ -1,0 +1,248 @@
+
+<!DOCTYPE HTML>
+<!-- <html manifest="generator.manifest">  -->
+<html>
+	<head>
+    	<meta name="viewport" content="width=device-width">
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>Highcharts Example</title>
+  		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>
+  		
+         <script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>    
+        <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+		<script type="text/javascript" src="./support/easyui/jquery.easyui.min.js"></script>  
+        
+		<script type="text/javascript" src="./support/datatable/media/js/jquery.dataTables.min.js"></script> 
+        <link rel="stylesheet" type="text/css" href="./support/datatable/media/css/jquery.dataTables.min.css"/>
+        <!--日期选择框-->
+		<script src="./support/datepicker/js/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
+        <script src="./support/datepicker/js/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
+        <link href="./support/datepicker/css/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
+        <link href="./support/datepicker/css/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" />
+        <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script>
+        <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
+        <script src="./support/datepicker/js/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
+        <link href="./support/datepicker/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />        
+		
+		
+		
+		
+		<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" />
+		<script src="./support/jquery.json.min.js" type="text/javascript"></script>
+		
+		<script type="text/javascript">
+			var g1Chart;
+			var g1Option;
+			var g2Chart;
+			var g2Option;
+			var ajaxbg;						
+			var columnOption = null;
+		
+		$(function () {
+       columnOption ={
+            chart: {
+                type: 'bar',
+                renderTo: 'columnContainer'
+            },
+            title: {
+                text: '风电公司日发电量对标'
+            },
+            subtitle: {
+                text: ''
+            },
+            exporting:{
+				enabled:false
+			},
+			credits:{
+				enabled:'false',
+				text:''
+			},
+            xAxis: {
+                type: 'category',
+                labels: {
+                    rotation: 0,
+                    style: {
+                        fontSize: '13px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: null
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            tooltip: {
+                //pointFormat: '月度发电量<b>{point.y:.1f} (万千瓦时)</b>',
+//                 formatter:function(){
+// 					var month = $("#appDate").val().substr(5,2);
+// 					var s = this.series.data[this.x].name+month+'月份';
+// 					s += '<br/>'+this.y+'万千瓦时';
+// 					return s;
+// 				}
+            },
+            series: [{
+                name: '发电量',
+                data: [
+                    ['龙源', 23.7],
+                    ['华能', 16,1],
+                    ['大唐国际', 14.2],
+                    ['和风', 14.0],
+                    ['大唐新能源', 12.5],
+                    ['华润新能源', 12.1],
+                    ['国电新能源', 11.8],
+                    ['辽能', 11.7],
+                    ['中电投', 11.1],
+                    ['中广核', 11.1],
+                    ['华能国际', 10.5],
+                    ['金山', 10.4],
+                    ['华能镇西堡', 10.0],
+                    ['三峡新能能源', 9.3],
+                    ['经开', 9.3],
+                    ['大连供电', 9.3],
+                    ['北京天润', 9.3]
+                ],
+                dataLabels: {
+                    enabled: true,
+                    rotation: 0,
+                    color: '#FFFFFF',
+                    align: 'right',
+                    x: 0,
+                    y: -5,
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'Verdana, sans-serif',
+                        textShadow: '0 0 3px black'
+                    }
+                }
+            }]
+        };
+        chart = new Highcharts.Chart(columnOption);
+    });
+		
+    
+    submitRequest = function()
+    {
+    	var date = $("#appDate").val().trim();
+    	var time_span = $("#menu_title").text().trim();
+//     	$.ajax({
+//     		url:"/pimsPhone/GeneratorServlet",
+//     		data:$.param({"date":date}),
+//     		type:"post",
+//     		beforeSend:function(){
+//     			ajaxbg.show(); 
+//     		}
+
+//     	})
+//     	.done(function(data,statusText){
+
+// 			ajaxbg.hide();
+//     		var dataReceived = $.evalJSON(data);
+    		
+//     		columnOption.series[0].data=dataReceived.monthLoadRate;
+//      		chart = new Highcharts.Chart(columnOption);
+
+//     		$("#average_power").text(dataReceived.average);
+//     		$("#energy").text(dataReceived.energy);
+//     		$("#timeUse").text(dataReceived.timeUse);
+//     		$("#volume").text(GENERATORVOLUME*2);
+    		
+//     		$("#g1Volume").text(GENERATORVOLUME);
+//     		$("#g1Energy").text(dataReceived.g1Energy);
+//     		$("#g1Average").text(dataReceived.g1Average);
+//     		$("#g1TimeUse").text(dataReceived.g1TimeUse);
+    		
+//     		$("#g2Volume").text(GENERATORVOLUME);
+//     		$("#g2Energy").text(dataReceived.g2Energy);
+//     		$("#g2Average").text(dataReceived.g2Average);
+//     		$("#g2TimeUse").text(dataReceived.g2TimeUse);
+    		
+//     		g1Option.series[0].data[0] = parseFloat((dataReceived.g1Average/GENERATORVOLUME*100).toFixed(2));
+//     		chart = new Highcharts.Chart(g1Option);
+    		
+//     		g2Option.series[0].data[0] = parseFloat((dataReceived.g2Average/GENERATORVOLUME*100).toFixed(2));
+//     		chart = new Highcharts.Chart(g2Option);
+//     	})
+//     	.fail(function(){
+//     		alert("服务器响应出错");
+//     	});
+    };
+
+
+	$(document).ready(function() {
+	
+		//$('#table_id1').DataTable();
+		if($("table").length > 0)
+		{
+			$("table").dataTable({
+				paging:false,
+				searching:false,
+				info:false,
+				ordering: false,
+			});
+		}
+	
+	
+	});
+	</script>
+	
+	<script type="text/javascript" src="./support/threeMainPage.js"></script>
+	</head>
+	<body>
+<script src="./support/highcharts/js/highcharts.js"></script>
+<script src="./support/highcharts/js/highcharts-more.js"></script>
+
+<script src="./support/highcharts/js/modules/solid-gauge.js"></script> 
+<script src="./support/ace/assets/js/spin.min.js"></script> 	
+
+
+
+<div id="background" class="background" style="display: none; min-height: 100%;_height:100%;"></div> 
+<div id="progressBar" class="progressBar" style="display: none;font-size: 12px;">数据加载中，请稍等...</div> 
+<!--时间选择器-->
+<div style="clear:both;height:10px"></div>
+	<div style="margin-left:20px;margin-right:20px">
+		<div style=";float:left">	
+	        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+	        <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
+	    </div>
+		<div style="float:right;">
+			<button id="submitRequest" class="btn btn-primary" 
+				style="margin:5px 0;height:30px;width:50px"
+				 onclick="submitRequest()">查询
+			</button>
+		</div>
+	</div>
+<div style="clear:both;height:20px"></div>
+
+
+<div id="columnContainer" style=" height: 600px;width:95%"></div>
+	<div style="clear:both;height:20px"></div>
+
+        <div id="content_my" style="clear:both"></div>
+ <hr>   
+<div style="">
+	<label for="name" style="float:left;margin-right:20px">地区列表</label>    
+	<select class="form-control" style="float:left;width:100px">
+	   <option>沈阳</option>
+	   <option>大连</option>
+	   <option>鞍山</option>
+	   <option>抚顺</option>
+	   <option>本溪</option>
+	   <option>丹东</option>
+	   <option>锦州</option>
+	   <option>营口</option>
+	   <option>阜新</option>
+	   <option>辽阳</option>
+	   <option>盘锦</option>
+	   <option>铁岭</option>
+	   <option>朝阳</option>
+	   <option>葫芦岛</option>
+	</select>
+</div>
+	</body>
+</html>

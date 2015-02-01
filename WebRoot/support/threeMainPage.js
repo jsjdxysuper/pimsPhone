@@ -51,6 +51,7 @@ $(function () {
 setDate=function () {
 	
 	var now = new Date();
+	now.setTime(now.getTime()-24*60*60*1000);
 	var year = now.getYear();
 	var month = now.getMonth()+1;
 	var day = now.getDate();
