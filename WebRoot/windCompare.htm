@@ -188,6 +188,121 @@
 	
 	
 	});
+	
+	
+	
+	$(function () {
+
+            var brands = {},
+                brandsData = [],
+                versions = {},
+                drilldownSeries = [];
+
+				brandsData = [
+				{drilldown:"沈阳",name:"沈阳",y:32},
+				{drilldown:"大连",name:"沈阳",y:22},
+				{drilldown:"朝阳",name:"朝阳",y:18},
+				{drilldown:"阜新",name:"阜新",y:26}
+				];
+				drilldownSeries =[
+				{
+					id:"沈阳",
+					name:"沈阳",
+					data:[["龙源望海寺",10],["龙源富饶山",10],["龙源和平",12]]
+				},
+				{	id:"大连",
+					name:"大连",
+					data:[["大连横山",8],["大连长海",9],["大连东岗",5]]},
+				{	id:"朝阳",
+					name:"朝阳",
+					data:[["华润建平龙岗",5],["华润北票向阳",7],["大唐双庙",6]]},
+				{	id:"阜新",
+					name:"阜新",
+					data:[["彰北风",5],["高山子",7],["阜新大唐",6],["石金皋",8]]}
+				
+				];
+				
+
+            // Create the chart
+            $('#areaContainer').highcharts({
+                chart: {
+                    type: 'bar',
+                    events:{
+                    	drilldown:function(e){
+//                     		this.setTitle(null,{
+//                     			text:"退回去"
+//                     		});                   		 
+                    	}
+                    }
+                },
+                title: {
+                    text: '风电场地区发电量对标'
+                },
+                subtitle: {
+//                     text: 'Click the columns to view versions. Source: netmarketshare.com.'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: '发电量(万千瓦时)'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}'
+                        }
+                    }
+                },
+
+//                 tooltip: {
+//                     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+//                     pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+//                 }, 
+
+                series: [{
+                    name: 'Area',
+                    colorByPoint: true,
+                    data: brandsData
+                }],
+                drilldown: {
+                    series: drilldownSeries,
+                    drillUpButton:{
+                    	position:{
+                    		x:-30,
+                    		y:0
+                    	}
+//                     	,
+//                     	text:"sdf",
+//                     	theme:{
+//                     		text:"huiqu",
+//                     		fill: 'white',
+// 		                    'stroke-width': 1,
+// 		                    stroke: 'silver',
+// 		                    r: 0,
+// 		                    states: {
+// 		                        hover: {
+// 		                            fill: '#bada55',
+// 		                            text:"huiqu"
+// 		                        },
+// 		                        select: {
+// 		                            stroke: '#039',
+// 		                            fill: '#bada55',
+// 		                            text:"huiqu"
+// 		                        }
+// 		                    }
+//                     	}
+                    }
+                }
+            });
+    });
 	</script>
 	
 	<script type="text/javascript" src="./support/threeMainPage.js"></script>
@@ -196,8 +311,8 @@
 <script src="./support/highcharts/js/highcharts.js"></script>
 <script src="./support/highcharts/js/highcharts-more.js"></script>
 
-<script src="./support/highcharts/js/modules/solid-gauge.js"></script> 
-<script src="./support/ace/assets/js/spin.min.js"></script> 	
+<script src="./support/highcharts/js/modules/data.js"></script>
+<script src="./support/highcharts/js/modules/drilldown.js"></script>
 
 
 
@@ -225,24 +340,26 @@
 
         <div id="content_my" style="clear:both"></div>
  <hr>   
-<div style="">
-	<label for="name" style="float:left;margin-right:20px">地区列表</label>    
-	<select class="form-control" style="float:left;width:100px">
-	   <option>沈阳</option>
-	   <option>大连</option>
-	   <option>鞍山</option>
-	   <option>抚顺</option>
-	   <option>本溪</option>
-	   <option>丹东</option>
-	   <option>锦州</option>
-	   <option>营口</option>
-	   <option>阜新</option>
-	   <option>辽阳</option>
-	   <option>盘锦</option>
-	   <option>铁岭</option>
-	   <option>朝阳</option>
-	   <option>葫芦岛</option>
-	</select>
-</div>
+<!-- <div style=""> -->
+<!-- 	<label for="name" style="float:left;margin-right:20px">地区列表</label>     -->
+<!-- 	<select class="form-control" style="float:left;width:100px"> -->
+<!-- 	   <option>沈阳</option> -->
+<!-- 	   <option>大连</option> -->
+<!-- 	   <option>鞍山</option> -->
+<!-- 	   <option>抚顺</option> -->
+<!-- 	   <option>本溪</option> -->
+<!-- 	   <option>丹东</option> -->
+<!-- 	   <option>锦州</option> -->
+<!-- 	   <option>营口</option> -->
+<!-- 	   <option>阜新</option> -->
+<!-- 	   <option>辽阳</option> -->
+<!-- 	   <option>盘锦</option> -->
+<!-- 	   <option>铁岭</option> -->
+<!-- 	   <option>朝阳</option> -->
+<!-- 	   <option>葫芦岛</option> -->
+<!-- 	</select> -->
+<!-- </div> -->
+
+<div id="areaContainer" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 	</body>
 </html>

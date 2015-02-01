@@ -1,0 +1,153 @@
+
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Highcharts Example</title>
+
+		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>   
+		<style type="text/css">
+${demo.css}
+		</style>
+		<script type="text/javascript">
+$(function () {
+
+            var brands = {},
+                brandsData = [],
+                versions = {},
+                drilldownSeries = [];
+
+				brandsData = [
+				{drilldown:"沈阳",name:"沈阳",y:32},
+				{drilldown:"大连",name:"沈阳",y:22},
+				{drilldown:"朝阳",name:"朝阳",y:18},
+				{drilldown:"阜新",name:"阜新",y:26}
+				];
+				drilldownSeries =[
+				{
+					id:"沈阳",
+					name:"沈阳",
+					data:[["龙源望海寺",10],["龙源富饶山",10],["龙源和平",12]]
+				},
+				{	id:"大连",
+					name:"大连",
+					data:[["大连横山",8],["大连长海",9],["大连东岗",5]]},
+				{	id:"朝阳",
+					name:"朝阳",
+					data:[["华润建平龙岗",5],["华润北票向阳",7],["大唐双庙",6]]},
+				{	id:"阜新",
+					name:"阜新",
+					data:[["彰北风",5],["高山子",7],["阜新大唐",6],["石金皋",8]]}
+				
+				];
+				
+
+            // Create the chart
+            $('#container').highcharts({
+                chart: {
+                    type: 'bar',
+                    events:{
+                    	drilldown:function(e){
+//                     		this.setTitle(null,{
+//                     			text:"退回去"
+//                     		});                   		 
+                    	}
+                    }
+                },
+                title: {
+                    text: 'Browser market shares. November, 2013'
+                },
+                subtitle: {
+//                     text: 'Click the columns to view versions. Source: netmarketshare.com.'
+                },
+                xAxis: {
+                    type: 'category'
+                },
+                yAxis: {
+                    title: {
+                        text: 'Total percent market share'
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f}'
+                        }
+                    }
+                },
+
+//                 tooltip: {
+//                     headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+//                     pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+//                 }, 
+
+                series: [{
+                    name: 'Brands',
+                    colorByPoint: true,
+                    data: brandsData
+                }],
+                drilldown: {
+                    series: drilldownSeries,
+                    drillUpButton:{
+                    	position:{
+                    		x:-30,
+                    		y:0
+                    	}
+//                     	,
+//                     	text:"sdf",
+//                     	theme:{
+//                     		text:"huiqu",
+//                     		fill: 'white',
+// 		                    'stroke-width': 1,
+// 		                    stroke: 'silver',
+// 		                    r: 0,
+// 		                    states: {
+// 		                        hover: {
+// 		                            fill: '#bada55',
+// 		                            text:"huiqu"
+// 		                        },
+// 		                        select: {
+// 		                            stroke: '#039',
+// 		                            fill: '#bada55',
+// 		                            text:"huiqu"
+// 		                        }
+// 		                    }
+//                     	}
+                    }
+                }
+            });
+    });
+    
+
+		</script>
+	</head>
+	<body>
+<script src="./support/highcharts/js/highcharts.js"></script>
+<script src="./support/highcharts/js/modules/data.js"></script>
+<script src="./support/highcharts/js/modules/drilldown.js"></script>
+
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<!-- Data from www.netmarketshare.com. Select Browsers => Desktop share by version. Download as tsv. -->
+<pre id="tsv" style="display:none">Browser Version	Total Market Share
+沈阳 龙源望海寺	26.61%
+沈阳 龙源富饶山	16.96%
+沈阳 龙源和平	8.01%
+沈阳 龙源龙康	7.73%
+大连 大连华能赵屯	3.55%
+大连 大连横山	3.53%
+大连 大连长海	2.16%
+大连 大连东岗	1.87%
+朝阳 朝阳龙源梨树沟	1.13%
+朝阳 朝阳龙源桃花山	0.90%
+朝阳 朝阳大唐中三家子	0.85%
+
+</pre>
+
+	</body>
+</html>
