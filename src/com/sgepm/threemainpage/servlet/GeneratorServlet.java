@@ -110,6 +110,8 @@ public class GeneratorServlet extends HttpServlet {
 	 */
 	public JSONObject getEachGenerator(){
 		
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		JSONObject eachGeneratorData = new JSONObject();
 
@@ -124,6 +126,7 @@ public class GeneratorServlet extends HttpServlet {
 		String generatorSqlStr="select t.jzbm,t.jzmc,t.rdl from info_dmis_zdhcjz t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm= ? and t.rq= ? order by jzbm,rq";
 
 		String []dataParas={dcbm,date};
+		log.debug("sql查询:"+generatorSqlStr+"\n参数:"+dcbm+","+date);
 
 		ResultSet rs = oc.query(generatorSqlStr,dataParas);
 
@@ -149,17 +152,17 @@ public class GeneratorServlet extends HttpServlet {
 		
 		float energy  = g1Energy+g2Energy;
 		float average = (energy)*10/24;
-		float timeUse = energy*24/(Tools.rongLiang*2);
+		float timeUse = energy*10/(Tools.rongLiang*2);
 		eachGeneratorData.put("energy", Tools.float2Format(energy, 2));
 		eachGeneratorData.put("average", Tools.float2Format(average, 2));
 		eachGeneratorData.put("timeUse", Tools.float2Format(timeUse, 2));
 		
 		
 		g1Average = g1Energy*10/24;
-		g1TimeUse = g1Energy*24/Tools.rongLiang;
+		g1TimeUse = g1Energy*10/Tools.rongLiang;
 		
 		g2Average = g2Energy*10/24;
-		g2TimeUse = g2Energy*24/Tools.rongLiang;
+		g2TimeUse = g2Energy*10/Tools.rongLiang;
 
 		eachGeneratorData.put("g1Average",Tools.float2Format(g1Average,2));
 		eachGeneratorData.put("g1Energy",Tools.float2Format(g1Energy,2));
@@ -175,72 +178,76 @@ public class GeneratorServlet extends HttpServlet {
 	
 	
 	public JSONObject getMonthLoadRate(){
+		
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		int dayDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.白"));
 		int foreNightDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.前"));
 		int laterNightDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.后"));
 		OracleConnection oc = new OracleConnection();
-//		select sum(decode(wz1,'白','9','前','8','后','7','0')) wz1,
-//		sum(decode(wz2,'白','9','前','8','后','7','0')) wz2,
-//		sum(decode(wz3,'白','9','前','8','后','7','0')) wz3,
-//		sum(decode(wz4,'白','9','前','8','后','7','0')) wz4,
-//		sum(decode(wz5,'白','9','前','8','后','7','0')) wz5 from pri_zbb t where rq like '2015-01-%%'
-//		select wz,(sum(dl1)+sum(dl2)) dl from pri_dljh t where rq like '2015-01-%%' group by wz
+//		select sum(decode(t.bc,'1','9','2','8','3','7','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from
+//		pri_zbb1 t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like '2015-01-%%'
+//		group by t.wz 
 		Vector<Integer> eachDutyHours = new Vector<Integer>();
+		Vector<Float> g1Energy = new Vector<Float>();
+		Vector<Float> g2Energy = new Vector<Float>();
 		eachDutyHours.setSize(5);
-		for(int i=0;i<eachDutyHours.size();i++)
+		g1Energy.setSize(5);
+		g2Energy.setSize(5);
+		for(int i=0;i<eachDutyHours.size();i++){
 			eachDutyHours.set(i, new Integer(0));
-		String hoursSql = 		"select sum(decode(wz1,'白','9','前','8','后','7','0')) wz1, "+
-				"sum(decode(wz2,'白','9','前','8','后','7','0')) wz2, "+
-				"sum(decode(wz3,'白','9','前','8','后','7','0')) wz3, "+
-				"sum(decode(wz4,'白','9','前','8','后','7','0')) wz4, "+
-				"sum(decode(wz5,'白','9','前','8','后','7','0')) wz5 from pri_zbb t where rq like ? ";
+			g1Energy.set(i,new Float(0));
+			g2Energy.set(i,new Float(0));
+		}
+		String hoursSql = 				"select sum(decode(t.bc,'1','9','2','8','3','7','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from "+
+				"pri_zbb1 t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like ? "+
+				"group by t.wz";
 		
 		String dateMonthWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		String []params = {dateMonthWildcard};
+		log.debug("sql查询："+hoursSql+"\n参数："+dateMonthWildcard);
 		ResultSet rs = oc.query(hoursSql,params);
 		
 		try {
 			while(rs.next()){
-				int wz1 = rs.getInt("wz1");
-				int wz2 = rs.getInt("wz2");
-				int wz3 = rs.getInt("wz3");
-				int wz4 = rs.getInt("wz4");
-				int wz5 = rs.getInt("wz5");
-				eachDutyHours.set(0, wz1);
-				eachDutyHours.set(1, wz2);
-				eachDutyHours.set(2, wz3);
-				eachDutyHours.set(3, wz4);
-				eachDutyHours.set(4, wz5);
+				int wz = rs.getInt("wz");
+				int sj = rs.getInt("sj");
+				float dl1 = rs.getFloat("dl1");
+				float dl2 = rs.getFloat("dl2");
+				eachDutyHours.set(wz-1, sj);
+
+				g1Energy.set(wz-1, dl1);
+				g2Energy.set(wz-1, dl1);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Vector<Float> eachDutyEnergy = new Vector<Float>();
-		eachDutyEnergy.setSize(5);
-		for(int i=0;i<eachDutyEnergy.size();i++)
-			eachDutyEnergy.set(i, new Float(0));
-		String energySql = "select wz,(sum(dl1)+sum(dl2)) as dl from pri_dljh t where rq like ? group by wz";
-		rs = oc.query(energySql,params);
-		try {
-			while(rs.next()){
-				eachDutyEnergy.set(rs.getInt("wz")-1, rs.getFloat("dl"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		
 		Vector<PlantMonthPowerOrRealTimeData> loadRate = new Vector<PlantMonthPowerOrRealTimeData>();
 		loadRate.setSize(5);
 		for(int i=0;i<eachDutyHours.size();i++){
 			float temp =0;
-			if(eachDutyHours.get(i).compareTo(new Integer(0))!=0)
-				temp = eachDutyEnergy.get(i)/(eachDutyHours.get(i)*Tools.rongLiang/10*2);
-
 			PlantMonthPowerOrRealTimeData object = new PlantMonthPowerOrRealTimeData();
-			object.setName((i+1)+"值");
-			object.setData(Tools.float2Format(temp*100, 2));
+			if(Math.abs(g1Energy.get(i)-0)<Tools.FLOAT_MIN&&Math.abs(g2Energy.get(i)-0)<Tools.FLOAT_MIN)
+			{
+				Float va = new Float(0);
+				object.setData(Tools.float2Format(va*100, 2));
+				object.setName((i+1)+"");
+			}
+			else if(Math.abs(g1Energy.get(i)-0)<Tools.FLOAT_MIN||Math.abs(g2Energy.get(i)-0)<Tools.FLOAT_MIN)
+			{
+				Float va = (g1Energy.get(i)+g2Energy.get(i))/(Tools.rongLiang/10*eachDutyHours.get(i));
+				object.setData(Tools.float2Format(va*100, 2));
+				object.setName((i+1)+"");
+			}else
+			{
+				Float va = (g1Energy.get(i)+g2Energy.get(i))/(Tools.rongLiang*2/10*eachDutyHours.get(i));
+				object.setData(Tools.float2Format(va*100, 2));
+				object.setName((i+1)+"");
+			}
+				
 			
 			loadRate.set(i,object);
 		}
@@ -252,7 +259,7 @@ public class GeneratorServlet extends HttpServlet {
 			ja.add(temp);
 		}
 		
-		
+		oc.closeAll();
 		JSONObject jo = new JSONObject();
 		jo.put("monthLoadRate", ja);
 		return jo;

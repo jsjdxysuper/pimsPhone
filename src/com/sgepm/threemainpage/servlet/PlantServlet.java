@@ -105,6 +105,8 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public JSONArray getOneMonthPowerData() {
 		
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		String plantListStr[];//柱图所要显示的电厂列表
 		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
@@ -149,6 +151,7 @@ public class PlantServlet extends HttpServlet {
 		String sql = "select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
 						+inString+" )"+
 						" and rq like ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
+		log.debug("sql查询:"+sql+"\n参数："+dateWildcard);
 		ResultSet rs=  oc.query(sql,params);
 
 		try {
@@ -191,6 +194,9 @@ public class PlantServlet extends HttpServlet {
 //		select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in (
 //				'sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2')
 //				and rq <= '2014-10-11' and rq >= '2014-01-01' and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc
+		
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		//分段柱图所要显示的电厂列表
 		int numPlant = 0;
@@ -239,7 +245,7 @@ public class PlantServlet extends HttpServlet {
 		String sql = "select substr(t.rq,0,7) as yf,sum(t.rdl) as ydl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
 						+inString+" )"+
 						" and rq >= ? and rq <= ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
-		log.debug(sql);
+		log.debug("sql查询:"+sql+"\n参数："+startDate+","+date);
 		ResultSet rs=  oc.query(sql,params);
 		
 		try {
@@ -281,6 +287,8 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public JSONObject getProgressData(){
 		
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		//select substr(rq,0,7),sum(rdl) from info_dmis_zdhcdc t where dcbm='sykpp' and rq>='2014-01-01' and rq <='2014-03-12' group by substr(rq,0,7)
 		//select t.*, t.rowid from info_sdlr_njh t
@@ -292,6 +300,7 @@ public class PlantServlet extends HttpServlet {
 		
 		String sqlGetYearPlan = "select t.nf,t.njh  from info_sdlr_dcnjh t where t.dcbm = ? and t.nf = ?";
 		String params1[] = {jzbm,date.substring(0,4)};
+		log.debug("sql查询:"+sqlGetYearPlan+"\n参数："+jzbm+","+date.substring(0,4));
 		ResultSet rs=  oc.query(sqlGetYearPlan,params1);
 		try {
 			while(rs.next())
@@ -314,6 +323,7 @@ public class PlantServlet extends HttpServlet {
 		String sqlGetMonthPower = "select substr(rq,0,7) as yf,sum(rdl) as ylj from info_dmis_zdhcdc t "+
 				"where dcbm='sykpp' and rq >= ? and rq <= ? group by substr(rq,0,7) order by yf";
 		String params2[] = {startDate,date};
+		log.debug("sql查询:"+sqlGetMonthPower+"\n参数："+startDate+","+date);
 		rs=  oc.query(sqlGetMonthPower,params2);
 		try {
 			while(rs.next()){
@@ -353,6 +363,8 @@ public class PlantServlet extends HttpServlet {
 //				select max(t.sj) as sj from info_data_jzyg t where rq = '2014-12-20' and t.jzbm in ('sykppg1') group by jzbm) and a.rq='2014-12-20' and a.jzbm in 
 //				('sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2') and 
 //				a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		String today = Tools.getTodayStr();
 		String realtimeTime    = "";
 		Vector<PlantMonthPowerOrRealTimeData> plantVectorData = new Vector<PlantMonthPowerOrRealTimeData>();
@@ -389,6 +401,7 @@ public class PlantServlet extends HttpServlet {
 			"a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj,a.rq";
 		
 		String params[] = {today,today};
+		log.debug("sql查询:"+sql+"\n参数："+today+","+today);
 		ResultSet rs =  oc.query(sql,null);
 
 		try {
@@ -462,6 +475,7 @@ public class PlantServlet extends HttpServlet {
 		OracleConnection oc = new OracleConnection();
 		//建立机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
 		String sqlGenerator2Plant = "select jzbm,ssdcmc from base_jzbm t";
+		log.debug("sql查询:"+sqlGenerator2Plant+"\n");
 		ResultSet rs= oc.query(sqlGenerator2Plant,null);		
 		try {
 			while(rs.next()){

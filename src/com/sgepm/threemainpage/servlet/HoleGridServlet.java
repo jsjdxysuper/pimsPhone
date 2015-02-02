@@ -79,10 +79,17 @@ public class HoleGridServlet extends HttpServlet {
 	 */
 	public JSONObject getHoleGridLineData(){
 		
-		
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		JSONObject jo = new JSONObject();
 		
+		Vector<ArrayList<String>> allDate = new Vector<ArrayList<String>>();
+		allDate.setSize(3);
+		for(int i=0;i<allDate.size();i++){
+			ArrayList<String> temp = new ArrayList<String>();
+			allDate.set(i, temp);
+		}
 		//获得上个月的全省发电量数据
 		ArrayList<Float> lastMonthAL = new ArrayList<Float>();
 		String projectSqlStr="select rq,sj from info_dmis_fdqk t where xmmc='全省发电' and rq like ? order by rq";
@@ -92,16 +99,21 @@ public class HoleGridServlet extends HttpServlet {
 		} catch (java.lang.IllegalArgumentException e1) {
 			// TODO Auto-generated catch block
 			log.warn("日期输入参数为空");
+			oc.closeAll();
 			return null;
 		}
 		Date lastMonthDate = Tools.getLastMonthDay(nowDate);
 		String lastMonthDateStr = Tools.formatDate(lastMonthDate);
 		String lastMonthDateWildStr = Tools.change2WildcardDate(lastMonthDateStr, Tools.time_span[2]);
 		String []dataParas = {lastMonthDateWildStr};
-		ResultSet rs= oc.query(projectSqlStr,dataParas);
 		log.debug("查询上个月的全省发电信息,日期:"+lastMonthDateWildStr);
+		log.debug("sql查询:"+projectSqlStr+"\n参数："+lastMonthDateWildStr);
+		ResultSet rs= oc.query(projectSqlStr,dataParas);
+
+		
 		try {
 			while(rs.next()){
+				allDate.get(1).add(rs.getString("rq"));
 				lastMonthAL.add(rs.getFloat("sj"));
 			}
 		} catch (SQLException e) {
@@ -115,8 +127,10 @@ public class HoleGridServlet extends HttpServlet {
 		dataParas[0] = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		rs = oc.query(projectSqlStr, dataParas);
 		log.debug("查询本月的全省发电信息,日期:"+dataParas[0]);
+		log.debug("sql查询:"+projectSqlStr+"\n参数："+dataParas[0]);
 		try {
 			while(rs.next()){
+				allDate.get(2).add(rs.getString("rq"));
 				thisMonthAl.add(rs.getFloat("sj"));
 			}
 		} catch (SQLException e) {
@@ -134,8 +148,10 @@ public class HoleGridServlet extends HttpServlet {
 		dataParas[0] = lastYearDateWildStr;
 		rs = oc.query(projectSqlStr, dataParas);
 		log.debug("查询去年同期的全省发电信息,日期:"+lastYearDateWildStr);
+		log.debug("sql查询:"+projectSqlStr+"\n参数："+dataParas[0]);
 		try {
 			while(rs.next()){
+				allDate.get(0).add(rs.getString("rq"));
 				lastYearAl.add(rs.getFloat("sj"));
 			}
 		} catch (SQLException e) {
@@ -144,6 +160,9 @@ public class HoleGridServlet extends HttpServlet {
 		}
 		jo.put("lastYear",lastYearAl);
 		
+		jo.put("lastYearDate", allDate.get(0));
+		jo.put("lastMonthDate", allDate.get(1));
+		jo.put("thisMonthDate", allDate.get(2));
 		oc.closeAll();
 		return jo;
 	}
@@ -159,6 +178,8 @@ public class HoleGridServlet extends HttpServlet {
 	 * ["联络线净受电","16893.00","20.66","559.10","-4.19","-7.17"]]
 	 */
 	public JSONObject getHoleGridTableData(){
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		String projectSqlStr="select xmmc,sj,ylj,nlj,ytb,ntb from info_dmis_fdqk t where rq like ? order by xmmc desc";
 		HashMap<String,JSONArray> projectData = new HashMap<String,JSONArray>();
@@ -179,6 +200,7 @@ public class HoleGridServlet extends HttpServlet {
 		
 		
 		String []dataParas = {date};
+		log.debug("sql查询:"+projectSqlStr+"\n参数："+dataParas[0]);
 		ResultSet rs= oc.query(projectSqlStr,dataParas);
 		try {
 			while(rs.next()){

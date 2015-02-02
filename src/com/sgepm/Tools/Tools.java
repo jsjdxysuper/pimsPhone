@@ -266,12 +266,10 @@ public class Tools {
 	
 	public static void main(String[] args) {
 
-//		Logger log = LoggerFactory.getLogger(Tools.class);
-//		Date dt = new Date();
-//		SimpleDateFormat matter = new SimpleDateFormat("yyyy-MM-dd");
-//
-//		System.out.println(matter.format(dt));
-//		log.debug(matter.format(dt));
+		String mathod = Thread.currentThread().getStackTrace()[1].getMethodName();
+		String className = Thread.currentThread().getStackTrace()[1].getClassName();
+		System.out.println(mathod);
+		System.out.println(className);
 	}
 	
 	

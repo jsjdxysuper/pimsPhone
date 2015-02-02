@@ -30,6 +30,9 @@
 				<script type="text/javascript" src="./support/threeMainPage.js"></script>
 		<script type="text/javascript">
 		var optionContainer =null;
+		var thisMonthDate = null;
+		var lastYearDate = null;
+		var lastMonthDate = null;
 		var tableColumnName = ["全省发电","直调火电","直调水电","直调风电","直调核电","联络线净受"];
 		
 		
@@ -90,8 +93,15 @@ $(function () {
 //                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
 //                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
 				formatter:function(){
+					var temp = null;
+					if(this.series.name=="同期")
+						temp = lastYearDate;
+					else if(this.series.name=="上月")
+						temp = lastMonthDate;
+					else if(this.series.name=="本月")
+						temp = thisMonthDate;
 					
-					var s = ''+this.series.name+':'+(this.x)+"日"+'';
+					var s = (temp[this.x-1])+'';
 					s += '<br/>'+this.y+'万千瓦时';
 					return s;
 				}
@@ -146,6 +156,10 @@ $(function () {
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来
 			      	//alert(json.line1);
 			      	//$("#loading").html(json.line1);
+			      	thisMonthDate = json.thisMonthDate;
+					lastYearDate = json.lastYearDate;
+					lastMonthDate = json.lastMonthDate;
+			      	
 			      	optionContainer.series=[
 			      	{
 			      		name: '同期',
