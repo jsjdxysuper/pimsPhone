@@ -81,7 +81,7 @@ $(function () {
                 formatter:function(){
 					var month = $("#appDate").val().substr(5,2);
 					var s = this.series.data[this.x].name+month+'月份';
-					s += '<br/>'+this.y+'兆瓦';
+					s += '<br/>'+this.y+'万千瓦时';
 					return s;
 				}
             },
@@ -166,7 +166,7 @@ $(function () {
             	formatter:function(){
 					
 					var s = this.x+this.series.name+'份'+'<br/>';
-					s += this.y+'兆瓦';
+					s += this.y+'万千瓦时';
 					return s;
 				}
             },
@@ -352,7 +352,7 @@ $(function () {
 			sss++;
 		})
 		.fail(function(){
-			alert("服务器响应出错");
+			alert("链接超时,请刷新");
 		});
 	},60000);
 
@@ -415,7 +415,7 @@ submitRequest= function(){
      	
 	})
 	.fail(function(){
-		alert("服务器响应出错");
+		alert("链接超时,请刷新");
 	});
 	
 // 	var i = 0;

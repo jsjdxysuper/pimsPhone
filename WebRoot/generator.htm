@@ -299,7 +299,7 @@
     		chart = new Highcharts.Chart(g2Option);
     	})
     	.fail(function(){
-    		alert("服务器响应出错");
+    		alert("链接超时,请刷新");
     	});
     };
 
@@ -359,7 +359,7 @@
 </div>
 
     <!--机组的统计信息(表格)-->
-<div style="margin:0">
+<div style="margin:0;width:100%">
 <table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
 	<thead>
 	    <tr>

@@ -26,10 +26,10 @@ public class OracleConnection {
 			URL = properties.getString("database.url");
 			USER = properties.getString("database.user");
 			PWD = properties.getString("database.pwd");
-			System.out.println("DRIVER:"+DRIVER);
-			System.out.println("URL:"+URL);
-			System.out.println("USER:"+USER);
-			System.out.println("PWD:"+PWD);
+//			System.out.println("DRIVER:"+DRIVER);
+//			System.out.println("URL:"+URL);
+//			System.out.println("USER:"+USER);
+//			System.out.println("PWD:"+PWD);
 			Class.forName(DRIVER);
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
