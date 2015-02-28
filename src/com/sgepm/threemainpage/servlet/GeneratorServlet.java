@@ -199,7 +199,7 @@ public class GeneratorServlet extends HttpServlet {
 			g1Energy.set(i,new Float(0));
 			g2Energy.set(i,new Float(0));
 		}
-		String hoursSql = 				"select sum(decode(t.bc,'1','9','2','8','3','7','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from "+
+		String hoursSql = 				"select sum(decode(t.bc,'1','7','2','8','3','9','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from "+
 				"pri_zbb1 t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like ? "+
 				"group by t.wz";
 		
