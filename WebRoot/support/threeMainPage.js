@@ -53,12 +53,12 @@ setDate=function () {
 	
 	var now = new Date();
 	now.setTime(now.getTime()-24*60*60*1000);
-	var year = now.getYear();
+	var year = now.getFullYear();
 	var month = now.getMonth()+1;
 	var day = now.getDate();
 	if(0 <month&&month < 10)  month = "0"+month;
 	if(0 < day&&day < 10)  day   = "0"+day;
-	var date_now =(year+1900)+'-'+month+'-'+day;
+	var date_now =(year)+'-'+month+'-'+day;
 	//alert(date_now);
 	document.getElementById("appDate").value=date_now;
 	//$("#background").css("height",document.body.scrollHeight+document.body.scrollTop);
