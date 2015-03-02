@@ -6,7 +6,45 @@
     	<meta name="viewport" content="width=device-width">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Highcharts Example</title>
-        <script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>        
+		
+<!-- 		<script type="text/javascript" -->
+<!--         src="./support/jscache/localStorage.min.js?swfURL=./support/jscache/localStorage.swf"> -->
+<!-- 		</script> -->
+<!-- 		<script type="text/javascript" src="./support/jscache/jsCache.js"></script>  -->
+		
+		
+		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>  
+		
+<!-- 		<script type="text/javascript"> -->
+		
+		
+<!-- 		jsCache.domReady(function () { -->
+<!-- 		jsCache.detect("if lt IE 9", function () { -->
+<!-- 		        // Include some IE 8 or lower specific code -->
+<!-- 		        alert("IE 8 or lower!"); -->
+<!-- 		    }).load( -->
+<!-- 		        // Load bootstrap CSS and CSS fixes for old IE versions -->
+<!-- 		        {url : "./support/jquery-1.11.2.min.js"}, -->
+<!-- 		        {url : "./support/bootstrap/js/bootstrap.min.js"}, -->
+<!-- 		        {url : "./support/bootstrap/css/bootstrap.min.css"} -->
+<!-- 		        // Load jQuery library -->
+<!-- 		    ).then(function () { -->
+<!-- 		        // Load image and append to element that is gotten by use of jQuery! -->
+<!-- // 		        jsCache.load( -->
+<!-- // 		            { -->
+<!-- // 		                url : "images/jsCache.png",  -->
+<!-- // 		                append : $("#logo")[0].firstChild, -->
+<!-- // 		                attr : { -->
+<!-- // 		                    clss : "img-responsive center-block",  -->
+<!-- // 		                    alt : "jsCache is the most awesome caching tool!",  -->
+<!-- // 		                    title : "jsCache is the most awesome caching tool!" -->
+<!-- // 		                } -->
+<!-- // 		            } -->
+<!-- // 		        ); -->
+<!-- 		    }); -->
+<!-- 		}); -->
+<!-- 		</script> -->
+              
         <script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>    
         <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" />	
 
@@ -29,13 +67,15 @@
             
 
 		<script type="text/javascript">
+
+		
     var columnOption = null;
     var rangeOption =null;
     var stackColumnOption = null;
     //用来提示差额、超额
     var columnRangeDataFlag = new Array();
     
-//是否缓存了
+
   
     
 $(function () {
@@ -334,13 +374,12 @@ $(function () {
 			data:$.param({"realtime":true}),
 			type:"post",
 			beforeSend:function(){
-				ajaxbg.show(); 
+
 			}
 		
 		})
 		.done(function(data1,statusText){
 		
-			ajaxbg.hide();
 			var dataReceived = $.evalJSON(data1);
 			realTimeData = dataReceived.realTimeData;
 			document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[0].data+sss;
@@ -366,13 +405,12 @@ submitRequest= function(){
 		data:$.param({"date":date}),
 		type:"post",
 		beforeSend:function(){
-			ajaxbg.show(); 
 		}
 	
 	})
 	.done(function(data1,statusText){
 	
-		ajaxbg.hide();
+
 		var dataReceived = $.evalJSON(data1);
 		
 		realTimeData = dataReceived.realTimeData;
