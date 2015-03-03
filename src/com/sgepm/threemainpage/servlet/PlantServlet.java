@@ -371,6 +371,8 @@ public class PlantServlet extends HttpServlet {
 		String plantListStr[];//所要显示的电厂列表
 		String plantsStr = properties.getString("pims.plant.graph1.plants");
 		plantListStr = plantsStr.split(",");
+		
+		
 		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
 		ArrayList<String> generatorList        = new ArrayList<String>();
 		//获得每个电厂所配置的机组列表		
@@ -394,32 +396,24 @@ public class PlantServlet extends HttpServlet {
 		    inString+="'"+generatorList.get(i)+"'";
 		}
 		OracleConnection oc = new OracleConnection();
-		String sql = "select a.sj,sum(a.yg) as yg,b.ssdcbm,b.ssdcmc,a.rq from info_data_jzyg a,base_jzbm b where a.sj =( "+
-			"select max(t.sj) as sj from info_data_jzyg t where rq = (select max(rq) from info_data_jzyg) "+
-				"and t.jzbm in ('sykppg1') group by jzbm) and a.rq=(select max(rq) from info_data_jzyg) and a.jzbm in "+
-			"("+inString+") and "+
-			"a.jzbm = b.jzbm group by b.ssdcmc,b.ssdcbm,a.sj,a.rq";
+		String sql = "select t.C1,t.C2,t.C3,t.C4 from latest_date_power t where t.C2 in (select max(C2) from latest_date_power) order by t.C3";
 		
 		String params[] = {today,today};
 		log.debug("sql查询:"+sql+"\n参数："+today+","+today);
 		ResultSet rs =  oc.query(sql,null);
 
+		int i = 0;
 		try {
 			while(rs.next()){
-				String sj     = rs.getString("sj");
-				float  yg     = rs.getFloat("yg");
-				String ssdcmc = rs.getString("ssdcmc");
-				String ssdcbm = rs.getString("ssdcbm");
-				String rq     = rs.getString("rq");
+				String rq     = rs.getString("C1");
+				String sj     = rs.getString("C2");
+				String ssdcmc = rs.getString("C3");
+				float  yg     = rs.getFloat("C4");
+				
 				realtimeTime  = rq+" "+sj;
-				
-				
-				realtimeTime  = sj;
-				for(int i=0;i<plantListStr.length;i++){
-					if(plantListStr[i].compareTo(ssdcmc)==0){
-						plantVectorData.get(i).setData(Tools.float2Format(yg, 2));
-					}
-				}
+
+				plantVectorData.get(i).setData(Tools.float2Format(yg, 2));
+				i++;
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
