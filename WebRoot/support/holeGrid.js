@@ -1,4 +1,4 @@
-		var optionContainer =null;
+	var optionContainer =null;
 		var thisMonthDate = null;
 		var lastYearDate = null;
 		var lastMonthDate = null;
@@ -170,6 +170,5 @@ $(function () {
 			table_example_id2.ajax.url("/pimsPhone/HoleGridServlet").load();
 						
 	};
-
 
 

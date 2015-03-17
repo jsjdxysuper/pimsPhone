@@ -28,13 +28,18 @@ CACHE:
 ./support/highcharts/js/highcharts-more.js
 ./support/highcharts/js/modules/solid-gauge.js
 ./support/ace/assets/js/spin.min.js
-
+##
+./support/threeMainPage.js
+./support/threeMainPage.css
+./support/holeGrid.js
+./support/plant.js
+./support/generator.js
 # 需要在时间在线的文件
 NETWORK:
 holeGrid.htm
 generater.htm
 plant.htm
-./support/threeMainPage.js
-./support/threeMainPage.css
+
+
 # 替代方案
 FALLBACK:
