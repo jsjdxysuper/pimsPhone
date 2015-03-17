@@ -224,14 +224,14 @@ $(function () {
 
 
 
-$(function () {
+// $(function () {
     	
-	rangeOption = {
+// 	rangeOption = {
 	
-	    chart: {
-	        type: 'columnrange',
-	        inverted: true,
-	        renderTo:'rangeContainer',
+// 	    chart: {
+// 	        type: 'columnrange',
+// 	        inverted: true,
+// 	        renderTo:'rangeContainer',
 // 	        events:{
 // 	        	click: function(e) {
 // 				console.log(
@@ -242,90 +242,90 @@ $(function () {
 // 	        },
 // 	        zoomType:'xy'
 
-	    },
+// 	    },
 	    
-	    title: {
-	        text: '本厂发电量日历进度'
-	    },
-	    exporting:{
-			enabled:false
-		},
-		credits:{
-			enabled:'false',
-			text:''
-		},
+// 	    title: {
+// 	        text: '本厂发电量日历进度'
+// 	    },
+// 	    exporting:{
+// 			enabled:false
+// 		},
+// 		credits:{
+// 			enabled:'false',
+// 			text:''
+// 		},
 // 		labels:{
 // 		},
-	    xAxis: {
-	        categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-			labels:{
-			}
-	    },
+// 	    xAxis: {
+// 	        categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+// 			labels:{
+// 			}
+// 	    },
 	    
-	    yAxis: {
-	        title: {
-	            text: '发电量(亿千瓦时)'
-	        },
-			labels:{
-			}
-	    },
+// 	    yAxis: {
+// 	        title: {
+// 	            text: '发电量(亿千瓦时)'
+// 	        },
+// 			labels:{
+// 			}
+// 	    },
 	
-	    tooltip: {
-	       // valueSuffix: '亿千瓦时',
-	        formatter:function(){
-	        		var high = this.point.high;
-					var low  = this.point.low;
-					var diff = (high - low).toFixed(2);
-					if(columnRangeDataFlag[this.x-1]==1){
+// 	    tooltip: {
+// 	       valueSuffix: '亿千瓦时',
+// 	        formatter:function(){
+// 	        		var high = this.point.high;
+// 					var low  = this.point.low;
+// 					var diff = (high - low).toFixed(2);
+// 					if(columnRangeDataFlag[this.x-1]==1){
 
-					var s = '目标电量：'+high+"<br/>"+'完成电量：'+low+'<br/>'+'差额：'+diff;
-					}
-					else
-					{var s = '目标电量：'+low+"<br/>"+'完成电量：'+high+'<br/>'+'超额：'+diff;}
-					return s;
-			}
-	    },
+// 					var s = '目标电量：'+high+"<br/>"+'完成电量：'+low+'<br/>'+'差额：'+diff;
+// 					}
+// 					else
+// 					{var s = '目标电量：'+low+"<br/>"+'完成电量：'+high+'<br/>'+'超额：'+diff;}
+// 					return s;
+// 			}
+// 	    },
 	    
-	    plotOptions: {
-	        columnrange: {
-	        	dataLabels: {
-	        		enabled: true,
-	        		formatter: function () {
-	        			return this.y + '';
-	        		}             
-	        	},
-                colorByPoint:true,//f15c80
-                colors:['#8085e9','#8085e9','#8085e9', '#8085e9',
-   '#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9']
-	        } 
-	    },
+// 	    plotOptions: {
+// 	        columnrange: {
+// 	        	dataLabels: {
+// 	        		enabled: true,
+// 	        		formatter: function () {
+// 	        			return this.y + '';
+// 	        		}             
+// 	        	},
+//                 colorByPoint:true,//f15c80
+//                 colors:['#8085e9','#8085e9','#8085e9', '#8085e9',
+//    '#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9']
+// 	        } 
+// 	    },
 	    
-	    legend: {
-	        enabled: false
-	    },
+// 	    legend: {
+// 	        enabled: false
+// 	    },
        
 	
-	    series: [{
-	        name: '发电量',
-	        data: [
-				[50, 110],
-				[200, 245],
-				[300, 313],
-				[380, 400],
-				[500, 501],
-				[600, 613],
-				[700, 765],
-				[800, 812],
-				[876, 900],
-				[1000, 1023],
-				[1100, 1134],
-				[1200, 1243]
-			]
-	    }]
+// 	    series: [{
+// 	        name: '发电量',
+// 	        data: [
+// 				[50, 110],
+// 				[200, 245],
+// 				[300, 313],
+// 				[380, 400],
+// 				[500, 501],
+// 				[600, 613],
+// 				[700, 765],
+// 				[800, 812],
+// 				[876, 900],
+// 				[1000, 1023],
+// 				[1100, 1134],
+// 				[1200, 1243]
+// 			]
+// 	    }]
 	
-	};
-    chart = new Highcharts.Chart(rangeOption);
-});	
+// 	};
+//     chart = new Highcharts.Chart(rangeOption);
+// });	
 
 	var sss = 1;
 	setInterval(function(){
@@ -392,25 +392,25 @@ submitRequest= function(){
      	stackColumnOption.series=dataReceived.yearAccumulatePlantPowerSeries;
      	chart = new Highcharts.Chart(stackColumnOption);
      	
-     	var rangeData = dataReceived.plantProgressData;
-      	for(i=0;i<rangeData.length;i++){
-      		if(rangeData[i][0]>rangeData[i][1]){
-      			var temp = rangeData[i][0];
-      			rangeData[i][0] = rangeData[i][1];
-      			rangeData[i][1] = temp;
-      			rangeOption.plotOptions.columnrange.colors[i] = '#f15c80';
-      			columnRangeDataFlag[i] = 1;
-      		}
-      		else
-      			columnRangeDataFlag[i] = 0;
-      	}
-     	rangeOption.series[0].data = rangeData;
-     	var len = rangeData.length;
-     	var min = rangeData[0][0];
-     	var max = rangeData[len-1][1];
-     	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/12;
-     	rangeOption.yAxis.max = rangeOption.series[0].data[len-1][1]+(max-min)/10;
-     	chart = new Highcharts.Chart(rangeOption);
+//      	var rangeData = dataReceived.plantProgressData;
+//       	for(i=0;i<rangeData.length;i++){
+//       		if(rangeData[i][0]>rangeData[i][1]){
+//       			var temp = rangeData[i][0];
+//       			rangeData[i][0] = rangeData[i][1];
+//       			rangeData[i][1] = temp;
+//       			rangeOption.plotOptions.columnrange.colors[i] = '#f15c80';
+//       			columnRangeDataFlag[i] = 1;
+//       		}
+//       		else
+//       			columnRangeDataFlag[i] = 0;
+//       	}
+//      	rangeOption.series[0].data = rangeData;
+//      	var len = rangeData.length;
+//      	var min = rangeData[0][0];
+//      	var max = rangeData[len-1][1];
+//      	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/12;
+//      	rangeOption.yAxis.max = rangeOption.series[0].data[len-1][1]+(max-min)/10;
+//      	chart = new Highcharts.Chart(rangeOption);
      	
      	
 	})
@@ -489,7 +489,7 @@ submitRequest= function(){
 <div id="columnContainer" style=" height: 350px;width:95%"></div>
 <hr>
 <div id="stackColumnContainer" style=" height: 400px;"></div>
-<hr>
-<div id="rangeContainer" style=" height: auto;"></div>
+<!-- <hr> -->
+<!-- <div id="rangeContainer" style=" height: auto;"></div> -->
 	</body>
 </html>
