@@ -153,7 +153,9 @@ $(function () {
 		        "ajax":{
 		        	url:"/pimsPhone/HoleGridServlet",
 		        	type:"POST",
-		        	data:function ( d ) { return $('#appDate').serialize(); },
+		        	data:function ( d ) {
+// 		        	alert($('#appDate').serialize());
+		        	 return $('#appDate').serialize(); },
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来
 			      	//alert(json.line1);
 			      	//$("#loading").html(json.line1);
