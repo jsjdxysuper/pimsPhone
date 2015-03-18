@@ -171,11 +171,25 @@ public class PlantServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		System.out.println("nnnnnnnnnn");
 		JSONArray ja = new JSONArray();
 		for(int i=0;i<plantVectorData.size();i++){
 			JSONArray temp = new JSONArray();
-			temp.add(plantVectorData.get(i).getName());
+			String tempName= plantVectorData.get(i).getName();
+			if(tempName.compareTo("沈阳康平电厂")==0)
+				tempName="K";
+			if(tempName.compareTo("铁岭厂")==0)
+				tempName="T";
+			if(tempName.compareTo("营口电厂")==0)
+				tempName="Y";
+			if(tempName.compareTo("大连庄河电厂")==0)
+				tempName="Z";
+			if(tempName.compareTo("铁岭清河电厂")==0)
+				tempName="Q";
+			if(tempName.compareTo("朝阳燕山湖电厂")==0)
+				tempName="H";
+			temp.add(tempName);
+			System.out.println(plantVectorData.get(i).getName());
 			temp.add(plantVectorData.get(i).getData());
 			ja.add(temp);
 		}
@@ -266,6 +280,24 @@ public class PlantServlet extends HttpServlet {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		System.out.println("wowowowowo");
+		for(int i=0;i<6;i++){
+			System.out.println(plantListStr[i]);
+			String tempName= plantListStr[i];
+			if(tempName.compareTo("沈阳康平电厂")==0)
+				tempName="K";
+			if(tempName.compareTo("铁岭厂")==0)
+				tempName="T";
+			if(tempName.compareTo("营口电厂")==0)
+				tempName="Y";
+			if(tempName.compareTo("大连庄河电厂")==0)
+				tempName="Z";
+			if(tempName.compareTo("铁岭清河电厂")==0)
+				tempName="Q";
+			if(tempName.compareTo("朝阳燕山湖电厂")==0)
+				tempName="H";
+			plantListStr[i] = tempName;
 		}
 		
 		JSONObject jo = new JSONObject();

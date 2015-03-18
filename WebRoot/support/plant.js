@@ -119,7 +119,7 @@ $(function () {
 			tooltip: {
 	    	},
             xAxis: {
-                categories: ['康平', '庄河', '营口', '铁岭', '清河','燕山湖'],
+                categories: ['K', 'Z', 'Y', 'T', 'Q','Y'],
 				labels:{
 				}
             },
@@ -312,16 +312,16 @@ $(function () {
 			ajaxbg.hide();
 			var dataReceived = $.evalJSON(data1);
 			realTimeData = dataReceived.realTimeData;
-			document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[0].data+sss;
-			document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[1].data+sss;
-			document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[2].data+sss;
-			document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[3].data+sss;
-			document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data+sss;
-			document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[5].data+sss;
+			document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[2].data;
+			document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[3].data;
+			document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[5].data;
+			document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[1].data;
+			document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data;
+			document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[0].data;
 			sss++;
 		})
 		.fail(function(){
-			alert("链接超时,请刷新");
+//			alert("链接超时,请刷新");
 		});
 	},60000);
 
@@ -345,12 +345,12 @@ submitRequest= function(){
 		var dataReceived = $.evalJSON(data1);
 		
 		realTimeData = dataReceived.realTimeData;
-		document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[0].data;
-		document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[1].data;
-		document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[2].data;
-		document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[3].data;
+		document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[2].data;
+		document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[3].data;
+		document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[5].data;
+		document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[1].data;
 		document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data;
-		document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[5].data;
+		document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[0].data;
 // 		dataReceived.realTimeData
 // 		dataReceived.realtimeTime
 
@@ -384,7 +384,7 @@ submitRequest= function(){
      	
 	})
 	.fail(function(){
-		alert("链接超时,请刷新");
+//		alert("链接超时,请刷新");
 	});
 	
 // 	var i = 0;

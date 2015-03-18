@@ -269,7 +269,7 @@
     		chart = new Highcharts.Chart(g2Option);
     	})
     	.fail(function(){
-    		alert("链接超时,请刷新");
+//    		alert("链接超时,请刷新");
     	});
     };
 
