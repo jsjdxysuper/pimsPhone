@@ -27,7 +27,6 @@ CACHE:
 ./support/highcharts/js/modules/data.js
 ./support/highcharts/js/highcharts-more.js
 ./support/highcharts/js/modules/solid-gauge.js
-./support/ace/assets/js/spin.min.js
 ##
 ./support/threeMainPage.js
 ./support/threeMainPage.css
