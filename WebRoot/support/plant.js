@@ -343,7 +343,7 @@ submitRequest= function(){
 	
 		ajaxbg.hide();
 		var dataReceived = $.evalJSON(data1);
-		
+//		alert("缓存测试2");
 		realTimeData = dataReceived.realTimeData;
 		document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[2].data;
 		document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[3].data;
@@ -407,6 +407,7 @@ submitRequest= function(){
 		}
 	
 	
+		
 	});
 };
 
