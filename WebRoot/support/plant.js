@@ -1,11 +1,129 @@
-    var columnOption = null;
-    var rangeOption =null;
-    var stackColumnOption = null;
-    //用来提示差额、超额
-    var columnRangeDataFlag = new Array();
+var realTimeLineOption  = null;
+var columnOption        = null;
+var stackColumnOption   = null;
+//用来提示差额、超额
+var columnRangeDataFlag = new Array();
+
+//realTimeLine的时间轴变量
+var KTimes = null;
+var TTimes = null;
+var YTimes = null;
+var ZTimes = null;
+var QTimes = null;
+var HTimes = null;
+ 
+$(function () {	
+		
+		realTimeLineOption={
+			chart:{
+				spacingLeft:0,
+				renderTo: 'realTimeLineContainer'
+			},
+			//colors:['#00ff00','#0000ff','#ff0000'],
+			plotOptions:{
+				line:{
+					lineWidth:2,
+					pointStart:1,
+					marker:{
+						enabled:false
+					}
+				}
+			},
+			exporting:{
+				enabled:false
+			},
+			credits:{
+				enabled:'false',
+				text:''
+			},
+			labels:{
+			},
+            title: {
+                text: '全网月度发电量',
+//                  x: -20, //center 
+            },
+            subtitle: {
+                text: '',
+                x: -20
+            },
+            xAxis: {
+//                  categories: ['1', '2', '3', '4', '5', '6',
+//                     '7', '8', '9', '10', '1', '12'], 
+            },
+            yAxis: {
+				min:276,
+				max:1500,
+                title: {
+                    text: '电量 (万千瓦时)',
+                },
+                tickInterval:50,
+                plotLines: [{
+                    value: 0,
+                    width: 1,
+                    color: '#808080'
+					
+                }],
+				labels:{
+
+				}
+            },
+            tooltip: {
+//                 valueSuffix: '万千瓦时',
+//                 headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
+//                 pointFormat:"{series.name}:<b>aaa{point.y}</b>"
+				formatter:function(){
+					var temp = null;
+					if(this.series.name=="K")
+						temp = KTimes;
+					else if(this.series.name=="T")
+						temp = TTimes;
+					else if(this.series.name=="Y")
+						temp = YTimes;
+					else if(this.series.name=="Z")
+						temp = ZTimes;
+					else if(this.series.name=="Q")
+						temp = QTimes;
+					else if(this.series.name=="H")
+						temp = HTimes;
+					
+					var s = (temp[this.x-1])+'';
+					s += '<br/>'+this.y+'兆瓦';
+					return s;
+				}
+            },
+            legend: {
+//                  layout: 'vertical',
+//                 align: 'right',
+// 				verticalAlign:'top',
+// 				floating:'true',
+// 				y:50,
+//                 borderWidth: 0, 
+            }
+//             ,
+//             series: [{
+//                 name: '同期',
+//                 data: [12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
+//                 		12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
+//                 		12.0, 12.9, 12.5, 14.5, 18.2]
+//             }, {
+//                 name: '上月',
+//                 data:  [10.0, 10.9, 12.5, 12.9, 16.2, 22.5, 22.2, 12.5, 12.3, 12.3, 13.9, 16.6,
+//                 		17.0, 15.9, 15.5, 15.5, 15.2, 23.5, 22.2, 15.5, 13.3, 14.3, 17.9, 15.6,
+//                 		16.0, 12.9, 14.5, 13.5, 11.2]
+//             }, {
+//                 name: '本月',
+//                 data:  [12.0, 13.9, 14.5, 14.9, 19.2, 26.5, 23.2, 18.5, 19.3, 19.3, 15.9, 12.6,
+//                 		19.0, 10.9, 14.5, 17.5, 19.2, 24.5, 24.2, 18.5, 19.3, 19.3, 15.9, 12.6,
+//                 		14.0, 15.9, 15.5, 16.5, 15.2]
+//             }]
+        };//全网线图
+        
+        chart = new Highcharts.Chart(realTimeLineOption);
+        
+    });	
     
-//是否缓存了
-  
+    
+    
     
 $(function () {
        columnOption ={
@@ -193,109 +311,6 @@ $(function () {
 
 
 
-// $(function () {
-    	
-// 	rangeOption = {
-	
-// 	    chart: {
-// 	        type: 'columnrange',
-// 	        inverted: true,
-// 	        renderTo:'rangeContainer',
-// 	        events:{
-// 	        	click: function(e) {
-// 				console.log(
-// 					Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', e.xAxis[0].value), 
-// 					e.yAxis[0].value,e.xAxis[0].value
-// 				);
-// 			}
-// 	        },
-// 	        zoomType:'xy'
-
-// 	    },
-	    
-// 	    title: {
-// 	        text: '本厂发电量日历进度'
-// 	    },
-// 	    exporting:{
-// 			enabled:false
-// 		},
-// 		credits:{
-// 			enabled:'false',
-// 			text:''
-// 		},
-// 		labels:{
-// 		},
-// 	    xAxis: {
-// 	        categories: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
-// 			labels:{
-// 			}
-// 	    },
-	    
-// 	    yAxis: {
-// 	        title: {
-// 	            text: '发电量(亿千瓦时)'
-// 	        },
-// 			labels:{
-// 			}
-// 	    },
-	
-// 	    tooltip: {
-// 	       valueSuffix: '亿千瓦时',
-// 	        formatter:function(){
-// 	        		var high = this.point.high;
-// 					var low  = this.point.low;
-// 					var diff = (high - low).toFixed(2);
-// 					if(columnRangeDataFlag[this.x-1]==1){
-
-// 					var s = '目标电量：'+high+"<br/>"+'完成电量：'+low+'<br/>'+'差额：'+diff;
-// 					}
-// 					else
-// 					{var s = '目标电量：'+low+"<br/>"+'完成电量：'+high+'<br/>'+'超额：'+diff;}
-// 					return s;
-// 			}
-// 	    },
-	    
-// 	    plotOptions: {
-// 	        columnrange: {
-// 	        	dataLabels: {
-// 	        		enabled: true,
-// 	        		formatter: function () {
-// 	        			return this.y + '';
-// 	        		}             
-// 	        	},
-//                 colorByPoint:true,//f15c80
-//                 colors:['#8085e9','#8085e9','#8085e9', '#8085e9',
-//    '#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9','#8085e9']
-// 	        } 
-// 	    },
-	    
-// 	    legend: {
-// 	        enabled: false
-// 	    },
-       
-	
-// 	    series: [{
-// 	        name: '发电量',
-// 	        data: [
-// 				[50, 110],
-// 				[200, 245],
-// 				[300, 313],
-// 				[380, 400],
-// 				[500, 501],
-// 				[600, 613],
-// 				[700, 765],
-// 				[800, 812],
-// 				[876, 900],
-// 				[1000, 1023],
-// 				[1100, 1134],
-// 				[1200, 1243]
-// 			]
-// 	    }]
-	
-// 	};
-//     chart = new Highcharts.Chart(rangeOption);
-// });	
-
 	var sss = 1;
 	setInterval(function(){
 		$.ajax({
@@ -303,22 +318,12 @@ $(function () {
 			data:$.param({"realtime":true}),
 			type:"post",
 			beforeSend:function(){
-				ajaxbg.show(); 
+//				ajaxbg.show(); 
 			}
 		
 		})
 		.done(function(data1,statusText){
 		
-			ajaxbg.hide();
-			var dataReceived = $.evalJSON(data1);
-			realTimeData = dataReceived.realTimeData;
-			document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[2].data;
-			document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[3].data;
-			document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[5].data;
-			document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[1].data;
-			document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data;
-			document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[0].data;
-			sss++;
 		})
 		.fail(function(){
 //			alert("链接超时,请刷新");
@@ -341,19 +346,45 @@ submitRequest= function(){
 	})
 	.done(function(data1,statusText){
 	
-		ajaxbg.hide();
+//		ajaxbg.hide();
 		var dataReceived = $.evalJSON(data1);
 //		alert("缓存测试2");
-		realTimeData = dataReceived.realTimeData;
-		document.getElementById('table_id2').rows[1].cells[0].innerHTML = realTimeData[2].data;
-		document.getElementById('table_id2').rows[1].cells[1].innerHTML = realTimeData[3].data;
-		document.getElementById('table_id2').rows[2].cells[0].innerHTML = realTimeData[5].data;
-		document.getElementById('table_id2').rows[2].cells[1].innerHTML = realTimeData[1].data;
-		document.getElementById('table_id2').rows[3].cells[0].innerHTML = realTimeData[4].data;
-		document.getElementById('table_id2').rows[3].cells[1].innerHTML = realTimeData[0].data;
-// 		dataReceived.realTimeData
-// 		dataReceived.realtimeTime
+		plant60GenPower = dataReceived.plant60GenPower;
 
+		//给实时曲线的时间轴变量赋值
+		KTimes = plant60GenPower.KTimes;
+		TTimes = plant60GenPower.TTimes;
+		YTimes = plant60GenPower.YTimes;
+		ZTimes = plant60GenPower.ZTimes;
+		QTimes = plant60GenPower.QTimes;
+		HTimes = plant60GenPower.HTimes;
+		//构造实时有功曲线的数据
+		realTimeLineOption.series=[
+      	  			      	{
+      	  			      		name: 'K',
+      	  			      		data:plant60GenPower.K
+      	  			      	},{
+      	  			      		name: 'T',
+      	  			      		data:plant60GenPower.T
+      	  			      	},{
+      	  			      		name: 'Y',
+      	  			      		data:plant60GenPower.Y
+      	  			      	},{
+      	  			      		name: 'Z',
+      	  			      		data:plant60GenPower.Z
+      	  			      	},{
+      	  			      		name: 'Q',
+      	  			      		data:plant60GenPower.Q
+      	  			      	},{
+      	  			      		name: 'H',
+      	  			      		data:plant60GenPower.H
+      	  			      	}];
+		
+		realTimeLineOption.yAxis.max = plant60GenPower.maxRealTime;
+		realTimeLineOption.yAxis.min = plant60GenPower.minRealtime;
+		
+		chart = new Highcharts.Chart(realTimeLineOption);
+		
      	columnOption.series[0].data=dataReceived.columnData;
      	chart = new Highcharts.Chart(columnOption);
      	
@@ -361,25 +392,6 @@ submitRequest= function(){
      	stackColumnOption.series=dataReceived.yearAccumulatePlantPowerSeries;
      	chart = new Highcharts.Chart(stackColumnOption);
      	
-//      	var rangeData = dataReceived.plantProgressData;
-//       	for(i=0;i<rangeData.length;i++){
-//       		if(rangeData[i][0]>rangeData[i][1]){
-//       			var temp = rangeData[i][0];
-//       			rangeData[i][0] = rangeData[i][1];
-//       			rangeData[i][1] = temp;
-//       			rangeOption.plotOptions.columnrange.colors[i] = '#f15c80';
-//       			columnRangeDataFlag[i] = 1;
-//       		}
-//       		else
-//       			columnRangeDataFlag[i] = 0;
-//       	}
-//      	rangeOption.series[0].data = rangeData;
-//      	var len = rangeData.length;
-//      	var min = rangeData[0][0];
-//      	var max = rangeData[len-1][1];
-//      	rangeOption.yAxis.min = rangeOption.series[0].data[0][0]-(max-min)/12;
-//      	rangeOption.yAxis.max = rangeOption.series[0].data[len-1][1]+(max-min)/10;
-//      	chart = new Highcharts.Chart(rangeOption);
      	
      	
 	})
@@ -387,10 +399,6 @@ submitRequest= function(){
 //		alert("链接超时,请刷新");
 	});
 	
-// 	var i = 0;
-// 	setInterval(function(){
-// 		console.log("来了"+(i++));
-// 	},2000);
 	
 	
 	$(document).ready(function() {
