@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 
@@ -27,7 +26,7 @@ import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.Plant60GenPower;
 import com.sgepm.threemainpage.entity.PlantYearAccumulateDataSeries;
-import com.sgepm.threemainpage.entity.PlantMonthPowerOrRealTimeData;
+import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 
 
 @WebServlet(name="PlantServlet",urlPatterns="/PlantServlet")
@@ -58,6 +57,29 @@ public class PlantServlet extends HttpServlet {
 	}
 
 	/**
+	 * Initialization of the servlet. <br>
+	 *
+	 * @throws ServletException if an error occurs
+	 */
+	public void init() throws ServletException {
+
+		OracleConnection oc = new OracleConnection();
+		//建立机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
+		String sqlGenerator2Plant = "select jzbm,ssdcmc from base_jzbm t";
+		log.debug("sql查询:"+sqlGenerator2Plant+"\n");
+		ResultSet rs= oc.query(sqlGenerator2Plant,null);		
+		try {
+			while(rs.next()){
+				JZBM2DCMCDictionary.put(rs.getString("JZBM"), rs.getString("SSDCMC"));
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		oc.closeAll();
+	}
+	
+	/**
 	 * 统一完成doGet和doPost的请求
 	 * @param request
 	 * @param response
@@ -79,30 +101,26 @@ public class PlantServlet extends HttpServlet {
 		//页面刷新，历史和实时数据全部获取
 		if(request.getParameter("realtime")==null){
 		
-			JSONObject joAll         = new JSONObject();//要返回的电厂页面的全部数据	
-			JSONArray ja             = new JSONArray();//各电厂月度发电量	
-			ja                       = getOneMonthPowerData();
+			JSONObject joAll             = new JSONObject();//要返回的电厂页面的全部数据	
+			JSONArray jaPlantsMonthEnergy = new JSONArray();//各电厂月度发电量	
+			jaPlantsMonthEnergy           = getOneMonthEnergyData();
 			
-			JSONObject joSeries      = getYearAccumulatePowerData();//相关电厂60万机组年累计电量对比数据		
-			JSONObject plantProgress = getProgressData();//本电厂日历进度曲线
+			JSONObject joPlantsYearAccEnergy      = getYearAccumulatePowerData();//相关电厂60万机组年累计电量对比数据		
 
-			joAll.accumulateAll(plantProgress);
-			joAll.accumulateAll(joSeries);
-			joAll.put("columnData",ja);
+			joAll.accumulateAll(joPlantsYearAccEnergy);
+			joAll.put("columnData",jaPlantsMonthEnergy);
 			
 			joAll.put("plant60GenPower", plant60GenPower);
 			
-
-			
 			String ret = joAll.toString();
-			ret        = Tools.replacePlantName(ret, PimsTools.getPlantAbbrDic());
-			ret        = Tools.getAbbrNameOfPlant(ret);
 			out.write(ret);
 		}
-		//为了响应每分钟的定时刷新实时数据曲线
+		//为了响应每分钟的定时刷新实时数据曲线,只返回出力曲线
 		else if(request.getParameter("realtime").compareTo("true")==0){
 			log.debug("realtime request");
-			out.write(plant60GenPower.toString());
+			JSONObject realTimeRetJO = new JSONObject();
+			realTimeRetJO.put("plant60GenPower", plant60GenPower);
+			out.write(realTimeRetJO.toString());
 		}
 		
 		out.close();
@@ -110,11 +128,9 @@ public class PlantServlet extends HttpServlet {
 	
 	public JSONObject getPlant60GenPower(){
 		
-		Vector<Plant60GenPower> retData = new Vector<Plant60GenPower>();
+		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		//有功的最大最小值，为了设置坐标轴的最大最小
-		double min = Double.MAX_VALUE;
-		double max = 0;
 		//完成电厂编码和序号之间的相互转换
 		String DCBMs[] = {"a0","b0","c0","d0","e0","f0"};
 		HashMap<String,Integer>str2index = new HashMap<String,Integer>();
@@ -125,6 +141,7 @@ public class PlantServlet extends HttpServlet {
 		str2index.put(DCBMs[4], 4);
 		str2index.put(DCBMs[5], 5);
 		
+		Vector<Plant60GenPower> retData = new Vector<Plant60GenPower>();
 		//60万机组所属电厂的数量
 		final int PlantNum = 6;
 		for(int i=0;i<PlantNum;i++){
@@ -132,13 +149,18 @@ public class PlantServlet extends HttpServlet {
 			retData.get(i).setPlantName(DCBMs[i]);
 		}
 		
-		OracleConnection oc = new OracleConnection();
+		
 		
 		String sql = "select c1 rq,c2 sj,c3 dcbm,c4 yg from t001 t where c1 = ? order by  rq,dcbm,sj";
 		String params[] = {date};
 		
+		OracleConnection oc = new OracleConnection();
 		ResultSet rs = oc.query(sql, params);
 		
+		
+		//有功的最大最小值，为了设置坐标轴的最大最小
+		double min = Double.MAX_VALUE;
+		double max = 0;
 		try {
 			while(rs.next()){
 				String dcbm = rs.getString("dcbm");
@@ -157,6 +179,7 @@ public class PlantServlet extends HttpServlet {
 			e.printStackTrace();
 		}
 		
+		//如果查询结果为空
 		if(min == Double.MAX_VALUE)min = 0;
 		
 		oc.closeAll();
@@ -175,7 +198,6 @@ public class PlantServlet extends HttpServlet {
 			retData.get(i).setPlantName(str2str.get(tempPlantName));
 		}
 		
-		String retRet = null;
 		JSONObject jo = new JSONObject();
 		for(int i=0;i<PlantNum;i++){
 			jo.put(retData.get(i).getPlantName(), retData.get(i).getPowers());
@@ -194,39 +216,28 @@ public class PlantServlet extends HttpServlet {
 	 * 结构如下
 	 * "columnData":[["康平厂",26242],["铁岭厂",26434],["营口厂",22435],["庄河厂",25299],["清河厂",36604],["燕山湖",27705]]
 	 */
-	public JSONArray getOneMonthPowerData() {
+	public JSONArray getOneMonthEnergyData() {
 		
 		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
-		OracleConnection oc = new OracleConnection();
+			
+		String plantsStr = properties.getString("pims.plant.graph1.plants");
+		
 		String plantListStr[];//柱图所要显示的电厂列表
-		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
-		Vector<PlantMonthPowerOrRealTimeData> plantVectorData = new Vector<PlantMonthPowerOrRealTimeData>();
+		plantListStr = plantsStr.split(",");
+		
+
+
+		log.debug("PlantsOneMonthEnergyData电厂列表:"+plantsStr);
 
 		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
 		ArrayList<String> generatorList        = new ArrayList<String>();
-
-		
-		String plantsStr = properties.getString("pims.plant.graph1.plants");
-		plantListStr = plantsStr.split(",");
-		plantVectorData.setSize(plantListStr.length);
-		//都初始化为0，当有某个电厂发电量为0时，在数据中也有所体现
-		for(int i=0;i<plantVectorData.size();i++){
-			PlantMonthPowerOrRealTimeData temp = new PlantMonthPowerOrRealTimeData();
-			temp.setName(plantListStr[i]);
-			temp.setData(new Float(0));
-			plantVectorData.set(i, temp);
-		}
-
-		log.debug("PlantsOneMonthPowerData电厂列表:"+plantsStr);
-
-
 		//获得每个电厂所配置的机组列表		
 		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph1");
 
-		
-		
 		//装配sql语句中机组列表,以逗号分隔,in子句的最大数目为1000,足够了
+		assert generatorList.size()<1000:"sql inSubStr len is "+generatorList.size();
+		
 		String inString="";
 		for(int i=0;i<generatorList.size();i++){
 		    if(i>0){
@@ -243,6 +254,19 @@ public class PlantServlet extends HttpServlet {
 						+inString+" )"+
 						" and rq like ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
 		log.debug("sql查询:"+sql+"\n参数："+dateWildcard);
+		
+		
+		//包含电厂发电量信息的Vector,其中每个对象代表一个电厂
+		Vector<PlantMonthEnergyOrRealTimeData> plantVectorData = new Vector<PlantMonthEnergyOrRealTimeData>();
+		plantVectorData.setSize(plantListStr.length);
+		//都初始化为0，当有某个电厂发电量为0时，在数据中也有所体现
+		for(int i=0;i<plantVectorData.size();i++){
+			PlantMonthEnergyOrRealTimeData onePlantMonthEnergy = new PlantMonthEnergyOrRealTimeData();
+			onePlantMonthEnergy.setName(plantListStr[i]);
+			onePlantMonthEnergy.setData(new Float(0));
+			plantVectorData.set(i, onePlantMonthEnergy);
+		}
+		OracleConnection oc = new OracleConnection();
 		ResultSet rs=  oc.query(sql,params);
 
 		try {
@@ -251,9 +275,9 @@ public class PlantServlet extends HttpServlet {
 				String ssdcmc = rs.getString("ssdcmc");
 				float rdl = rs.getFloat("rdl");
 				for(int i=0;i<plantVectorData.size();i++){
-					PlantMonthPowerOrRealTimeData temp = plantVectorData.get(i);
-					if(temp.getName().compareTo(ssdcmc)==0)
-						temp.setData(rdl);
+					PlantMonthEnergyOrRealTimeData onePlantMonthEnergy = plantVectorData.get(i);
+					if(onePlantMonthEnergy.getName().compareTo(ssdcmc)==0)
+						onePlantMonthEnergy.setData(rdl);
 				}
 
 				log.debug(ssdcmc+","+rdl);
@@ -262,7 +286,7 @@ public class PlantServlet extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("nnnnnnnnnn");
+
 		JSONArray ja = new JSONArray();
 		for(int i=0;i<plantVectorData.size();i++){
 			JSONArray temp = new JSONArray();
@@ -507,27 +531,6 @@ public class PlantServlet extends HttpServlet {
 		doRequest(request,response);
 	}
 
-	/**
-	 * Initialization of the servlet. <br>
-	 *
-	 * @throws ServletException if an error occurs
-	 */
-	public void init() throws ServletException {
 
-		OracleConnection oc = new OracleConnection();
-		//建立机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
-		String sqlGenerator2Plant = "select jzbm,ssdcmc from base_jzbm t";
-		log.debug("sql查询:"+sqlGenerator2Plant+"\n");
-		ResultSet rs= oc.query(sqlGenerator2Plant,null);		
-		try {
-			while(rs.next()){
-				JZBM2DCMCDictionary.put(rs.getString("JZBM"), rs.getString("SSDCMC"));
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		oc.closeAll();
-	}
 
 }

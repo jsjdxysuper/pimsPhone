@@ -11,18 +11,18 @@ import java.util.Vector;
  * @author Administrator
  *
  */
-public class PlantMonthPowerOrRealTimeData {
+public class PlantMonthEnergyOrRealTimeData {
 
 	String name;
 	Float data;
 	
-	public PlantMonthPowerOrRealTimeData(String name, Float data) {
+	public PlantMonthEnergyOrRealTimeData(String name, Float data) {
 		super();
 		this.name = name;
 		this.data = data;
 	}
 
-	public PlantMonthPowerOrRealTimeData() {
+	public PlantMonthEnergyOrRealTimeData() {
 		super();
 	}
 

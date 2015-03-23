@@ -17,7 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
-import com.sgepm.threemainpage.entity.PlantMonthPowerOrRealTimeData;
+import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -225,11 +225,11 @@ public class GeneratorServlet extends HttpServlet {
 		}
 
 		
-		Vector<PlantMonthPowerOrRealTimeData> loadRate = new Vector<PlantMonthPowerOrRealTimeData>();
+		Vector<PlantMonthEnergyOrRealTimeData> loadRate = new Vector<PlantMonthEnergyOrRealTimeData>();
 		loadRate.setSize(5);
 		for(int i=0;i<eachDutyHours.size();i++){
 			float temp =0;
-			PlantMonthPowerOrRealTimeData object = new PlantMonthPowerOrRealTimeData();
+			PlantMonthEnergyOrRealTimeData object = new PlantMonthEnergyOrRealTimeData();
 			if(Math.abs(g1Energy.get(i)-0)<Tools.FLOAT_MIN&&Math.abs(g2Energy.get(i)-0)<Tools.FLOAT_MIN)
 			{
 				Float va = new Float(0);
