@@ -32,7 +32,7 @@ public class Tools {
 	public static String [] time_span      = {"实时","年","月","日"};
 	public static int    [] days_all_month = {31,28,31,30,31,30,31,31,30,31,30,31};
 	public static float rongLiang = 600;
-	
+	public static final double DOUBLE_MIN = 1e-6d;
 	/**
 	 * 对日期进行格式化
 	 * @param date

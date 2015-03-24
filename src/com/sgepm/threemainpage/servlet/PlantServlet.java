@@ -171,7 +171,10 @@ public class PlantServlet extends HttpServlet {
 				if(yg > max) max = yg;
 				if(yg < min) min = yg;
 				retData.get(str2index.get(dcbm)).setTimes(sj);
-				retData.get(str2index.get(dcbm)).setPowers(yg);
+				if(Math.abs(yg)<Tools.DOUBLE_MIN)
+					retData.get(str2index.get(dcbm)).setPowers(null);
+				else
+					retData.get(str2index.get(dcbm)).setPowers(yg);
 				
 			}
 		} catch (SQLException e) {

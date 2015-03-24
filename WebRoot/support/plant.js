@@ -51,8 +51,6 @@ $(function () {
 //          	'7', '8', '9', '10', '1', '12'], 
             },
         yAxis: {
-        	min:276,
-			max:1500,
             title: {
             	text: '',
             },
@@ -297,9 +295,6 @@ intervalFunction = function(){
 	      	}
 	      	];
 		
-		realTimeLineOption.yAxis.max = plant60GenPower.maxRealTime;
-		realTimeLineOption.yAxis.min = plant60GenPower.minRealtime;
-		
 		chart = new Highcharts.Chart(realTimeLineOption);
 	})
 	.fail(function(){
@@ -357,9 +352,6 @@ submitRequest= function(){
 	      		name: 'H',
 	      		data:plant60GenPower.H
 	      	}];
-		
-		realTimeLineOption.yAxis.max = plant60GenPower.maxRealTime;
-		realTimeLineOption.yAxis.min = plant60GenPower.minRealtime;
 		
 		chart = new Highcharts.Chart(realTimeLineOption);
 		
