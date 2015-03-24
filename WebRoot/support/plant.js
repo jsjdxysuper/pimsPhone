@@ -331,6 +331,20 @@ submitRequest= function(){
 		ZTimes = plant60GenPower.ZTimes;
 		QTimes = plant60GenPower.QTimes;
 		HTimes = plant60GenPower.HTimes;
+		
+		if(KTimes.length==TTimes.length&&
+				TTimes.length==YTimes.length&&
+				YTimes.length==ZTimes.length&&
+				ZTimes.length==QTimes.length&&
+				QTimes.length==HTimes.length&&
+				HTimes==0){
+			$("#textWhenNoData").css("display","block");
+			$("#realTimeLineContainer").css("display","none");
+		}
+		else{
+			$("#textWhenNoData").css("display","none");
+			$("#realTimeLineContainer").css("display","block");
+		}
 		//构造实时有功曲线的数据
 		realTimeLineOption.series=[
 	      	{
