@@ -31,69 +31,64 @@
 	<script type="text/javascript" src="./support/threeMainPage.js"></script>
 	</head>
 	<body>
-<script src="./support/highcharts/js/highcharts.js"></script>
-<script src="./support/highcharts/js/highcharts-more.js"></script>
+		<script src="./support/highcharts/js/highcharts.js"></script>
+		<script src="./support/highcharts/js/highcharts-more.js"></script>
+		<script src="./support/highcharts/js/modules/solid-gauge.js"></script> 
 
-<script src="./support/highcharts/js/modules/solid-gauge.js"></script> 	
-
-
-
-<div id="background" class="background" style="display: none; min-height: 100%;_height:100%;"></div> 
-<div id="progressBar" class="progressBar" style="display: none;font-size: 12px;">数据加载中，请稍等...</div> 
-<!--时间选择器-->
-<div style="clear:both;height:10px"></div>
-	<div style="margin-left:20px;margin-right:20px">
-		<div style=";float:left">	
-	        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
-	        <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
-	    </div>
-		<div style="float:right;">
-			<button id="submitRequest" class="btn btn-primary" 
-				style="margin:5px 0;height:30px;width:50px"
-				 onclick="submitRequest()">查询
-			</button>
+		<!--时间选择器-->
+		<div style="clear:both;height:10px"></div>
+		<div style="margin-left:20px;margin-right:20px">
+			<div style=";float:left">	
+		        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
+		        <input type="text" name="test_default" id="appDate" style="width:100px;float:left" />
+		    </div>
+			<div style="float:right;">
+				<button id="submitRequest" class="btn btn-primary" 
+					style="margin:5px 0;height:30px;width:50px"
+					 onclick="submitRequest()">查询
+				</button>
+			</div>
 		</div>
-	</div>
-<div style="clear:both;height:20px"></div>
-
-<hr>
-<div style="text-align:center;width:window.screen.width;">
-	<div style="margin-left:auto;margin-right:auto;" id="gaugeParent">
-		<div id="g1Container" style="float:left;"></div>
-		<div id="g2Container" style="float:left;"></div>
-	</div>
-</div>
-
-    <!--机组的统计信息(表格)-->
-<div style="margin:0;width:100%">
-<table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
-	<thead>
-	    <tr>
-	        <td colspan="4" style="text-align:center;font-size:18px;color:#000000">本厂机组统计信息  </td>
-	    </tr>
-	    <tr style="background-color:#30a4dd;color:#ffffff">   
-	    	<td></td><td>#1机</td><td>#2机</td><td >电厂</td>   
-	    </tr> 
-	</thead>  
-	    <tbody>   
+		<div style="clear:both;height:20px"></div>
 	
-	        <tr>   
-	            <td>容量</td><td id="g1Volume">0</td><td id="g2Volume">0</td><td id="volume">0</td>   
-	        </tr>   
-	        <tr>   
-	            <td>发电量</td><td id="g1Energy">0</td><td id="g2Energy">0</td><td id="energy">0</td>   
-	        </tr> 
-	        <tr>   
-	            <td>平均有功</td><td id="g1Average">0</td><td id="g2Average">0</td><td id="average_power">0</td>   
-	        </tr> 	                       
-	        <tr>   
-	            <td>利用小时</td><td id="g1TimeUse">0</td><td id="g2TimeUse">0</td><td id="timeUse">0</td>   
-	        </tr> 	        
-	    </tbody> 
-</table>  
-</div>
-<div id="columnContainer" style=" height: 350px;width:95%"></div>
-	<div style="clear:both;height:20px"></div>
+		<hr>
+		<div style="text-align:center;width:window.screen.width;">
+			<div style="margin-left:auto;margin-right:auto;" id="gaugeParent">
+				<div id="g1Container" style="float:left;"></div>
+				<div id="g2Container" style="float:left;"></div>
+			</div>
+		</div>
+	
+	    <!--机组的统计信息(表格)-->
+		<div style="margin:0 0;">
+			<table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
+				<thead>
+				    <tr>
+				        <td colspan="4" style="text-align:center;font-size:18px;color:#000000">本厂机组统计信息  </td>
+				    </tr>
+				    <tr style="background-color:#30a4dd;color:#ffffff">   
+				    	<td></td><td>#1机</td><td>#2机</td><td >电厂</td>   
+				    </tr> 
+				</thead>  
+				    <tbody>   
+				
+				        <tr>   
+				            <td>容量</td><td id="g1Volume">0</td><td id="g2Volume">0</td><td id="volume">0</td>   
+				        </tr>   
+				        <tr>   
+				            <td>发电量</td><td id="g1Energy">0</td><td id="g2Energy">0</td><td id="energy">0</td>   
+				        </tr> 
+				        <tr>   
+				            <td>平均有功</td><td id="g1Average">0</td><td id="g2Average">0</td><td id="average_power">0</td>   
+				        </tr> 	                       
+				        <tr>   
+				            <td>利用小时</td><td id="g1TimeUse">0</td><td id="g2TimeUse">0</td><td id="timeUse">0</td>   
+				        </tr> 	        
+				    </tbody> 
+			</table>  
+		</div>
+		<div id="columnContainer" style=" height: 350px;width:95%"></div>
+		<div style="clear:both;height:20px"></div>
         <script type="text/javascript">
 
 			var resize_gauge = function()
@@ -120,6 +115,5 @@
         </script>
         <div id="content_my" style="clear:both"></div>
         
-
 	</body>
 </html>
