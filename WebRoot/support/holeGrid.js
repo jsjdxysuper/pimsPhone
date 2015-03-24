@@ -96,7 +96,7 @@ var table_example_id2 = null;
 
 
 $(document).ready(function() {
-	var date = $("#appDate").val().trim();
+
 	if($("#table_example").length > 0)
 	{
 		table_example_id2 = $("#table_example").DataTable({
@@ -106,6 +106,7 @@ $(document).ready(function() {
 	        	type:"POST",
 	        	data:function ( d ) {
 	// 		        	alert($('#appDate').serialize());
+	        		var date = $("#appDate").val().trim();
 	        		return {date:date}; 
 	        	},
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来

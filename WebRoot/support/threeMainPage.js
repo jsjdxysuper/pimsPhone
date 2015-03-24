@@ -44,7 +44,7 @@ $(function () {
 	};
 	var optJQuery = $.extend(opt['date'], opt['default']);
 	
-	$("#appDate").mobiscroll().date(optJQuery);
+	$("#appDate").val('').mobiscroll(optJQuery).date(optJQuery);
 //	$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
 
 });
