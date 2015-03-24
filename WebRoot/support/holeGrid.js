@@ -113,7 +113,7 @@ $(function () {
 
 
 	$(document).ready(function() {
-	
+		var date = $("#appDate").val().trim();
 		//$('#table_id1').DataTable();
 		if($("#table_example").length > 0)
 		{
@@ -124,7 +124,7 @@ $(function () {
 		        	type:"POST",
 		        	data:function ( d ) {
 // 		        	alert($('#appDate').serialize());
-		        	 return $('#appDate').serialize(); },
+		        	 return {date:date}; },
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来
 			      	//alert(json.line1);
 			      	//$("#loading").html(json.line1);

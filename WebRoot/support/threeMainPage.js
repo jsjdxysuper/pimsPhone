@@ -28,25 +28,26 @@ var timeStrArray = ['00:00','00:05','00:10','00:15','00:20','00:25','00:30','00:
                '22:00','22:05','22:10','22:15','22:20','22:25','22:30','22:35','22:40','22:45','22:50','22:55',
                '23:00','23:05','23:10','23:15','23:20','23:25','23:30','23:35','23:40','23:45','23:50','23:55'];//日期选择框的控制
 
+
 $(function () {
+	
 	var currYear = (new Date()).getFullYear();	
 	var opt={};
 	opt.date = {preset : 'date'};
-	opt.datetime = {preset : 'datetime'};
-	opt.time = {preset : 'time'};
 	opt.default = {
 		theme: 'android-ics light', //皮肤样式
         display: 'modal', //显示方式 
         mode: 'mixed', //日期选择模式
 		lang:'zh',
-		endYear:currYear, //结束年份
-        startYear:currYear - 5 //开始年份
-        
+        startYear:currYear-5, //开始年份
+		endYear:currYear//结束年份
 	};
-	$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
+	var optJQuery = $.extend(opt['date'], opt['default']);
+	
+	$("#appDate").mobiscroll().date(optJQuery);
+//	$("#appDate").val('').scroller('destroy').scroller($.extend(opt['date'], opt['default']));
+
 });
-
-
 
 
 setDate=function () {
@@ -59,15 +60,19 @@ setDate=function () {
 	if(0 <month&&month < 10)  month = "0"+month;
 	if(0 < day&&day < 10)  day   = "0"+day;
 	var date_now =(year)+'-'+month+'-'+day;
+	console.debug(year);
+	console.debug(month);
+	console.debug(day);
 	//alert(date_now);
-	document.getElementById("appDate").value=date_now;
+	$("#appDate").val(" "+date_now+" ");
 	//$("#background").css("height",document.body.scrollHeight+document.body.scrollTop);
-	ajaxbg = $("#background,#progressBar"); 
 	//如果函数submitRequest已经被初始化了，就调用此函数
 	if(typeof(submitRequest) == 'undefined');
 	else submitRequest();
 };
 $(document).ready(setDate);
+
+
 
 
 

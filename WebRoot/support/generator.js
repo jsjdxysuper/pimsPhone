@@ -241,7 +241,6 @@
     	})
     	.done(function(data,statusText){
 
-			ajaxbg.hide();
     		var dataReceived = $.evalJSON(data);
     		
     		columnOption.series[0].data=dataReceived.monthLoadRate;

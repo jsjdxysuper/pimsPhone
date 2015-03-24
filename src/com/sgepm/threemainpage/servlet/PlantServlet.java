@@ -289,7 +289,7 @@ public class PlantServlet extends HttpServlet {
 
 		JSONArray ja = new JSONArray();
 		for(int i=0;i<plantVectorData.size();i++){
-			JSONArray temp = new JSONArray();
+			JSONArray onePlantDataInOneMonth = new JSONArray();
 			String tempName= plantVectorData.get(i).getName();
 			if(tempName.compareTo("沈阳康平电厂")==0)
 				tempName="K";
@@ -303,10 +303,10 @@ public class PlantServlet extends HttpServlet {
 				tempName="Q";
 			if(tempName.compareTo("朝阳燕山湖电厂")==0)
 				tempName="H";
-			temp.add(tempName);
+			onePlantDataInOneMonth.add(tempName);
 			System.out.println(plantVectorData.get(i).getName());
-			temp.add(plantVectorData.get(i).getData());
-			ja.add(temp);
+			onePlantDataInOneMonth.add(plantVectorData.get(i).getData());
+			ja.add(onePlantDataInOneMonth);
 		}
 		oc.closeAll();
 		return ja;

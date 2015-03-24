@@ -320,7 +320,7 @@ submitRequest= function(){
 		data:$.param({"date":date}),
 		type:"post",
 		beforeSend:function(){
-			ajaxbg.show(); 
+//			ajaxbg.show(); 
 		}
 	})
 	.done(function(data1,statusText){
