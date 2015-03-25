@@ -128,6 +128,9 @@ $(document).ready(function() {
 			      		data:json.thisMonth
 			      	}];
 			      	chart = new Highcharts.Chart(optionContainer);
+			      	
+			      //平常按钮的效果
+					$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
 			      	return json.data;
 	  			}//end for "dataSrc":function(json){
 		    },//end for "ajax":{
@@ -145,6 +148,9 @@ $(document).ready(function() {
 });
 
 submitRequest = function(){
+	//按下按钮之后的效果
+	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
+	
 	if(table_example_id2!=null)
 		table_example_id2.ajax.url("/pimsPhone/HoleGridServlet").load();				
 };

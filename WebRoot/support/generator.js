@@ -205,6 +205,9 @@ $(function () {
 });//end for $(function () {
     
 submitRequest = function(){
+	//按下按钮之后的效果
+	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
+	
 	var date = $("#appDate").val().trim();
 	var time_span = $("#menu_title").text().trim();
 	$.ajax({
@@ -241,6 +244,9 @@ submitRequest = function(){
 		
 		g2Option.series[0].data[0] = parseFloat((dataReceived.g2Average/GENERATORVOLUME*100).toFixed(2));
 		chart = new Highcharts.Chart(g2Option);
+		
+		//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
     })
     .fail(function(){
 //    	alert("链接超时,请刷新");

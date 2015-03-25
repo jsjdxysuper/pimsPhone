@@ -296,6 +296,10 @@ intervalFunction = function(){
 	      	];
 		
 		chart = new Highcharts.Chart(realTimeLineOption);
+//		position: relative;
+//		background-color: rgba(0,190,200,1);
+//		top:4px;
+
 	})
 	.fail(function(){
 //		alert("链接超时,请刷新");
@@ -306,9 +310,11 @@ var sss = 1;
 setInterval(intervalFunction,60000);
 
 submitRequest= function(){
+	//按下按钮之后的效果
+	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
+	
+	
 	var date = $("#appDate").val().trim();
-
-
 	//取历史数据,捎带把实时数据取回来
 	$.ajax({
 		url:"/pimsPhone/PlantServlet",
@@ -374,7 +380,9 @@ submitRequest= function(){
      	
      	stackColumnOption.xAxis.categories = dataReceived.seriesPlantName;
      	stackColumnOption.series=dataReceived.yearAccumulatePlantPowerSeries;
-     	chart = new Highcharts.Chart(stackColumnOption);  	
+     	chart = new Highcharts.Chart(stackColumnOption); 
+     	//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
 	})
 	.fail(function(){
 //		alert("链接超时,请刷新");
