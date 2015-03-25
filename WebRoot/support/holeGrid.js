@@ -40,7 +40,7 @@ $(function () {
         },
         yAxis: {
             title: {
-                text: '电量 (万千瓦时)',
+                text: '',
             },
             plotLines: [{
                 value: 0,
