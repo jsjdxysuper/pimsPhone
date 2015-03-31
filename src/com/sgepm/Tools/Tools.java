@@ -147,20 +147,35 @@ public class Tools {
 	}
 	/**
 	 * 获得指定日期的上一个月的日期
+	 * 当输入为03月30日，上月的30日是不存在的
 	 * @param old
 	 * @return
 	 */
-	public static Date getLastMonthDay(Date old){
-		if(old==null)
+	public static Date getLastMonthDay(Date oldDate){
+		if(oldDate==null)
 			return null;
 		Date ret ;
 		Calendar cal1 = Calendar.getInstance();
-		cal1.set(old.getYear()+1900, old.getMonth()-1, old.getDate());
+		cal1.set(oldDate.getYear()+1900, oldDate.getMonth()-1, oldDate.getDate());
 		ret = cal1.getTime();
+		return ret;
+	}
+	public static String getLastMonthWildStr(Date oldDate)
+	{
+		String lastMonthDateStr;
+		
+		if(oldDate == null)
+			return null;
+		Calendar cal1 = Calendar.getInstance();
+		cal1.set(oldDate.getYear()+1900, oldDate.getMonth()-1, 1);
+		Date lastMonthDate = cal1.getTime();
+		lastMonthDateStr = formatDate(lastMonthDate);
+		String ret = change2WildcardDate(lastMonthDateStr, Tools.time_span[2]);
 		return ret;
 	}
 	/**
 	 * 获得指定日期的上一个年的日期
+	 * 使用时请注意，如果瑞年的02-29号的前一年是没有对应的天的
 	 * @param old
 	 * @return
 	 */
@@ -171,6 +186,19 @@ public class Tools {
 		Calendar cal1 = Calendar.getInstance();
 		cal1.set(old.getYear()+1900-1, old.getMonth(), old.getDate());
 		ret = cal1.getTime();
+		return ret;
+	}
+	
+	public static String getLastYearMonthWildStr(Date oldDate){
+		String lastMonthDateStr;
+		
+		if(oldDate == null)
+			return null;
+		Calendar cal1 = Calendar.getInstance();
+		cal1.set(oldDate.getYear()+1900-1, oldDate.getMonth(), 1);
+		Date lastMonthDate = cal1.getTime();
+		lastMonthDateStr = formatDate(lastMonthDate);
+		String ret = change2WildcardDate(lastMonthDateStr, Tools.time_span[2]);
 		return ret;
 	}
 	/**
@@ -266,10 +294,11 @@ public class Tools {
 	
 	public static void main(String[] args) {
 
-		String mathod = Thread.currentThread().getStackTrace()[1].getMethodName();
-		String className = Thread.currentThread().getStackTrace()[1].getClassName();
-		System.out.println(mathod);
-		System.out.println(className);
+		java.sql.Date nowDate;
+		
+		String lastYearDateWildStr = Tools.getLastYearMonthWildStr(java.sql.Date.valueOf("2012-02-29"));
+
+		System.out.println(lastYearDateWildStr);
 	}
 	
 	

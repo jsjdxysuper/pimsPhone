@@ -102,9 +102,8 @@ public class HoleGridServlet extends HttpServlet {
 			oc.closeAll();
 			return null;
 		}
-		Date lastMonthDate = Tools.getLastMonthDay(nowDate);
-		String lastMonthDateStr = Tools.formatDate(lastMonthDate);
-		String lastMonthDateWildStr = Tools.change2WildcardDate(lastMonthDateStr, Tools.time_span[2]);
+		
+		String lastMonthDateWildStr = Tools.getLastMonthWildStr(nowDate);
 		String []dataParas = {lastMonthDateWildStr};
 		log.debug("查询上个月的全省发电信息,日期:"+lastMonthDateWildStr);
 		log.debug("sql查询:"+projectSqlStr+"\n参数："+lastMonthDateWildStr);
@@ -142,9 +141,7 @@ public class HoleGridServlet extends HttpServlet {
 		//获得去年同期月份全省发电量数据
 		ArrayList<Float> lastYearAl = new ArrayList<Float>();
 		
-		Date lastYearDate = Tools.getLastYearDay(java.sql.Date.valueOf(date));
-		String lastYearDateStr = Tools.formatDate(lastYearDate);
-		String lastYearDateWildStr = Tools.change2WildcardDate(lastYearDateStr, Tools.time_span[2]);
+		String lastYearDateWildStr = Tools.getLastYearMonthWildStr(java.sql.Date.valueOf(date));
 		dataParas[0] = lastYearDateWildStr;
 		rs = oc.query(projectSqlStr, dataParas);
 		log.debug("查询去年同期的全省发电信息,日期:"+lastYearDateWildStr);
