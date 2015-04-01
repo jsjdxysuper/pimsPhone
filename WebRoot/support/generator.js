@@ -120,7 +120,7 @@ $(function () {
             tickPixelInterval: 400,
             tickWidth: 0,
 	        title: {
-                y: -40//标题的位置
+                y: -45//标题的位置
 	        },
             labels: {
                 y: 10//表盘刻度位置
@@ -263,7 +263,16 @@ $(document).ready(function() {
 			paging:false,
 			searching:false,
 			info:false,
-			ordering: false,
+			ordering: false
+//			,
+//			"columns":[
+//				{"width":"200px"},
+//				{"width":"200px"},
+//				{"width":"200px"},
+//				{"width":"200px"}]
 		});
+		$("table").css("width","100%");
 	}
+	
+//	resize_gauge();
 });

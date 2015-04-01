@@ -26,7 +26,31 @@
 		<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" />
 		<script src="./support/jquery.json.min.js" type="text/javascript"></script>
 		<script src="./support/generator.js" charset="utf-8"></script>
-	
+	        <script type="text/javascript">
+		
+// 			var resize_gauge = function()
+// 			{
+// 					container_speed=document.getElementById('g1Container');
+// 					container_rpm=document.getElementById('g2Container');
+// 					gaugeParent = $('#gaugeParent');
+
+// 					table_width=document.body.clientWidth;
+// 					wid=table_width/2;
+// 					container_speed.style.width=wid-10+'px';
+// 					container_rpm.style.width=wid-10+'px';
+					
+// 					container_speed.style.height=(container_speed.offsetWidth/9*7)+'px';
+// 					container_rpm.style.height=(container_rpm.offsetWidth/9*7)+'px';
+// 					gaugeParent.css("margin-left",(table_width-(wid-10)*2)/2);
+
+					
+// 			};
+// 			$(document).ready(resize_gauge);
+// 			window.onresize= resize_gauge;
+
+			
+
+        </script>
 	<script type="text/javascript" src="./support/threeMainPage.js"></script>
 	</head>
 	<body>
@@ -55,10 +79,10 @@
 				<div id="g2Container" style="float:left;"></div>
 			</div>
 		</div>
-	
+	<div style="clear:both;height:20px"></div>
 	    <!--机组的统计信息(表格)-->
 		<div style="margin:0 0;">
-			<table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center">   
+			<table id="table_id2" class="display cell-border" cellspacing="0" style="text-align:center;width:100%">   
 				<thead>
 				    <tr>
 				        <td colspan="4" style="text-align:center;font-size:18px;color:#000000">本厂机组统计信息  </td>
@@ -86,7 +110,8 @@
 		</div>
 		<div style="clear:both;height:40px"></div>
 		<div id="columnContainer" style=" clear:both;height: 350px;width:95%"></div>
-        <script type="text/javascript">
+
+                <script type="text/javascript">
 
 			var resize_gauge = function()
 			{
@@ -110,6 +135,5 @@
 			
 
         </script>
-        
 	</body>
 </html>
