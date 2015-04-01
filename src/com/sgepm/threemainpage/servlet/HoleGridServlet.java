@@ -22,6 +22,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.sgepm.Tools.OracleConnection;
+import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
 
 @WebServlet(name="HoleGridServlet",urlPatterns="/HoleGridServlet")
@@ -29,6 +30,7 @@ public class HoleGridServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
+	private String nickName;
 	private Logger log                       = LoggerFactory.getLogger(HoleGridServlet.class);
 	private HashMap<String,Integer> sequence = new HashMap<String,Integer>();
 	private int tableRows                    = 6;
@@ -58,14 +60,17 @@ public class HoleGridServlet extends HttpServlet {
 			throws IOException{
 		
 		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=UTF-8") ;
+		response.setContentType("text/html;charset=UTF-8");
 		response.setCharacterEncoding("UTF-8") ;
 		PrintWriter out = response.getWriter();
 
 		date = request.getParameter("date");
+		String yhid = request.getParameter("yhid");
+		nickName = PimsTools.getNickName(yhid);
+		
 		if(date==null || (date.compareTo("")==0))return;
 		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
-		log.debug("全网信息查询日期:"+date);
+		log.debug("全网信息查询日期:"+date+",nickName:"+nickName);
 		String returnData =  getData();
 		out.write(returnData);
 
@@ -79,7 +84,7 @@ public class HoleGridServlet extends HttpServlet {
 	 */
 	public JSONObject getHoleGridLineData(){
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-,"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		JSONObject jo = new JSONObject();
@@ -175,7 +180,7 @@ public class HoleGridServlet extends HttpServlet {
 	 * ["联络线净受电","16893.00","20.66","559.10","-4.19","-7.17"]]
 	 */
 	public JSONObject getHoleGridTableData(){
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-,"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		String projectSqlStr="select xmmc,sj,ylj,nlj,ytb,ntb from info_dmis_fdqk t where rq like ? order by xmmc desc";

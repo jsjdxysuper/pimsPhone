@@ -209,10 +209,11 @@ submitRequest = function(){
 	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
 	
 	var date = $("#appDate").val().trim();
+	var yhid = getUrlVars()["yhid"];
 	var time_span = $("#menu_title").text().trim();
 	$.ajax({
 		url:"/pimsPhone/GeneratorServlet",
-		data:$.param({"date":date}),
+		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
 		}

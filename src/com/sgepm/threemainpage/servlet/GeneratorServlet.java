@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.sgepm.Tools.OracleConnection;
+import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 
@@ -27,6 +28,7 @@ public class GeneratorServlet extends HttpServlet {
 
 	private String date;
 	private String dateWildcard;
+	private String nickName;//为了清楚是谁在访问服务器
 	private String dcbm = "sykpp";
 	private ResourceBundle properties = ResourceBundle.getBundle("pimsphone");
 	private Logger log                = LoggerFactory.getLogger(GeneratorServlet.class);
@@ -61,7 +63,10 @@ public class GeneratorServlet extends HttpServlet {
 		
 		date = request.getParameter("date");		
 		date = Tools.formatDate(date);//改变日期的格式为YYYY-MM-DD
-		log.debug("post机组日期查询日期:"+date);
+		String yhid = request.getParameter("yhid");
+		nickName = PimsTools.getNickName(yhid);
+		
+		log.debug("post机组页面查询日期:"+date+",nickName:"+nickName+"-");
 		String returnData =  getData();
 //		try {
 //			Thread.currentThread().sleep(5000);
@@ -110,7 +115,7 @@ public class GeneratorServlet extends HttpServlet {
 	 */
 	public JSONObject getEachGenerator(){
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		JSONObject eachGeneratorData = new JSONObject();
@@ -179,7 +184,7 @@ public class GeneratorServlet extends HttpServlet {
 	
 	public JSONObject getMonthLoadRate(){
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		int dayDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.白"));
 		int foreNightDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.前"));

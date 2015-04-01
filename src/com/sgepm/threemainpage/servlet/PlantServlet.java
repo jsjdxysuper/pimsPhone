@@ -35,6 +35,7 @@ public class PlantServlet extends HttpServlet {
 	private String date;
 	private String dateWildcard;
 	private String jzbm = "sykpp";
+	private String nickName;
 	
 	private ResourceBundle properties                  = ResourceBundle.getBundle("pimsphone");
 	//机组编码到机组所属电厂名称的查询字典,Map<String,String>第一个String为机组编码，第二个String为所属电厂名称
@@ -93,11 +94,13 @@ public class PlantServlet extends HttpServlet {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		
-		date                     = request.getParameter("date");
-		dateWildcard             = Tools.change2WildcardDate(date, Tools.time_span[2]);
-		
+		date         = request.getParameter("date");
+		dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
+		String yhid  = request.getParameter("yhid");
+		nickName     = PimsTools.getNickName(yhid);
 		JSONObject plant60GenPower = getPlant60GenPower();
 		
+		log.debug("nickName:"+nickName+"-查询电厂页面,时间:"+date);
 		//页面刷新，历史和实时数据全部获取
 		if(request.getParameter("realtime")==null){
 		
@@ -128,7 +131,7 @@ public class PlantServlet extends HttpServlet {
 	
 	public JSONObject getPlant60GenPower(){
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
 		//完成电厂编码和序号之间的相互转换
@@ -221,7 +224,7 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public JSONArray getOneMonthEnergyData() {
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 			
 		String plantsStr = properties.getString("pims.plant.graph1.plants");
@@ -327,7 +330,7 @@ public class PlantServlet extends HttpServlet {
 //				'sykppg1','sykppg2','tlpg5','tlpg6','ykpg3','ykpg4','dlzhpg1','dlzhpg2','tlqhpg1','tlqhpg9','cyyshpg1','cyyshpg2')
 //				and rq <= '2014-10-11' and rq >= '2014-01-01' and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		//分段柱图所要显示的电厂列表
@@ -437,7 +440,7 @@ public class PlantServlet extends HttpServlet {
 	 */
 	public JSONObject getProgressData(){
 		
-		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		OracleConnection oc = new OracleConnection();
 		//select substr(rq,0,7),sum(rdl) from info_dmis_zdhcdc t where dcbm='sykpp' and rq>='2014-01-01' and rq <='2014-03-12' group by substr(rq,0,7)

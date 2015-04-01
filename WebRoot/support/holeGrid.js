@@ -107,7 +107,8 @@ $(document).ready(function() {
 	        	data:function ( d ) {
 	// 		        	alert($('#appDate').serialize());
 	        		var date = $("#appDate").val().trim();
-	        		return {date:date}; 
+	        		var yhid = getUrlVars()["yhid"];
+	        		return {"date":date,"yhid":yhid}; 
 	        	},
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来
 			      	//alert(json.line1);

@@ -12,12 +12,13 @@ public class PimsTools {
 
 	private static ResourceBundle properties = ResourceBundle.getBundle("pimsphone");
 	
-	private static OracleConnection oc = new OracleConnection();
+	
 	public static HashMap<String,String>plantAbbrDic = null;
 	
 	public static void setPlantAbbrDic(){
 		plantAbbrDic = new HashMap<String,String>();
 		String sql = "select dcmc,yxtfbm from base_dcbm t";
+		OracleConnection oc = new OracleConnection();
 		ResultSet rs=  oc.query(sql,null);
 		try {
 			while(rs.next()){
@@ -27,6 +28,7 @@ public class PimsTools {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		oc.closeAll();
 	}
 	
 	public static HashMap<String,String> getPlantAbbrDic(){
@@ -64,7 +66,31 @@ public class PimsTools {
 		return generatorList;
 	}
 	
+	
+	//select ssdc from pcadb.base_yhbm where yhid = '1'
+	/**
+	 * 获取电厂用户的nickName
+	 * nickName = yhid+ssdc
+	 * @param yhid
+	 * @return
+	 */
+	public static String getNickName(String yhid){
 
+		String sql = "select ssdc from pcadb.base_yhbm where yhid = ?";
+		OracleConnection oc = new OracleConnection();
+		String paras[] = {yhid};
+		ResultSet rs=  oc.query(sql,paras);
+		try {
+			while(rs.next()){
+				yhid += rs.getString("ssdc");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		oc.closeAll();
+		return yhid;
+	}
 	public static void main(String[] args) {
 		ArrayList<String> t = getGeneratorsList("pims","plant","graph1");
 		System.out.println(t);

@@ -250,13 +250,14 @@ $(function () {
 
 
 intervalFunction = function(){
+	var yhid = getUrlVars()["yhid"];
 	if($("#appDate").length>0)
 		var date = $("#appDate").val().trim();
 	else
 		var date = null;
 	$.ajax({
 		url:"/pimsPhone/PlantServlet",
-		data:$.param({"realtime":true,"date":date}),
+		data:$.param({"realtime":true,"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
 		}
@@ -313,12 +314,12 @@ submitRequest= function(){
 	//按下按钮之后的效果
 	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
 	
-	
+	var yhid = getUrlVars()["yhid"];
 	var date = $("#appDate").val().trim();
 	//取历史数据,捎带把实时数据取回来
 	$.ajax({
 		url:"/pimsPhone/PlantServlet",
-		data:$.param({"date":date}),
+		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
 //			ajaxbg.show(); 
