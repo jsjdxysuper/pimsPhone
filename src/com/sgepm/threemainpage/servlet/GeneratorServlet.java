@@ -23,7 +23,7 @@ import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-@WebServlet(name="GeneratorServlet",urlPatterns="/GeneratorServlet")
+@WebServlet(name="GeneratorServlet",urlPatterns="/GeneratorServlet.h")
 public class GeneratorServlet extends HttpServlet {
 
 	private String date;
@@ -186,9 +186,7 @@ public class GeneratorServlet extends HttpServlet {
 		
 		log.debug("nickName:"+nickName+"-"+"进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
-		int dayDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.白"));
-		int foreNightDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.前"));
-		int laterNightDutyHour = Integer.parseInt(properties.getString("pims.plant.dutyhour.后"));
+
 		OracleConnection oc = new OracleConnection();
 //		select sum(decode(t.bc,'1','9','2','8','3','7','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from
 //		pri_zbb1 t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like '2015-01-%%'
