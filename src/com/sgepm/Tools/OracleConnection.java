@@ -97,6 +97,37 @@ public class OracleConnection {
 		return rs;
 	}
 	
+	public int update(String sqlStr,String []paras){
+		con = getCon();
+		
+		try {
+			ps = con.prepareStatement(sqlStr);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(paras!=null){
+			for(int i=0;i<paras.length;i++)
+				try {
+					ps.setString(i+1, paras[i]);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		}
+		
+		int ret = 0;
+		try {
+			ret = ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return ret;
+	}
+	
 	public String printRS(){
 		String str=new String();
 		try {

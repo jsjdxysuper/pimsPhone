@@ -294,11 +294,24 @@ public class Tools {
 	
 	public static void main(String[] args) {
 
-		java.sql.Date nowDate;
+		Calendar now      = Calendar.getInstance();
+		int      year     = now.get(Calendar.YEAR);
+		int      month    = now.get(Calendar.MONTH);
+		int      day      = now.get(Calendar.DATE);
+		int      hour     = now.get(Calendar.HOUR_OF_DAY);
+		int      min      = now.get(Calendar.MINUTE);
+		int      second   = now.get(Calendar.SECOND);
 		
-		String lastYearDateWildStr = Tools.getLastYearMonthWildStr(java.sql.Date.valueOf("2012-02-29"));
-
-		System.out.println(lastYearDateWildStr);
+		String todyDate = String.format("%04d-%02d-%02d", year,month+1,day);
+		String nowTime = String.format("%02d:%02d:%02d", hour,min,second);
+		System.out.println(todyDate+" "+nowTime);
+		
+		Date nowDate = new Date();
+		System.out.printf("%tF%n",nowDate);
+		System.out.printf("%tT%n",nowDate);
+		
+		System.out.printf(String.format("%tF%n", nowDate));
+		System.out.printf(String.format("%tT%n",nowDate));
 	}
 	
 	
