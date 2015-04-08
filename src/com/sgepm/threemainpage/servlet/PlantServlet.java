@@ -29,7 +29,7 @@ import com.sgepm.threemainpage.entity.PlantYearAccumulateDataSeries;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 
 
-@WebServlet(name="PlantServlet",urlPatterns="/PlantServlet")
+@WebServlet(name="PlantServlet",urlPatterns="/PlantServlet.h")
 public class PlantServlet extends HttpServlet {
 
 	private String date;

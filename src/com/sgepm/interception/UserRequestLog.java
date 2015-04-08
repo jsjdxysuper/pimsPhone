@@ -14,7 +14,7 @@ import com.sgepm.Tools.OracleConnection;
 public class UserRequestLog  extends AbstractInterceptor{
 
 	private Logger log = LoggerFactory.getLogger(UserRequestLog.class);
-	private static int i = 0;
+	private static long i = 0;
 	@Override
 	public String intercept(ActionInvocation invocation) throws Exception {
 
@@ -25,13 +25,11 @@ public class UserRequestLog  extends AbstractInterceptor{
 			yhid = names[0];
 		else
 			yhid = "";
-		log.info("i am UserRequestLog, yhid is:"+yhid);
+		
 		String method = invocation.getInvocationContext().getName(); 
-		log.info("request method is:"+method);
 		
 		String className = invocation.getAction().getClass().getSimpleName();
 		
-		log.info("request class is:"+className);
 		String result = invocation.invoke();
 		//insert into info_user_request_log (rq,sj,yhid,class,method,message) values('2015-04-08','09:43:00','123','class','method','message')
 		OracleConnection oc = new OracleConnection();

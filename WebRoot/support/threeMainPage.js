@@ -60,9 +60,6 @@ setDate=function () {
 	if(0 <month&&month < 10)  month = "0"+month;
 	if(0 < day&&day < 10)  day   = "0"+day;
 	var date_now =(year)+'-'+month+'-'+day;
-	console.debug(year);
-	console.debug(month);
-	console.debug(day);
 	//alert(date_now);
 	$("#appDate").val(" "+date_now+" ");
 	//$("#background").css("height",document.body.scrollHeight+document.body.scrollTop);

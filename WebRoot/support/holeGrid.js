@@ -102,7 +102,7 @@ $(document).ready(function() {
 		table_example_id2 = $("#table_example").DataTable({
 	// 		"processing": true,
 		    "ajax":{
-	        	url:"/pimsPhone/HoleGridServlet",
+	        	url:"/pimsPhone/HoleGrid_dayEnergyTableData",
 	        	type:"POST",
 	        	data:function ( d ) {
 	// 		        	alert($('#appDate').serialize());
@@ -113,22 +113,7 @@ $(document).ready(function() {
 		        "dataSrc":function(json){//在此操作来自服务器的数据，把表格的返回给dataTables，把页面其余部分的给拦截下来
 			      	//alert(json.line1);
 			      	//$("#loading").html(json.line1);
-			      	thisMonthDate = json.thisMonthDate;
-					lastYearDate = json.lastYearDate;
-					lastMonthDate = json.lastMonthDate;
-			      	
-			      	optionContainer.series=[
-			      	{
-			      		name: '同期',
-			      		data:json.lastYear
-			      	},{
-			      		name: '上月',
-			      		data:json.lastMonth
-			      	},{
-			      		name: '本月',
-			      		data:json.thisMonth
-			      	}];
-			      	chart = new Highcharts.Chart(optionContainer);
+
 			      	
 			      //平常按钮的效果
 					$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
@@ -153,7 +138,42 @@ submitRequest = function(){
 	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
 	
 	if(table_example_id2!=null)
-		table_example_id2.ajax.url("/pimsPhone/HoleGridServlet").load();				
+		table_example_id2.ajax.url("/pimsPhone/HoleGrid_dayEnergyTableData").load();	
+	
+	var yhid = getUrlVars()["yhid"];
+	var date = $("#appDate").val().trim();
+	$.ajax({
+		url:"/pimsPhone/HoleGrid_monthEnergyLineData",
+		data:$.param({"date":date,"yhid":yhid}),
+		type:"post",
+		beforeSend:function(){
+		}
+	})
+	.done(function(jsonObject,statusText){
+	
+		
+      	thisMonthDate = jsonObject.thisMonthDate;
+		lastYearDate = jsonObject.lastYearDate;
+		lastMonthDate = jsonObject.lastMonthDate;
+      	
+      	optionContainer.series=[
+      	{
+      		name: '同期',
+      		data:jsonObject.lastYear
+      	},{
+      		name: '上月',
+      		data:jsonObject.lastMonth
+      	},{
+      		name: '本月',
+      		data:jsonObject.thisMonth
+      	}];
+      	chart = new Highcharts.Chart(optionContainer);
+		
+		
+	})
+	.fail(function(){
+//		alert("链接超时,请刷新");
+	});
 };
 
 

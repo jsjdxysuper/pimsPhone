@@ -256,15 +256,13 @@ intervalFunction = function(){
 	else
 		var date = null;
 	$.ajax({
-		url:"/pimsPhone/PlantServlet",
+		url:"/pimsPhone/Plant_plant60GensPowerLineData",
 		data:$.param({"realtime":true,"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
 		}
 	})
-	.done(function(data1,statusText){
-		var dataReceived = $.evalJSON(data1);
-		plant60GenPower = dataReceived.plant60GenPower;
+	.done(function(plant60GenPower,statusText){
 
 		//给实时曲线的时间轴变量赋值
 		KTimes = plant60GenPower.KTimes;
@@ -297,13 +295,9 @@ intervalFunction = function(){
 	      	];
 		
 		chart = new Highcharts.Chart(realTimeLineOption);
-//		position: relative;
-//		background-color: rgba(0,190,200,1);
-//		top:4px;
 
 	})
 	.fail(function(){
-//		alert("链接超时,请刷新");
 	});
 };
 
@@ -316,20 +310,17 @@ submitRequest= function(){
 	
 	var yhid = getUrlVars()["yhid"];
 	var date = $("#appDate").val().trim();
-	//取历史数据,捎带把实时数据取回来
+	
+	
+	//取实时曲线数据
 	$.ajax({
-		url:"/pimsPhone/PlantServlet",
+		url:"/pimsPhone/Plant_plant60GensPowerLineData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
-//			ajaxbg.show(); 
 		}
 	})
-	.done(function(data1,statusText){
-	
-		var dataReceived = $.evalJSON(data1);
-//		alert("缓存测试2");
-		plant60GenPower = dataReceived.plant60GenPower;
+	.done(function(plant60GenPower,statusText){
 
 		//给实时曲线的时间轴变量赋值
 		KTimes = plant60GenPower.KTimes;
@@ -376,12 +367,6 @@ submitRequest= function(){
 		
 		chart = new Highcharts.Chart(realTimeLineOption);
 		
-     	columnOption.series[0].data=dataReceived.columnData;
-     	chart = new Highcharts.Chart(columnOption);
-     	
-     	stackColumnOption.xAxis.categories = dataReceived.seriesPlantName;
-     	stackColumnOption.series=dataReceived.yearAccumulatePlantPowerSeries;
-     	chart = new Highcharts.Chart(stackColumnOption); 
      	//平常按钮的效果
 		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
 	})
@@ -390,6 +375,46 @@ submitRequest= function(){
 	});
 	
 	
+	
+	//取相关电厂月度发电量柱图数据
+	$.ajax({
+		url:"/pimsPhone/Plant_oneMonth60GensEnergyColumnData",
+		data:$.param({"date":date,"yhid":yhid}),
+		type:"post",
+		beforeSend:function(){
+		}
+	})
+	.done(function(recData,statusText){
+	
+		
+     	columnOption.series[0].data=recData.oneMonth60GensEnergyColumnData;
+     	chart = new Highcharts.Chart(columnOption);
+		
+     	//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
+	})
+	.fail(function(){
+	});
+	
+	//取相关电厂年累计发电量数据
+	$.ajax({
+		url:"/pimsPhone/Plant_year60GensAccuEnergyStackColumnData",
+		data:$.param({"date":date,"yhid":yhid}),
+		type:"post",
+		beforeSend:function(){
+		}
+	})
+	.done(function(oneMonth60GensEnergyColumnData,statusText){
+	
+     	stackColumnOption.xAxis.categories = oneMonth60GensEnergyColumnData.seriesPlantName;
+     	stackColumnOption.series=oneMonth60GensEnergyColumnData.yearAccumulatePlantPowerSeries;
+     	chart = new Highcharts.Chart(stackColumnOption); 
+		
+     	//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
+	})
+	.fail(function(){
+	});
 	
 	$(document).ready(function() {
 	

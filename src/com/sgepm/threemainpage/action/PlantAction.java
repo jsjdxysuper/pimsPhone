@@ -221,7 +221,6 @@ public class PlantAction  extends ActionSupport{
 			if(tempName.compareTo("³¯ÑôÑàÉ½ºþµç³§")==0)
 				tempName="H";
 			onePlantDataInOneMonth.add(tempName);
-			System.out.println(plantVectorData.get(i).getName());
 			onePlantDataInOneMonth.add(plantVectorData.get(i).getData());
 			allColumnData.add(onePlantDataInOneMonth);
 		}
@@ -306,7 +305,7 @@ public class PlantAction  extends ActionSupport{
 						temp.getData().set(i, ydl);
 					}
 				}
-				log.info("yf:"+yf+",ydl:"+ydl+",ssdcmc:"+ssdcmc);
+				//log.info("yf:"+yf+",ydl:"+ydl+",ssdcmc:"+ssdcmc);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
