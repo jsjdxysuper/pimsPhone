@@ -211,19 +211,41 @@ submitRequest = function(){
 	var date = $("#appDate").val().trim();
 	var yhid = getUrlVars()["yhid"];
 	var time_span = $("#menu_title").text().trim();
+	
+	//获取表盘数据
 	$.ajax({
-		url:"/pimsPhone/GeneratorServlet",
+		url:"/pimsPhone/Generator_dayGensLoadGaugeData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
 		}
 	})
     .done(function(data,statusText){
-
-		var dataReceived = $.evalJSON(data);
 		
-		columnOption.series[0].data=dataReceived.monthLoadRate;
- 		chart = new Highcharts.Chart(columnOption);
+		g1Option.series[0].data[0] = parseFloat((data.g1Load).toFixed(2));
+		chart = new Highcharts.Chart(g1Option);
+		
+		g2Option.series[0].data[0] = parseFloat((data.g2Load).toFixed(2));
+		chart = new Highcharts.Chart(g2Option);
+		
+		//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
+    })
+    .fail(function(){
+    });//end for 	$.ajax({
+	
+	
+	
+	
+	//获取表格数据
+	$.ajax({
+		url:"/pimsPhone/Generator_dayGensDetailTableData",
+		data:$.param({"date":date,"yhid":yhid}),
+		type:"post",
+		beforeSend:function(){
+		}
+	})
+    .done(function(dataReceived,statusText){
 
 		$("#average_power").text(dataReceived.average);
 		$("#energy").text(dataReceived.energy);
@@ -240,17 +262,31 @@ submitRequest = function(){
 		$("#g2Average").text(dataReceived.g2Average);
 		$("#g2TimeUse").text(dataReceived.g2TimeUse);
 		
-		g1Option.series[0].data[0] = parseFloat((dataReceived.g1Average/GENERATORVOLUME*100).toFixed(2));
-		chart = new Highcharts.Chart(g1Option);
-		
-		g2Option.series[0].data[0] = parseFloat((dataReceived.g2Average/GENERATORVOLUME*100).toFixed(2));
-		chart = new Highcharts.Chart(g2Option);
-		
 		//平常按钮的效果
 		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
     })
     .fail(function(){
-//    	alert("链接超时,请刷新");
+    });//end for 	$.ajax({
+	
+	
+	
+	//获取值间发电量对比柱图
+	$.ajax({
+		url:"/pimsPhone/Generator_monthInterDutyLoadColumnData",
+		data:$.param({"date":date,"yhid":yhid}),
+		type:"post",
+		beforeSend:function(){
+		}
+	})
+    .done(function(dataReceived,statusText){
+		
+		columnOption.series[0].data=dataReceived.monthLoadRate;
+ 		chart = new Highcharts.Chart(columnOption);
+
+		//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
+    })
+    .fail(function(){
     });//end for 	$.ajax({
 };//end for submitRequest = function(){
 

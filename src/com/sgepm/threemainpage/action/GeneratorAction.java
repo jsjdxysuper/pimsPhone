@@ -33,7 +33,78 @@ public class GeneratorAction  extends ActionSupport{
 	 *  获取机组日电量信息,由日电量信息计算利用小时数,平均有功,负荷率
 	 * @return 康平机组信息的Map
 	 */
-	public String dayGensLoadLineData(){
+	public String dayGensLoadGaugeData(){
+		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
+				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
+		
+		float g1Average,g1Energy,g1TimeUse;
+		float g2Average,g2Energy,g2TimeUse;
+		
+
+		g1Average=g1Energy=g1TimeUse=0;
+		g2Average=g2Energy=g2TimeUse=0;
+		
+		String generatorSqlStr="select t.jzbm,t.jzmc,t.rdl from info_dmis_zdhcjz t,base_jzbm b where t.jzbm=b.jzbm and b.ssdcbm= ? and t.rq= ? order by jzbm,rq";
+
+		String dcbm = "sykpp";
+		String date = ServletActionContext.getRequest().getParameter("date");
+		String []dataParas={dcbm,date};
+		log.info("sql查询:"+generatorSqlStr+"\n参数:"+dcbm+","+date);
+		
+		OracleConnection oc = new OracleConnection();
+		ResultSet rs = oc.query(generatorSqlStr,dataParas);
+		
+		try {
+			while(rs.next()){
+				
+				String jzbm = rs.getString("jzbm");
+				String jzmc = rs.getString("jzmc");
+				float  rdl  = rs.getFloat("rdl");
+
+				if(jzbm.compareTo("sykppg1")==0){
+					g1Energy = rdl;
+				}
+				else if(jzbm.compareTo("sykppg2")==0){
+					g2Energy = rdl;
+				}
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		oc.closeAll();
+		
+		
+		float energy  = g1Energy+g2Energy;
+		float average = (energy)*10/24;
+		float timeUse = energy*10/(Tools.rongLiang*2);
+		
+
+		
+		
+		g1Average = g1Energy*10/24;
+		g1TimeUse = g1Energy*10/Tools.rongLiang;
+		
+		g2Average = g2Energy*10/24;
+		g2TimeUse = g2Energy*10/Tools.rongLiang;
+
+		float g1Load = g1Energy*10/(24*Tools.rongLiang)*100;
+		float g2Load = g2Energy*10/(24*Tools.rongLiang)*100;
+		
+		dataMap.clear();
+
+		dataMap.put("g1Load", Tools.float2Format(g1Load, 2));
+		dataMap.put("g2Load", Tools.float2Format(g2Load, 2));
+		return SUCCESS;
+	}
+	
+	
+	
+	/**
+	 * 获取机组的详细表格信息
+	 * @return
+	 */
+	public String dayGensDetailTableData(){
 		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
@@ -102,6 +173,10 @@ public class GeneratorAction  extends ActionSupport{
 		return SUCCESS;
 	}
 	
+	/**
+	 * 获取电厂内值间月度负荷率对比数据
+	 * @return
+	 */
 	public String monthInterDutyLoadColumnData(){
 		
 		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
