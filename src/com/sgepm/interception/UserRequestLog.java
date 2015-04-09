@@ -44,6 +44,8 @@ public class UserRequestLog  extends AbstractInterceptor{
 		
 		//向数据库中插入访问日志
 		oc.update(sqlStr, paras);
+		
+		oc.closeAll();
 		return   result;
 	}
 

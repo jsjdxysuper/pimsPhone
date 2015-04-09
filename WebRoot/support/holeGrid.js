@@ -40,7 +40,7 @@ $(function () {
         },
         yAxis: {
             title: {
-                text: '',
+                text: '发电量(万千瓦时)',
             },
             plotLines: [{
                 value: 0,
@@ -151,7 +151,8 @@ submitRequest = function(){
 	})
 	.done(function(jsonObject,statusText){
 	
-		
+		//平常按钮的效果
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
       	thisMonthDate = jsonObject.thisMonthDate;
 		lastYearDate = jsonObject.lastYearDate;
 		lastMonthDate = jsonObject.lastMonthDate;

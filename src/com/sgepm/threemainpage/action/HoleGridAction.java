@@ -14,12 +14,11 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
-import com.sgepm.threemainpage.servlet.HoleGridServlet;
 
 public class HoleGridAction extends ActionSupport{
 //	private String date;
 //	private String dateWildcard;
-	private Logger log                       = LoggerFactory.getLogger(HoleGridServlet.class);
+	private Logger log                       = LoggerFactory.getLogger(HoleGridAction.class);
 	private HashMap<String,Integer> sequence = new HashMap<String,Integer>();
 	private int tableRows                    = 6;
 	private int tableColumns                 = 6;
@@ -53,7 +52,7 @@ public class HoleGridAction extends ActionSupport{
 	 * @return
 	 */
 	public String monthEnergyLineData(){
-		dataMap.clear();
+		
 		
 		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
@@ -136,6 +135,8 @@ public class HoleGridAction extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		oc.closeAll();
+		dataMap.clear();
 		dataMap.put("lastYearDate", allDate.get(0));
 		dataMap.put("lastMonthDate", allDate.get(1));
 		dataMap.put("thisMonthDate", allDate.get(2));
@@ -160,11 +161,13 @@ public class HoleGridAction extends ActionSupport{
 		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		OracleConnection oc = new OracleConnection();
+		
 		String projectSqlStr="select xmmc,sj,ylj,nlj,ytb,ntb from info_dmis_fdqk t where rq like ? order by xmmc desc";
 		String date = ServletActionContext.getRequest().getParameter("date");
 		String []dataParas = {date};
 		log.info("sql查询:"+projectSqlStr+"\n参数："+dataParas[0]);
+		
+		OracleConnection oc = new OracleConnection();
 		ResultSet rs= oc.query(projectSqlStr,dataParas);
 		
 		Vector<Vector<String>> vector = new Vector<Vector<String>>();
@@ -215,6 +218,8 @@ public class HoleGridAction extends ActionSupport{
 			e.printStackTrace();
 		}
 
+		oc.closeAll();
+		dataMap.clear();
 		dataMap.put("data", vector);
 		return SUCCESS;
 	}

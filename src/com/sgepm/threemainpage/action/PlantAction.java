@@ -225,6 +225,7 @@ public class PlantAction  extends ActionSupport{
 			allColumnData.add(onePlantDataInOneMonth);
 		}
 		
+		dataMap.clear();
 		dataMap.put("oneMonth60GensEnergyColumnData", allColumnData);
 		return SUCCESS;
 		
