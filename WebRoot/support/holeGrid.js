@@ -2,7 +2,7 @@ var optionContainer =null;
 var thisMonthDate = null;
 var lastYearDate = null;
 var lastMonthDate = null;
-var tableColumnName = ["È«Ê¡·¢µç","Ö±µ÷»ğµç","Ö±µ÷Ë®µç","Ö±µ÷·çµç","Ö±µ÷ºËµç","ÁªÂçÏß¾»ÊÜ"];
+var tableColumnName = ["å…¨çœå‘ç”µ","ç›´è°ƒç«ç”µ","ç›´è°ƒæ°´ç”µ","ç›´è°ƒé£ç”µ","ç›´è°ƒæ ¸ç”µ","è”ç»œçº¿å‡€å—"];
 			
 $(function () {
 	optionContainer={
@@ -27,7 +27,7 @@ $(function () {
 		labels:{
 		},
         title: {
-            text: 'È«ÍøÔÂ¶È·¢µçÁ¿',
+            text: 'å…¨ç½‘æœˆåº¦å‘ç”µé‡',
 //                  x: -20, //center 
         },
         subtitle: {
@@ -40,7 +40,7 @@ $(function () {
         },
         yAxis: {
             title: {
-                text: '·¢µçÁ¿(ÍòÇ§ÍßÊ±)',
+                text: 'å‘ç”µé‡(ä¸‡åƒç“¦æ—¶)',
             },
             plotLines: [{
                 value: 0,
@@ -52,20 +52,20 @@ $(function () {
 			}
         },
         tooltip: {
-//			valueSuffix: 'ÍòÇ§ÍßÊ±',
+//			valueSuffix: 'ä¸‡åƒç“¦æ—¶',
 //			headerFormat:"<span style=\"font-size: 10px\">$(\"#appDate\").value(),{point.key}</span><br/>",
 //			pointFormat:"{series.name}:<b>aaa{point.y}</b>"
 			formatter:function(){
 				var temp = null;
-				if(this.series.name=="Í¬ÆÚ")
+				if(this.series.name=="åŒæœŸ")
 					temp = lastYearDate;
-				else if(this.series.name=="ÉÏÔÂ")
+				else if(this.series.name=="ä¸Šæœˆ")
 					temp = lastMonthDate;
-				else if(this.series.name=="±¾ÔÂ")
+				else if(this.series.name=="æœ¬æœˆ")
 					temp = thisMonthDate;
 				
 				var s = (temp[this.x-1])+'';
-				s += '<br/>'+this.y+'ÍòÇ§ÍßÊ±';
+				s += '<br/>'+this.y+'ä¸‡åƒç“¦æ—¶';
 				return s;
 			}
         },
@@ -79,12 +79,12 @@ $(function () {
         }
 //             ,
 //             series: [{
-//                 name: 'Í¬ÆÚ',
+//                 name: 'Í¬ï¿½ï¿½',
 //                 data: [12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
 //                 		12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
 //                 		12.0, 12.9, 12.5, 14.5, 18.2]
 //             }]
-	};//È«ÍøÏßÍ¼
+	};//å…¨ç½‘çº¿å›¾
         
     chart = new Highcharts.Chart(optionContainer);
 });//end for $(function () {	
@@ -110,12 +110,12 @@ $(document).ready(function() {
 	        		var yhid = getUrlVars()["yhid"];
 	        		return {"date":date,"yhid":yhid}; 
 	        	},
-		        "dataSrc":function(json){//ÔÚ´Ë²Ù×÷À´×Ô·şÎñÆ÷µÄÊı¾İ£¬°Ñ±í¸ñµÄ·µ»Ø¸ødataTables£¬°ÑÒ³ÃæÆäÓà²¿·ÖµÄ¸øÀ¹½ØÏÂÀ´
+		        "dataSrc":function(json){//åœ¨æ­¤æ“ä½œæ¥è‡ªæœåŠ¡å™¨çš„æ•°æ®ï¼ŒæŠŠè¡¨æ ¼çš„è¿”å›ç»™dataTablesï¼ŒæŠŠé¡µé¢å…¶ä½™éƒ¨åˆ†çš„ç»™æ‹¦æˆªä¸‹æ¥
 			      	//alert(json.line1);
 			      	//$("#loading").html(json.line1);
 
 			      	
-			      //Æ½³£°´Å¥µÄĞ§¹û
+			      //Æ½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½Ğ§ï¿½ï¿½
 					$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
 			      	return json.data;
 	  			}//end for "dataSrc":function(json){
@@ -134,7 +134,7 @@ $(document).ready(function() {
 });
 
 submitRequest = function(){
-	//°´ÏÂ°´Å¥Ö®ºóµÄĞ§¹û
+	//æŒ‰ä¸‹æŒ‰é’®ä¹‹åçš„æ•ˆæœ
 	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
 	
 	if(table_example_id2!=null)
@@ -151,7 +151,7 @@ submitRequest = function(){
 	})
 	.done(function(jsonObject,statusText){
 	
-		//Æ½³£°´Å¥µÄĞ§¹û
+		//Æ½ï¿½ï¿½ï¿½ï¿½Å¥ï¿½ï¿½Ğ§ï¿½ï¿½
 		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
       	thisMonthDate = jsonObject.thisMonthDate;
 		lastYearDate = jsonObject.lastYearDate;
@@ -159,13 +159,13 @@ submitRequest = function(){
       	
       	optionContainer.series=[
       	{
-      		name: 'Í¬ÆÚ',
+      		name: 'åŒæœŸ',
       		data:jsonObject.lastYear
       	},{
-      		name: 'ÉÏÔÂ',
+      		name: 'ä¸Šæœˆ',
       		data:jsonObject.lastMonth
       	},{
-      		name: '±¾ÔÂ',
+      		name: 'æœ¬æœˆ',
       		data:jsonObject.thisMonth
       	}];
       	chart = new Highcharts.Chart(optionContainer);
@@ -173,7 +173,7 @@ submitRequest = function(){
 		
 	})
 	.fail(function(){
-//		alert("Á´½Ó³¬Ê±,ÇëË¢ĞÂ");
+//		alert("ï¿½ï¿½ï¿½Ó³ï¿½Ê±,ï¿½ï¿½Ë¢ï¿½ï¿½");
 	});
 };
 

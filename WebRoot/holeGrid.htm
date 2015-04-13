@@ -6,31 +6,87 @@
     <meta name="viewport" content="width=device-width">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 		<title>Highcharts Example</title>
+	<script type="text/javascript"
+        src="./support/localStorage.min.js?swfURL=./support/localStorage.swf">
+	</script>
+	<script type="text/javascript"
+        src="./support/jsCache.min.js">
+	</script>
+<script type="text/javascript">
+jsCache.domReady(function () {
+    jsCache.detect("if lt IE 9", function () {
+        // Include some IE 8 or lower specific code
+        alert("IE 8 or lower!");
+    }).load(
+        // Load bootstrap CSS and CSS fixes for old IE versions
+        {url : "./support/jquery-1.11.2.min.js"}
+    ).then(function () {
+        // Load image and append to element that is gotten by use of jQuery!
+        jsCache.load(
+            {url : "./support/bootstrap/js/bootstrap.min.js"},
+            {url:"./support/datatable/media/js/jquery.dataTables.min.js"},
+            {url : "./support/bootstrap/css/bootstrap.min.css"},
+            {url : "./support/datatable/media/css/jquery.dataTables.min.css"},
+            {url : "./support/datatable/media/js/jquery.dataTables.min.js"},
+            
+            {url :"./support/datepicker/js/mobiscroll.core-2.5.2-zh.js"},
+        	{url : "./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js"},
+            
+            {url :"./support/datepicker/js/mobiscroll.android-ics-2.5.2.js"},
+            
+            {url : "./support/datepicker/js/mobiscroll.datetime-2.5.1.js"},
+            {url : "./support/datepicker/js/mobiscroll.core-2.5.2.js"},
+            
+            {url : "./support/datepicker/css/mobiscroll.core-2.5.2.css"},
+            {url : "./support/datepicker/css/mobiscroll.animation-2.5.2.css"},
+            {url : "./support/datepicker/css/mobiscroll.android-ics-2.5.2.css"},
+            {url : "./support/threeMainPage.css"},
+            {url : "./support/jquery.json.min.js"},
+            
+            
+            {url : "./support/highcharts/js/highcharts.js"}
+        ).then(function(){
+        	jsCache.load(	
 
-		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script>
-    	<script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>    
-        <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" /> 
+        	{url : "./support/threeMainPage.js"},
+        	{url : "./support/highcharts/js/modules/exporting.js"}
 
-        <link rel="stylesheet" type="text/css" href="./support/datatable/media/css/jquery.dataTables.min.css">
-    	<script type="text/javascript" src="./support/datatable/media/js/jquery.dataTables.min.js"></script> 
+        	).then(function(){
+        		jsCache.load({url : "./support/holeGrid.js"});
+        		jsCache.remove("./support/holeGrid.js");
+        		jsCache.remove("./support/threeMainPage.js");//21
+        	});
+        });//end for ).then(function(){
+    });//end for ).then(function () {
+});
+</script>
+
+
+
+<!-- 		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script> -->
+<!--     	<script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>     -->
+<!--         <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" />  -->
+
+<!--         <link rel="stylesheet" type="text/css" href="./support/datatable/media/css/jquery.dataTables.min.css"> -->
+<!--     	<script type="text/javascript" src="./support/datatable/media/js/jquery.dataTables.min.js"></script>  -->
         <!--日期选择框-->
-		<script src="./support/datepicker/js/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
-        <script src="./support/datepicker/js/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
-        <link href="./support/datepicker/css/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
-        <link href="./support/datepicker/css/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" />
-        <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script>
-        <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
-        <script src="./support/datepicker/js/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
-        <link href="./support/datepicker/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />        
+<!-- 		<script src="./support/datepicker/js/mobiscroll.core-2.5.2.js" type="text/javascript"></script> -->
+<!--         <script src="./support/datepicker/js/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script> -->
+<!--         <link href="./support/datepicker/css/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" /> -->
+<!--         <link href="./support/datepicker/css/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" /> -->
+<!--         <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script> -->
+<!--         <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script> -->
+<!--         <script src="./support/datepicker/js/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script> -->
+<!--         <link href="./support/datepicker/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />         -->
 		
-    	<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" />
-		<script src="./support/jquery.json.min.js" type="text/javascript"></script>
-		<script type="text/javascript" src="./support/threeMainPage.js"></script>
-		<script type="text/javascript" src="./support/holeGrid.js" charset="gbk"></script>
+<!--     	<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" /> -->
+<!-- 		<script src="./support/jquery.json.min.js" type="text/javascript"></script> -->
+<!-- 		<script type="text/javascript" src="./support/threeMainPage.js"></script> -->
+<!-- 		<script type="text/javascript" src="./support/holeGrid.js" charset="gbk"></script> -->
 	</head>
 <body>
-<script src="./support/highcharts/js/highcharts.js"></script>
-<script src="./support/highcharts/js/modules/exporting.js"></script>
+<!-- <script src="./support/highcharts/js/highcharts.js"></script> -->
+<!-- <script src="./support/highcharts/js/modules/exporting.js"></script> -->
 
 
 		
@@ -42,7 +98,7 @@
     </div>
 	<div style="float:right;">
 		<a href="javascript:submitRequest();" class="button"  id="requestButton"
-			style="width:50px;height:30px;font-size:18px;margin:5px 0;float:left">查询</a>
+			style="width:50px;height:30px;font-size:18px;margin:5px 0;float:left;color:white;text-decoration:none;">查询</a>
 	</div>
 </div>
 
