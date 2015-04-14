@@ -131,7 +131,43 @@ $(document).ready(function() {
 			}
 		});//end for table_example_id2 = $("#table_example").DataTable({
 	}//end for if($("#table_example").length > 0)
-});
+	
+	var yhid = getUrlVars()["yhid"];
+	var date = $("#appDate").val().trim();
+	$.ajax({
+		url:"/pimsPhone/HoleGrid_monthEnergyLineData",
+		data:$.param({"date":date,"yhid":yhid}),
+		type:"post",
+		beforeSend:function(){
+		}
+	})
+	.done(function(jsonObject,statusText){
+	
+		//ƽ����ť��Ч��
+		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
+      	thisMonthDate = jsonObject.thisMonthDate;
+		lastYearDate = jsonObject.lastYearDate;
+		lastMonthDate = jsonObject.lastMonthDate;
+      	
+      	optionContainer.series=[
+      	{
+      		name: '同期',
+      		data:jsonObject.lastYear
+      	},{
+      		name: '上月',
+      		data:jsonObject.lastMonth
+      	},{
+      		name: '本月',
+      		data:jsonObject.thisMonth
+      	}];
+      	chart = new Highcharts.Chart(optionContainer);
+		
+		
+	})
+	.fail(function(){
+//		alert("���ӳ�ʱ,��ˢ��");
+	});
+});//end for $(document).ready(function() {
 
 submitRequest = function(){
 	//按下按钮之后的效果

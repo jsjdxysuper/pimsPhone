@@ -12,6 +12,8 @@
 	<script type="text/javascript"
         src="./support/jsCache.min.js">
 	</script>
+	
+	
 <script type="text/javascript">
 jsCache.domReady(function () {
     jsCache.detect("if lt IE 9", function () {
@@ -24,18 +26,18 @@ jsCache.domReady(function () {
         // Load image and append to element that is gotten by use of jQuery!
         jsCache.load(
             {url : "./support/bootstrap/js/bootstrap.min.js"},
-            {url:"./support/datatable/media/js/jquery.dataTables.min.js"},
             {url : "./support/bootstrap/css/bootstrap.min.css"},
             {url : "./support/datatable/media/css/jquery.dataTables.min.css"},
             {url : "./support/datatable/media/js/jquery.dataTables.min.js"},
             
-            {url :"./support/datepicker/js/mobiscroll.core-2.5.2-zh.js"},
-        	{url : "./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js"},
+
             
             {url :"./support/datepicker/js/mobiscroll.android-ics-2.5.2.js"},
             
             {url : "./support/datepicker/js/mobiscroll.datetime-2.5.1.js"},
             {url : "./support/datepicker/js/mobiscroll.core-2.5.2.js"},
+            
+
             
             {url : "./support/datepicker/css/mobiscroll.core-2.5.2.css"},
             {url : "./support/datepicker/css/mobiscroll.animation-2.5.2.css"},
@@ -46,15 +48,19 @@ jsCache.domReady(function () {
             
             {url : "./support/highcharts/js/highcharts.js"}
         ).then(function(){
+        
+        	jsCache.remove("./support/threeMainPage.js");//21
         	jsCache.load(	
-
         	{url : "./support/threeMainPage.js"},
-        	{url : "./support/highcharts/js/modules/exporting.js"}
+        	{url : "./support/highcharts/js/modules/exporting.js"},
+        	{url :"./support/datepicker/js/mobiscroll.core-2.5.2-zh.js"},
+        	{url : "./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js"}
 
         	).then(function(){
-        		jsCache.load({url : "./support/holeGrid.js"});
         		jsCache.remove("./support/holeGrid.js");
-        		jsCache.remove("./support/threeMainPage.js");//21
+        		jsCache.load({url : "./support/holeGrid.js"});
+        		
+        		
         	});
         });//end for ).then(function(){
     });//end for ).then(function () {
@@ -62,33 +68,8 @@ jsCache.domReady(function () {
 </script>
 
 
-
-<!-- 		<script type="text/javascript" src="./support/jquery-1.11.2.min.js"></script> -->
-<!--     	<script type="text/javascript" src="./support/bootstrap/js/bootstrap.min.js"></script>     -->
-<!--         <link href="./support/bootstrap/css/bootstrap.min.css" rel="stylesheet" />  -->
-
-<!--         <link rel="stylesheet" type="text/css" href="./support/datatable/media/css/jquery.dataTables.min.css"> -->
-<!--     	<script type="text/javascript" src="./support/datatable/media/js/jquery.dataTables.min.js"></script>  -->
-        <!--日期选择框-->
-<!-- 		<script src="./support/datepicker/js/mobiscroll.core-2.5.2.js" type="text/javascript"></script> -->
-<!--         <script src="./support/datepicker/js/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script> -->
-<!--         <link href="./support/datepicker/css/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" /> -->
-<!--         <link href="./support/datepicker/css/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" /> -->
-<!--         <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script> -->
-<!--         <script src="./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script> -->
-<!--         <script src="./support/datepicker/js/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script> -->
-<!--         <link href="./support/datepicker/css/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />         -->
-		
-<!--     	<link href="./support/threeMainPage.css" rel="stylesheet" type="text/css" /> -->
-<!-- 		<script src="./support/jquery.json.min.js" type="text/javascript"></script> -->
-<!-- 		<script type="text/javascript" src="./support/threeMainPage.js"></script> -->
-<!-- 		<script type="text/javascript" src="./support/holeGrid.js" charset="gbk"></script> -->
 	</head>
 <body>
-<!-- <script src="./support/highcharts/js/highcharts.js"></script> -->
-<!-- <script src="./support/highcharts/js/modules/exporting.js"></script> -->
-
-
 		
 <div style="clear:both;height:10px"></div>
 <div style="margin-left:20px;margin-right:20px">
