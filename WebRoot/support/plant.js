@@ -431,3 +431,4 @@ submitRequest= function(){
 	});//end for $(document).ready(function() {
 };//end for submitRequest= function(){
 
+$(document).ready(submitRequest);

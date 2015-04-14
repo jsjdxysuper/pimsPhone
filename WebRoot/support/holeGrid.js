@@ -79,7 +79,7 @@ $(function () {
         }
 //             ,
 //             series: [{
-//                 name: 'ͬ��',
+//                 name: 'ͬ同期',
 //                 data: [12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
 //                 		12.0, 12.9, 12.5, 14.5, 18.2, 21.5, 25.2, 14.5, 16.3, 18.3, 13.9, 9.6,
 //                 		12.0, 12.9, 12.5, 14.5, 18.2]
@@ -143,7 +143,7 @@ $(document).ready(function() {
 	})
 	.done(function(jsonObject,statusText){
 	
-		//ƽ����ť��Ч��
+		//按下按钮之前的效果
 		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
       	thisMonthDate = jsonObject.thisMonthDate;
 		lastYearDate = jsonObject.lastYearDate;
@@ -187,7 +187,7 @@ submitRequest = function(){
 	})
 	.done(function(jsonObject,statusText){
 	
-		//ƽ����ť��Ч��
+		//按下按钮之前的效果
 		$("#requestButton").css("position","relative").css("top","2px").css("background-color","#0080b0");
       	thisMonthDate = jsonObject.thisMonthDate;
 		lastYearDate = jsonObject.lastYearDate;
@@ -209,7 +209,6 @@ submitRequest = function(){
 		
 	})
 	.fail(function(){
-//		alert("���ӳ�ʱ,��ˢ��");
 	});
 };
 

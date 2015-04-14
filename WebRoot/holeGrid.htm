@@ -3,71 +3,61 @@
 <!-- <html manifest="generator.manifest">  -->
 <html>
 	<head>
-    <meta name="viewport" content="width=device-width">
+    	<meta name="viewport" content="width=device-width">
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Highcharts Example</title>
-	<script type="text/javascript"
-        src="./support/localStorage.min.js?swfURL=./support/localStorage.swf">
-	</script>
-	<script type="text/javascript"
-        src="./support/jsCache.min.js">
-	</script>
-	
-	
-<script type="text/javascript">
-jsCache.domReady(function () {
-    jsCache.detect("if lt IE 9", function () {
-        // Include some IE 8 or lower specific code
-        alert("IE 8 or lower!");
-    }).load(
-        // Load bootstrap CSS and CSS fixes for old IE versions
-        {url : "./support/jquery-1.11.2.min.js"}
-    ).then(function () {
-        // Load image and append to element that is gotten by use of jQuery!
-        jsCache.load(
-            {url : "./support/bootstrap/js/bootstrap.min.js"},
-            {url : "./support/bootstrap/css/bootstrap.min.css"},
-            {url : "./support/datatable/media/css/jquery.dataTables.min.css"},
-            {url : "./support/datatable/media/js/jquery.dataTables.min.js"},
-            
+		<title>HoleGrid Page</title>
+		<script type="text/javascript"
+	        src="./support/localStorage.min.js?swfURL=./support/localStorage.swf">
+		</script>
+		<script type="text/javascript"
+	        src="./support/jsCache.min.js">
+		</script>
 
-            
-            {url :"./support/datepicker/js/mobiscroll.android-ics-2.5.2.js"},
-            
-            {url : "./support/datepicker/js/mobiscroll.datetime-2.5.1.js"},
-            {url : "./support/datepicker/js/mobiscroll.core-2.5.2.js"},
-            
-
-            
-            {url : "./support/datepicker/css/mobiscroll.core-2.5.2.css"},
-            {url : "./support/datepicker/css/mobiscroll.animation-2.5.2.css"},
-            {url : "./support/datepicker/css/mobiscroll.android-ics-2.5.2.css"},
-            {url : "./support/threeMainPage.css"},
-            {url : "./support/jquery.json.min.js"},
-            
-            
-            {url : "./support/highcharts/js/highcharts.js"}
-        ).then(function(){
-        
-        	jsCache.remove("./support/threeMainPage.js");//21
-        	jsCache.load(	
-        	{url : "./support/threeMainPage.js"},
-        	{url : "./support/highcharts/js/modules/exporting.js"},
-        	{url :"./support/datepicker/js/mobiscroll.core-2.5.2-zh.js"},
-        	{url : "./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js"}
-
-        	).then(function(){
-        		jsCache.remove("./support/holeGrid.js");
-        		jsCache.load({url : "./support/holeGrid.js"});
-        		
-        		
-        	});
-        });//end for ).then(function(){
-    });//end for ).then(function () {
-});
-</script>
-
-
+		<script type="text/javascript">
+		
+			jsCache.domReady(function () {
+				jsCache.expires = 30*24*60*60*1000;//30 days
+			    jsCache.detect("if lt IE 9", function () {
+			        // Include some IE 8 or lower specific code
+			        alert("IE 8 or lower!");
+			    }).load(
+			        // Load bootstrap CSS and CSS fixes for old IE versions
+			        {url : "./support/jquery-1.11.2.min.js"}
+			    ).then(function () {
+			        // Load image and append to element that is gotten by use of jQuery!
+			        jsCache.load(
+			            {url : "./support/bootstrap/js/bootstrap.min.js"},
+			            {url : "./support/bootstrap/css/bootstrap.min.css"},
+			            {url : "./support/datatable/media/css/jquery.dataTables.min.css"},
+			            {url : "./support/datatable/media/js/jquery.dataTables.min.js"},
+			
+			            {url :"./support/datepicker/js/mobiscroll.android-ics-2.5.2.js"},
+			            
+			            {url : "./support/datepicker/js/mobiscroll.datetime-2.5.1.js"},
+			            {url : "./support/datepicker/js/mobiscroll.core-2.5.2.js"},
+			
+			            {url : "./support/datepicker/css/mobiscroll.core-2.5.2.css"},
+			            {url : "./support/datepicker/css/mobiscroll.animation-2.5.2.css"},
+			            {url : "./support/datepicker/css/mobiscroll.android-ics-2.5.2.css"},
+			            {url : "./support/threeMainPage.css"},
+			            {url : "./support/jquery.json.min.js"},
+			
+			            {url : "./support/highcharts/js/highcharts.js"}
+			        ).then(function(){
+			        
+			        	jsCache.load(	
+			        	{url : "./support/threeMainPage.js",cahce:false},
+			        	{url : "./support/highcharts/js/modules/exporting.js"},
+			        	{url :"./support/datepicker/js/mobiscroll.core-2.5.2-zh.js"},
+			        	{url : "./support/datepicker/js/mobiscroll.datetime-2.5.1-zh.js"}
+			
+			        	).then(function(){
+			        		jsCache.load({url : "./support/holeGrid.js",cache:false});
+			        	});
+			        });//end for ).then(function(){
+			    });//end for ).then(function () {
+			});//end for jsCache.domReady(function () {
+		</script>
 	</head>
 <body>
 		
