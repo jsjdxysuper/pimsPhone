@@ -302,7 +302,7 @@ intervalFunction = function(){
 };
 
 var sss = 1;
-setInterval(intervalFunction,60000);
+setInterval(intervalFunction,3000);
 
 submitRequest= function(){
 	//按下按钮之后的效果

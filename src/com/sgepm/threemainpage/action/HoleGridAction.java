@@ -1,5 +1,7 @@
 package com.sgepm.threemainpage.action;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
 
@@ -25,6 +28,10 @@ public class HoleGridAction extends ActionSupport{
 	private Vector<String> tableFirstColumn  = new Vector<String>();
 	
 	private Map<String,Object>dataMap;//used to return json data
+	
+    private Connection conn = null;
+    private PreparedStatement st = null;
+    private ResultSet rs = null;
 	
 	public HoleGridAction(){
 		dataMap = new HashMap<String,Object>();
@@ -87,12 +94,14 @@ public class HoleGridAction extends ActionSupport{
 		//获得上个月的全省发电量数据
 		String projectSqlStr="select rq,sj from info_dmis_fdqk t where xmmc='全省发电' and rq like ? order by rq";
 		String lastMonthDateWildStr = Tools.getLastMonthWildStr(nowDate);
-		String []dataParas = {lastMonthDateWildStr};
 		log.info("sql 查询上个月的全省发电量数据:"+projectSqlStr+",参数:"+lastMonthDateWildStr);
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs= oc.query(projectSqlStr,dataParas);
 		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(projectSqlStr);
+			st.setString(1,lastMonthDateWildStr);
+			rs = st.executeQuery();
+		
 			while(rs.next()){
 				allDate.get(1).add(rs.getString("rq"));
 				allData.get(1).add(rs.getFloat("sj"));
@@ -100,15 +109,20 @@ public class HoleGridAction extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
 		
-		//获得这个月的全省发电量数据
-		dataParas[0] = Tools.change2WildcardDate(date, Tools.time_span[2]);
-		log.info("sql 查询这个月的全省发电量数据,参数:"+dataParas[0]);
-		rs = null;
-		rs = oc.query(projectSqlStr, dataParas);
+
 		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(projectSqlStr);
+			st.setString(1,Tools.change2WildcardDate(date, Tools.time_span[2]));
+			//获得这个月的全省发电量数据
+			log.info("sql 查询这个月的全省发电量数据,参数:"+Tools.change2WildcardDate(date, Tools.time_span[2]));
+			rs = st.executeQuery();
+		
 			while(rs.next()){
 				allDate.get(2).add(rs.getString("rq"));
 				allData.get(2).add(rs.getFloat("sj"));
@@ -116,17 +130,20 @@ public class HoleGridAction extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
 		
 		
 		//获得去年同期月份全省发电量数据
 		String lastYearDateWildStr = Tools.getLastYearMonthWildStr(java.sql.Date.valueOf(date));
-		dataParas[0] = lastYearDateWildStr;
-		log.info("sql 查询去年同期月份全省发电量数据,参数:"+dataParas[0]);
-		rs = null;
-		rs = oc.query(projectSqlStr, dataParas);
-		
+		log.info("sql 查询去年同期月份全省发电量数据,参数:"+lastYearDateWildStr);
 		try {
+		
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(projectSqlStr);
+			st.setString(1,lastYearDateWildStr);
+			rs = st.executeQuery();
 			while(rs.next()){
 				allDate.get(0).add(rs.getString("rq"));
 				allData.get(0).add(rs.getFloat("sj"));
@@ -134,8 +151,10 @@ public class HoleGridAction extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
+
 		dataMap.clear();
 		dataMap.put("lastYearDate", allDate.get(0));
 		dataMap.put("lastMonthDate", allDate.get(1));
@@ -167,8 +186,6 @@ public class HoleGridAction extends ActionSupport{
 		String []dataParas = {date};
 		log.info("sql查询:"+projectSqlStr+"\n参数："+dataParas[0]);
 		
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs= oc.query(projectSqlStr,dataParas);
 		
 		Vector<Vector<String>> vector = new Vector<Vector<String>>();
 		vector.setSize(tableRows);
@@ -185,6 +202,10 @@ public class HoleGridAction extends ActionSupport{
 		
 		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(projectSqlStr);
+			st.setString(1,date);
+			rs = st.executeQuery();
 			while(rs.next()){
 				
 				String xmmc = rs.getString("xmmc");
@@ -216,9 +237,10 @@ public class HoleGridAction extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
 
-		oc.closeAll();
 		dataMap.clear();
 		dataMap.put("data", vector);
 		return SUCCESS;

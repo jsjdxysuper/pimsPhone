@@ -1,5 +1,7 @@
 package com.sgepm.threemainpage.action;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -7,15 +9,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
-
 import net.sf.json.JSONArray;
-
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.opensymphony.xwork2.ActionSupport;
-import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.Plant60GenPower;
@@ -26,6 +25,11 @@ public class PlantAction  extends ActionSupport{
 	
 	private Logger log = LoggerFactory.getLogger(PlantAction.class);
 	private Map<String,Object>dataMap;//used to return json data
+	
+    private Connection conn = null;
+    private PreparedStatement st = null;
+    private ResultSet rs = null;
+    
 	public Map<String, Object> getDataMap() {
 		return dataMap;
 	}
@@ -63,15 +67,16 @@ public class PlantAction  extends ActionSupport{
 		String date = ServletActionContext.getRequest().getParameter("date");
 		//日期,时间,电厂编码,有功
 		String sql = "select c1 rq,c2 sj,c3 dcbm,c4 yg from t001 t where c1 = ? order by  rq,dcbm,sj";
-		String params[] = {date};
-		
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs = oc.query(sql, params);
 		
 		//有功的最大最小值，为了设置坐标轴的最大最小
 		double min = Double.MAX_VALUE;
 		double max = 0;
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sql);
+			st.setString(1,date);
+			rs = st.executeQuery();
+		
 			while(rs.next()){
 				String dcbm = rs.getString("dcbm");
 				String  rq  = rs.getString("rq");
@@ -92,12 +97,12 @@ public class PlantAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
 		
 		//如果查询结果为空
 		if(min == Double.MAX_VALUE)min = 0;
-		
-		oc.closeAll();
 		
 		//数据库中的电厂代码与电厂首字母的对应
 		HashMap<String,String>str2str = new HashMap<String,String>();
@@ -165,7 +170,6 @@ public class PlantAction  extends ActionSupport{
 		String date = ServletActionContext.getRequest().getParameter("date");
 		String dateWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		
-		String params[] = {dateWildcard};
 		String sql = "select substr(t.rq,0,7),sum(t.rdl) as rdl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
 						+inString+" )"+
 						" and rq like ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
@@ -181,10 +185,14 @@ public class PlantAction  extends ActionSupport{
 			onePlantMonthEnergy.setData(new Float(0));
 			plantVectorData.set(i, onePlantMonthEnergy);
 		}
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs=  oc.query(sql,params);
 		
 		try {
+
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sql);
+			st.setString(1,dateWildcard);
+			rs = st.executeQuery();
+		
 			while(rs.next()){
 				
 				String ssdcmc = rs.getString("ssdcmc");
@@ -200,9 +208,9 @@ public class PlantAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		
-		oc.closeAll();
 		
 		JSONArray allColumnData = new JSONArray();
 		for(int i=0;i<plantVectorData.size();i++){
@@ -284,16 +292,18 @@ public class PlantAction  extends ActionSupport{
 		log.info("params:");
 		
 		String startDate = Tools.getFirstDateInYear(date);
-		String params[] = {startDate,date};
 		String sql = "select substr(t.rq,0,7) as yf,sum(t.rdl) as ydl,b.ssdcmc from info_dmis_zdhcjz t,base_jzbm b where t.jzbm in ("
 						+inString+" )"+
 						" and rq >= ? and rq <= ? and t.jzbm=b.jzbm group by ssdcmc,substr(t.rq,0,7) order by ssdcmc";
 		log.info("sql查询:"+sql+"\n参数："+startDate+","+date);
 		
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs=  oc.query(sql,params);
-		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sql);
+			st.setString(1,startDate);
+			st.setString(2,date);
+			rs = st.executeQuery();
+
 			while(rs.next()){
 				String yf = rs.getString("yf");
 				int yfInt = Integer.parseInt(yf.substring(5, 7));
@@ -311,9 +321,9 @@ public class PlantAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		
-		oc.closeAll();
 		
 		for(int i=0;i<6;i++){
 			System.out.println(plantListStr[i]);
@@ -364,18 +374,23 @@ public class PlantAction  extends ActionSupport{
 		
 		//为以后留着的接口
 		String jzbm = "sykpp";
-		String params1[] = {jzbm,date.substring(0,4)};
 		log.debug("sql查询:"+sqlGetYearPlan+"\n参数："+jzbm+","+date.substring(0,4));
 		
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs=  oc.query(sqlGetYearPlan,params1);
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sqlGetYearPlan);
+			st.setString(1,jzbm);
+			st.setString(2,date.substring(0,4));
+			rs = st.executeQuery();
+		
 			while(rs.next())
 				yearPlan = rs.getFloat("njh");
 				
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
 		
 		float oneMonthPlan = yearPlan/12/10000;
@@ -387,10 +402,16 @@ public class PlantAction  extends ActionSupport{
 		
 		String sqlGetMonthPower = "select substr(rq,0,7) as yf,sum(rdl) as ylj from info_dmis_zdhcdc t "+
 				"where dcbm='sykpp' and rq >= ? and rq <= ? group by substr(rq,0,7) order by yf";
-		String params2[] = {startDate,date};
 		log.debug("sql查询:"+sqlGetMonthPower+"\n参数："+startDate+","+date);
-		rs=  oc.query(sqlGetMonthPower,params2);
+		
 		try {
+			
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sqlGetYearPlan);
+			st.setString(1,startDate);
+			st.setString(2,date);
+			rs = st.executeQuery();
+
 			while(rs.next()){
 				String yf = rs.getString("yf");
 				float ylj = rs.getFloat("ylj");
@@ -401,8 +422,9 @@ public class PlantAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
 		
 		//plantIdentity
 		Vector<Vector<Float>> vector = new Vector<Vector<Float>>();

@@ -1,5 +1,7 @@
 package com.sgepm.threemainpage.action;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -13,14 +15,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 
 public class GeneratorAction  extends ActionSupport{
 	
-	private Logger log = LoggerFactory.getLogger(PlantAction.class);
+	private Logger log = LoggerFactory.getLogger(GeneratorAction.class);
 	private Map<String,Object>dataMap;//used to return json data
+    private Connection conn = null;
+    private PreparedStatement st = null;
+    private ResultSet rs = null;
+	
+	
 	public Map<String, Object> getDataMap() {
 		return dataMap;
 	}
@@ -36,7 +44,6 @@ public class GeneratorAction  extends ActionSupport{
 	public String dayGensLoadGaugeData(){
 		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
-		
 		float g1Average,g1Energy,g1TimeUse;
 		float g2Average,g2Energy,g2TimeUse;
 		
@@ -51,10 +58,13 @@ public class GeneratorAction  extends ActionSupport{
 		String []dataParas={dcbm,date};
 		log.info("sql查询:"+generatorSqlStr+"\n参数:"+dcbm+","+date);
 		
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs = oc.query(generatorSqlStr,dataParas);
-		
 		try {
+			
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(generatorSqlStr);
+			st.setString(1,dcbm);
+			st.setString(2,date);
+			rs = st.executeQuery();
 			while(rs.next()){
 				
 				String jzbm = rs.getString("jzbm");
@@ -71,9 +81,9 @@ public class GeneratorAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
-		
 		
 		float energy  = g1Energy+g2Energy;
 		float average = (energy)*10/24;
@@ -122,10 +132,13 @@ public class GeneratorAction  extends ActionSupport{
 		String []dataParas={dcbm,date};
 		log.info("sql查询:"+generatorSqlStr+"\n参数:"+dcbm+","+date);
 		
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs = oc.query(generatorSqlStr,dataParas);
 		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(generatorSqlStr);
+			st.setString(1,dcbm);
+			st.setString(2,date);
+			rs = st.executeQuery();
 			while(rs.next()){
 				
 				String jzbm = rs.getString("jzbm");
@@ -142,8 +155,9 @@ public class GeneratorAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
 		
 		
 		float energy  = g1Energy+g2Energy;
@@ -182,7 +196,6 @@ public class GeneratorAction  extends ActionSupport{
 		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		OracleConnection oc = new OracleConnection();
 //		select sum(decode(t.bc,'1','9','2','8','3','7','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from
 //		pri_zbb1 t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like '2015-01-%%'
 //		group by t.wz 
@@ -205,9 +218,12 @@ public class GeneratorAction  extends ActionSupport{
 		String dateMonthWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
 		String []params = {dateMonthWildcard};
 		log.debug("sql查询："+hoursSql+"\n参数："+dateMonthWildcard);
-		ResultSet rs = oc.query(hoursSql,params);
 		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(hoursSql);
+			st.setString(1,dateMonthWildcard);
+			rs = st.executeQuery();
 			while(rs.next()){
 				int wz = rs.getInt("wz");
 				int sj = rs.getInt("sj");
@@ -221,8 +237,9 @@ public class GeneratorAction  extends ActionSupport{
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
 		
 		Vector<PlantMonthEnergyOrRealTimeData> loadRate = new Vector<PlantMonthEnergyOrRealTimeData>();
 		loadRate.setSize(5);
