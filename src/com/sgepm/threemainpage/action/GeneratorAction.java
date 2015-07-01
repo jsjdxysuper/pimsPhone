@@ -7,16 +7,12 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
-
 import net.sf.json.JSONArray;
-
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.JdbcUtils_C3P0;
-import com.sgepm.Tools.OracleConnection;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 

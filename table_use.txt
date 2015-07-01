@@ -1,0 +1,7 @@
+info_dmis_zdhcjz	直调火厂机组
+base_jzbm	机组编码
+pri_zbb		值班表
+pri_dljh	电量计划
+info_dmis_fdqk	发电情况
+t001
+info_sdlr_dcnjh	电厂年计划
