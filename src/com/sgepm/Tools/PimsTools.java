@@ -1,5 +1,7 @@
 package com.sgepm.Tools;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -11,24 +13,33 @@ import java.util.Vector;
 public class PimsTools {
 
 	private static ResourceBundle properties = ResourceBundle.getBundle("pimsphone");
-	
+    private static Connection conn = null;
+    private static PreparedStatement st = null;
+    private static ResultSet rs = null;
 	
 	public static HashMap<String,String>plantAbbrDic = null;
 	
 	public static void setPlantAbbrDic(){
 		plantAbbrDic = new HashMap<String,String>();
 		String sql = "select dcmc,yxtfbm from base_dcbm t";
-		OracleConnection oc = new OracleConnection();
-		ResultSet rs=  oc.query(sql,null);
+		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sql);
+			rs = st.executeQuery();
+			
+//			OracleConnection oc = new OracleConnection();
+//			ResultSet rs=  oc.query(sql,null);
+		
 			while(rs.next()){
 				plantAbbrDic.put(rs.getString("dcmc"), rs.getString("yxtfbm"));
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
 	}
 	
 	public static HashMap<String,String> getPlantAbbrDic(){
@@ -77,18 +88,25 @@ public class PimsTools {
 	public static String getNickName(String yhid){
 
 		String sql = "select ssdc from pcadb.base_yhbm where yhid = ?";
-		OracleConnection oc = new OracleConnection();
-		String paras[] = {yhid};
-		ResultSet rs=  oc.query(sql,paras);
+		
 		try {
+			conn = JdbcUtils_C3P0.getConnection();
+			st = conn.prepareStatement(sql);
+			st.setString(1,yhid);
+			rs = st.executeQuery();
+//		OracleConnection oc = new OracleConnection();
+//		String paras[] = {yhid};
+//		ResultSet rs=  oc.query(sql,paras);
+		
 			while(rs.next()){
 				yhid += rs.getString("ssdc");
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			JdbcUtils_C3P0.release(conn, st, rs);
 		}
-		oc.closeAll();
 		return yhid;
 	}
 	public static void main(String[] args) {

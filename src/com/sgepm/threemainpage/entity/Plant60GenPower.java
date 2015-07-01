@@ -7,6 +7,8 @@ public class Plant60GenPower {
 	String plantName = null;
 	Vector<String> times = new Vector<String>();;
 	Vector<Double> powers = new Vector<Double>();;
+	String nickName = null;
+
 	
 	public Plant60GenPower(){}
 	public String getPlantName() {
@@ -31,5 +33,10 @@ public class Plant60GenPower {
 		this.powers.add(powers);
 	}
 	
-	
+	public String getNickName() {
+		return nickName;
+	}
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
 }

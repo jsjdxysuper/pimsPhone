@@ -33,6 +33,7 @@ public class Tools {
 	public static int    [] days_all_month = {31,28,31,30,31,30,31,31,30,31,30,31};
 	public static float rongLiang = 600;
 	public static final double DOUBLE_MIN = 1e-6d;
+	public static final String PROFILENAME = "pimsphone";
 	/**
 	 * 对日期进行格式化
 	 * @param date
@@ -98,6 +99,13 @@ public class Tools {
 		return ret;
 	}
 	
+	public static String float2Format(double old){
+		String ret;
+		DecimalFormat form2 = new DecimalFormat("##0.00");
+		DecimalFormat form = new DecimalFormat("##0");
+		ret = ((old==0)?form.format(old):form2.format(old));
+		return ret;
+	}
 	public static float float2Format(float old,int dotNum){
 		BigDecimal b = new BigDecimal(old);
 		float ret ;

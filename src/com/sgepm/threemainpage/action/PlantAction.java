@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,7 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.Plant60GenPower;
+import com.sgepm.threemainpage.entity.Plant60GenPowerLineWrapper;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 import com.sgepm.threemainpage.entity.PlantYearAccumulateDataSeries;
 
@@ -25,7 +28,7 @@ public class PlantAction  extends ActionSupport{
 	
 	private Logger log = LoggerFactory.getLogger(PlantAction.class);
 	private Map<String,Object>dataMap;//used to return json data
-	
+	ResourceBundle properties                  = ResourceBundle.getBundle(Tools.PROFILENAME);
     private Connection conn = null;
     private PreparedStatement st = null;
     private ResultSet rs = null;
@@ -45,29 +48,45 @@ public class PlantAction  extends ActionSupport{
 	public String plant60GensPowerLineData(){
 		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
-		
-		//完成电厂编码和序号之间的相互转换
-		String DCBMs[] = {"a0","b0","c0","d0","e0","f0"};
-		HashMap<String,Integer>str2index = new HashMap<String,Integer>();
-		str2index.put(DCBMs[0], 0);
-		str2index.put(DCBMs[1], 1);
-		str2index.put(DCBMs[2], 2);
-		str2index.put(DCBMs[3], 3);
-		str2index.put(DCBMs[4], 4);
-		str2index.put(DCBMs[5], 5);
-		
+		//pims.plant.graph1.plant2nickname
+
+		String plant2nicknames[] = properties.getString("pims.plant.graph1.plant2nickname")
+				.split(",");
 		Vector<Plant60GenPower> retData = new Vector<Plant60GenPower>();
 		//60万机组所属电厂的数量
-		final int PlantNum = 6;
+		final int PlantNum = plant2nicknames.length;
 		for(int i=0;i<PlantNum;i++){
-			retData.add(new Plant60GenPower());
-			retData.get(i).setPlantName(DCBMs[i]);
+			Plant60GenPower one60GenPower = new Plant60GenPower();
+			String plantAndNick[] = plant2nicknames[i].split(":");
+			one60GenPower.setPlantName(plantAndNick[0]);
+			one60GenPower.setNickName(plantAndNick[1]);
+			retData.add(one60GenPower);
+			
+			//retData.get(i).setPlantName(DCBMs[i]);
 		}
 		
+		//电厂的所配置的机组的集合(配置在pimsphone.properties文件中）
+		ArrayList<String> generatorList        = new ArrayList<String>();
+		//获得每个电厂所配置的机组列表		
+		generatorList = PimsTools.getGeneratorsList("pims", "plant", "graph1");
+		
+		//装配sql语句中机组列表,以逗号分隔,in子句的最大数目为1000,足够了
+		assert generatorList.size()<1000:"sql inSubStr len is "+generatorList.size();
+		
+		String inString="";
+		for(int i=0;i<generatorList.size();i++){
+		    if(i>0){
+		        inString+=",";
+		    }
+		    inString+="'"+generatorList.get(i)+"'";
+		}
 		String date = ServletActionContext.getRequest().getParameter("date");
 		//日期,时间,电厂编码,有功
-		String sql = "select c1 rq,c2 sj,c3 dcbm,c4 yg from t001 t where c1 = ? order by  rq,dcbm,sj";
-		
+		//String sql = "select c1 rq,c2 sj,c3 dcbm,c4 yg from t001 t where c1 = ? order by  rq,dcbm,sj";
+		String sql = "select a.ssdcmc,b.sj,sum(b.yg) as yg "+
+				"from Base_Jzbm a,info_data_jzyg b "+
+				"where a.jzbm=b.jzbm and b.rq= ? and b.jzbm in ("+inString+") "+
+				"group by a.ssdcmc,b.sj order by a.ssdcmc,b.sj"; 
 		//有功的最大最小值，为了设置坐标轴的最大最小
 		double min = Double.MAX_VALUE;
 		double max = 0;
@@ -78,21 +97,22 @@ public class PlantAction  extends ActionSupport{
 			rs = st.executeQuery();
 		
 			while(rs.next()){
-				String dcbm = rs.getString("dcbm");
-				String  rq  = rs.getString("rq");
-				String  sj  = rs.getString("sj");
-				double  yg  = rs.getDouble("yg");
+				String ssdcmc = rs.getString("SSDCMC");
+				String  sj  = rs.getString("SJ");
+				double  yg  = rs.getDouble("YG");
 
 				if(yg > max) max = yg;
 				if(yg < min) min = yg;
-				retData.get(str2index.get(dcbm)).setTimes(sj);
-				
-				//如果有功为0,能设置为null,在曲线上不会显示此点,使得坐标轴只显示有数部分,后面为0的不会显示
-				if(Math.abs(yg)<Tools.DOUBLE_MIN)
-					retData.get(str2index.get(dcbm)).setPowers(null);
-				else
-					retData.get(str2index.get(dcbm)).setPowers(yg);
-				
+				for(int i=0;i<retData.size();i++){
+					if(retData.get(i).getPlantName().equals(ssdcmc)){
+						
+						//如果有功为0,能设置为null,在曲线上不会显示此点,使得坐标轴只显示有数部分,后面为0的不会显示
+						if(Math.abs(yg)<Tools.DOUBLE_MIN)
+							retData.get(i).setPowers(null);
+						else
+							retData.get(i).setPowers(Double.valueOf(Tools.float2Format(yg)));;
+					}
+				}
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -104,28 +124,13 @@ public class PlantAction  extends ActionSupport{
 		//如果查询结果为空
 		if(min == Double.MAX_VALUE)min = 0;
 		
-		//数据库中的电厂代码与电厂首字母的对应
-		HashMap<String,String>str2str = new HashMap<String,String>();
-		str2str.put(DCBMs[0], "H");
-		str2str.put(DCBMs[1], "Z");
-		str2str.put(DCBMs[2], "K");
-		str2str.put(DCBMs[3], "T");
-		str2str.put(DCBMs[4], "Q");
-		str2str.put(DCBMs[5], "Y");
 		
-		for(int i=0;i<retData.size();i++){
-			String tempPlantName = retData.get(i).getPlantName();
-			retData.get(i).setPlantName(str2str.get(tempPlantName));
-		}
-		
-		dataMap.clear();
-		for(int i=0;i<PlantNum;i++){
-			dataMap.put(retData.get(i).getPlantName(), retData.get(i).getPowers());
-			dataMap.put(retData.get(i).getPlantName()+"Times", retData.get(i).getTimes());
-		}
-		dataMap.put("maxRealtime", max);
-		dataMap.put("minRealtime", min);
-		
+		Plant60GenPowerLineWrapper retWrapper = new Plant60GenPowerLineWrapper();
+		retWrapper.setLineData(retData);
+		retWrapper.setMaxRealtime(max);
+		retWrapper.setMinRealtime(min);
+
+		dataMap.put("plantLinePower", JSONObject.fromObject(retWrapper).toString());
 		return SUCCESS;
 	}
 	
@@ -140,7 +145,6 @@ public class PlantAction  extends ActionSupport{
 		log.info("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-		ResourceBundle properties                  = ResourceBundle.getBundle("pimsphone");
 		String plantsStr = properties.getString("pims.plant.graph1.plants");
 		
 		String plantListStr[];//柱图所要显示的电厂列表
