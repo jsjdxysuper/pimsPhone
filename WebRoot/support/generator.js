@@ -209,6 +209,7 @@ submitRequest = function(){
 	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
 	
 	var date = $("#appDate").val().trim();
+	sessionStorage.setItem("date",date);
 	var yhid = getUrlVars()["yhid"];
 	var time_span = $("#menu_title").text().trim();
 	
@@ -290,7 +291,15 @@ submitRequest = function(){
     });//end for 	$.ajax({
 };//end for submitRequest = function(){
 
-$(document).ready(setDate(1));
+$(document).ready(function(){
+	
+	var sessionDate = sessionStorage.getItem("date");
+	if(sessionDate== null)
+		setDate(1);
+	else
+		$("#appDate").val(sessionDate);
+	
+});
 $(document).ready(function() {
 	
 	//$('#table_id1').DataTable();
@@ -312,22 +321,6 @@ $(document).ready(function() {
 	}
 	
 	
-/*	var resize_gauge = function()
-	{
-			container_speed=document.getElementById('g1Container');
-			container_rpm=document.getElementById('g2Container');
-			gaugeParent = $('#gaugeParent');
-			//table_width=document.getElementById('table_id2').offsetWidth;
-			table_width=500;//document.body.clientWidth;
-			wid=table_width/2;
-			container_speed.style.width=wid-10+'px';
-			container_rpm.style.width=wid-10+'px';
-			
-			container_speed.style.height=(container_speed.offsetWidth/9*7)+'px';
-			container_rpm.style.height=(container_rpm.offsetWidth/9*7)+'px';
-			gaugeParent.css("margin-left",(table_width-(wid-10)*2)/2);
-			
-	};*/
 	var resize_gauge = function()
 	{
 			container_speed=document.getElementById('g1Container');
@@ -345,8 +338,8 @@ $(document).ready(function() {
 			
 	};
 
-	window.onresize= resize_gauge;
-	resize_gauge();
+	window.onpageshow= resize_gauge;
+	window.onloadeddata=resize_gauge();
 	
 	submitRequest();
 

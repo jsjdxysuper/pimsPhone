@@ -336,7 +336,7 @@ submitRequest= function(){
 	
 	var yhid = getUrlVars()["yhid"];
 	var date = $("#appDate").val().trim();
-	
+	sessionStorage.setItem("date",date);
 	
 	//取实时曲线数据
 	$.ajax({
@@ -458,5 +458,11 @@ submitRequest= function(){
 	});//end for $(document).ready(function() {
 };//end for submitRequest= function(){
 //默认日期设置为当天
-$(document).ready(setDate(0));
+$(document).ready(function(){
+	var sessionDate = sessionStorage.getItem("date");
+	if(sessionDate== null)
+		setDate(0);
+	else
+		$("#appDate").val(sessionDate);
+	});
 $(document).ready(submitRequest);

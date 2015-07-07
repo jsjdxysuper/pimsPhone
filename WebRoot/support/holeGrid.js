@@ -178,6 +178,7 @@ submitRequest = function(){
 	
 	var yhid = getUrlVars()["yhid"];
 	var date = $("#appDate").val().trim();
+	sessionStorage.setItem("date",date);
 	$.ajax({
 		url:"/pimsPhone/HoleGrid_monthEnergyLineData",
 		data:$.param({"date":date,"yhid":yhid}),
@@ -212,5 +213,13 @@ submitRequest = function(){
 	});
 };
 //默认日期设置为昨天
-$(document).ready(setDate(1));
+$(document).ready(function(){
+	var sessionDate = sessionStorage.getItem("date");
+	if(sessionDate== null)
+		setDate(1);
+	else
+		$("#appDate").val(sessionDate);
+	
+	submitRequest();
+	});
 
