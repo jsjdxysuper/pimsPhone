@@ -173,7 +173,7 @@ $(function () {
 	});//end for g1Option
 			
 			
-				//generator2对应的表盘的option
+	//generator2对应的表盘的option
 	g2Option = Highcharts.merge
 		(gaugeOptions, 
 				{
@@ -290,7 +290,7 @@ submitRequest = function(){
     });//end for 	$.ajax({
 };//end for submitRequest = function(){
 
-
+$(document).ready(setDate(1));
 $(document).ready(function() {
 	
 	//$('#table_id1').DataTable();
@@ -312,6 +312,22 @@ $(document).ready(function() {
 	}
 	
 	
+/*	var resize_gauge = function()
+	{
+			container_speed=document.getElementById('g1Container');
+			container_rpm=document.getElementById('g2Container');
+			gaugeParent = $('#gaugeParent');
+			//table_width=document.getElementById('table_id2').offsetWidth;
+			table_width=500;//document.body.clientWidth;
+			wid=table_width/2;
+			container_speed.style.width=wid-10+'px';
+			container_rpm.style.width=wid-10+'px';
+			
+			container_speed.style.height=(container_speed.offsetWidth/9*7)+'px';
+			container_rpm.style.height=(container_rpm.offsetWidth/9*7)+'px';
+			gaugeParent.css("margin-left",(table_width-(wid-10)*2)/2);
+			
+	};*/
 	var resize_gauge = function()
 	{
 			container_speed=document.getElementById('g1Container');
@@ -320,12 +336,12 @@ $(document).ready(function() {
 			//table_width=document.getElementById('table_id2').offsetWidth;
 			table_width=document.body.clientWidth;
 			wid=table_width/2;
-			container_speed.style.width=wid-10+'px';
-			container_rpm.style.width=wid-10+'px';
+			container_speed.style.width='47%';
+			container_rpm.style.width='47%';
 			
 			container_speed.style.height=(container_speed.offsetWidth/9*7)+'px';
 			container_rpm.style.height=(container_rpm.offsetWidth/9*7)+'px';
-			gaugeParent.css("margin-left",(table_width-(wid-10)*2)/2);
+			gaugeParent.css("margin-left",'5%');
 			
 	};
 

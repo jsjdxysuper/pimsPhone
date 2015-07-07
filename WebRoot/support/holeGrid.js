@@ -211,5 +211,6 @@ submitRequest = function(){
 	.fail(function(){
 	});
 };
-
+//默认日期设置为昨天
+$(document).ready(setDate(1));
 

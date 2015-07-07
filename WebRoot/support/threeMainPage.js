@@ -26,10 +26,10 @@ $(function () {
 });
 
 
-setDate=function () {
+setDate=function (dayNum) {
 	
 	var now = new Date();
-	now.setTime(now.getTime()-24*60*60*1000);
+	now.setTime(now.getTime()-dayNum*24*60*60*1000);
 	var year = now.getFullYear();
 	var month = now.getMonth()+1;
 	var day = now.getDate();
@@ -43,7 +43,7 @@ setDate=function () {
 	if(typeof(submitRequest) == 'undefined');
 	else submitRequest();
 };
-$(document).ready(setDate);
+
 
 function getUrlVars()
 {

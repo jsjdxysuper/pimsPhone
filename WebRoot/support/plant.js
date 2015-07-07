@@ -41,7 +41,8 @@ $(function () {
 	realTimeLineOption={
 		chart:{
 			spacingLeft:0,
-			renderTo: 'realTimeLineContainer'
+			renderTo: 'realTimeLineContainer'//,
+            //zoomType: "x"
 		},
 		//colors:['#00ff00','#0000ff','#ff0000'],
 		plotOptions:{
@@ -99,9 +100,13 @@ $(function () {
 				 //= +'';
 				//'<br/>'+
 				var s = this.x+'';
-				s+= '<br/>'+this.y+'兆瓦';
+				for(i=0;i<this.points.length;i++){
+					s+= '<br/>'+this.points[i].series.name+':'+this.points[i].y+'兆瓦';
+				}
 				return s;
-			}
+			},
+			crosshairs:[true,false],
+			shared:true
         },
         legend: {
 //			layout: 'vertical',
@@ -130,6 +135,7 @@ $(function () {
 		chart: {
             type: 'column',
             renderTo: 'columnContainer'
+
         },
         title: {
             text: '相关电厂月度发电量'
@@ -451,5 +457,6 @@ submitRequest= function(){
 		}
 	});//end for $(document).ready(function() {
 };//end for submitRequest= function(){
-
+//默认日期设置为当天
+$(document).ready(setDate(0));
 $(document).ready(submitRequest);
