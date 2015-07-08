@@ -90,7 +90,7 @@ $(function () {
 	    
 	    pane: {
 	    	center: ['50%', '85%'],
-	    	size: '130%',//中间表盘与pane的大小对比，数值越大，表盘就越大
+	    	size: '100%',//中间表盘与pane的大小对比，数值越大，表盘就越大
 	        startAngle: -90,
 	        endAngle: 90,
             background: {
@@ -338,8 +338,8 @@ $(document).ready(function() {
 			
 	};
 
-	window.onpageshow= resize_gauge;
-	window.onloadeddata=resize_gauge();
+	//window.onpageshow= resize_gauge;
+	//window.onloadeddata=resize_gauge();
 	
 	submitRequest();
 
