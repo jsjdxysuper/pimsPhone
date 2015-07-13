@@ -47,8 +47,8 @@ $(function () {
             //pointFormat: '月度发电量<b>{point.y:.1f} (万千瓦时)</b>',
             formatter:function(){
 				var month = $("#appDate").val().substr(5,2);
-				var s = this.series.data[this.x].name+month+'月份';
-				s += '<br/>'+this.y+'%';
+				var s ='班次:'+this.series.data[this.x].name;
+				s += '<br/>'+'负荷率:'+this.y+'%';
 				return s;
 			}
         },
@@ -100,10 +100,12 @@ $(function () {
                 shape: 'arc'
             }
 	    },
-		
 	    tooltip: {
 	    	enabled: false
 	    },
+        exporting:{
+			enabled:false
+		},
 	    credits:{
 			enabled:'false',
 			text:''
@@ -154,9 +156,13 @@ $(function () {
 	            text: '#1机'
 	        }       
 	    },
-	    credits: {
+	    tooltip: {
 	    	enabled: false
 	    },
+	    credits:{
+			enabled:'false',
+			text:''
+		}, 
 	    series: [{
 	        name: 'rate',
 	        data: [0],
@@ -180,6 +186,13 @@ $(function () {
 			    	chart:{
 			    		renderTo: 'g2Container'
 			    	},
+				    tooltip: {
+				    	enabled: false
+				    },
+				    credits:{
+						enabled:'false',
+						text:''
+					}, 
 			        yAxis:{
 			        	min: 0,
 			        	max: 100,
@@ -215,7 +228,7 @@ submitRequest = function(){
 	
 	//获取表盘数据
 	$.ajax({
-		url:"/pimsPhone/Generator_dayGensLoadGaugeData",
+		url:"Generator_dayGensLoadGaugeData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -240,7 +253,7 @@ submitRequest = function(){
 	
 	//获取表格数据
 	$.ajax({
-		url:"/pimsPhone/Generator_dayGensDetailTableData",
+		url:"Generator_dayGensDetailTableData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -273,7 +286,7 @@ submitRequest = function(){
 	
 	//获取值间发电量对比柱图
 	$.ajax({
-		url:"/pimsPhone/Generator_monthInterDutyLoadColumnData",
+		url:"Generator_monthInterDutyLoadColumnData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){

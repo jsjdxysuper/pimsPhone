@@ -278,7 +278,7 @@ intervalFunction = function(){
 	else
 		var date = null;
 	$.ajax({
-		url:"/pimsPhone/Plant_plant60GensPowerLineData",
+		url:"Plant_plant60GensPowerLineData",
 		data:$.param({"realtime":true,"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -340,7 +340,7 @@ submitRequest= function(){
 	
 	//取实时曲线数据
 	$.ajax({
-		url:"/pimsPhone/Plant_plant60GensPowerLineData",
+		url:"Plant_plant60GensPowerLineData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -405,7 +405,7 @@ submitRequest= function(){
 	
 	//取相关电厂月度发电量柱图数据
 	$.ajax({
-		url:"/pimsPhone/Plant_oneMonth60GensEnergyColumnData",
+		url:"Plant_oneMonth60GensEnergyColumnData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -425,7 +425,7 @@ submitRequest= function(){
 	
 	//取相关电厂年累计发电量数据
 	$.ajax({
-		url:"/pimsPhone/Plant_year60GensAccuEnergyStackColumnData",
+		url:"Plant_year60GensAccuEnergyStackColumnData",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
