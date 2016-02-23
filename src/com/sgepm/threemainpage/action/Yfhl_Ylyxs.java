@@ -6,7 +6,6 @@ import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.JdbcUtilProxoolImpl;
-import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.sgepm.Tools.Yfhl_Ylyxs_Tool;
 
 import net.sf.json.JSONArray;

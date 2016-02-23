@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
 import com.sgepm.Tools.JdbcUtilProxoolImpl;
-import com.sgepm.Tools.JdbcUtils_C3P0;
 public class UserRequestLog  extends AbstractInterceptor{
 
 	private Logger log = LoggerFactory.getLogger(UserRequestLog.class);

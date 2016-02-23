@@ -24,12 +24,9 @@ public class PimsTools {
 		String sql = "select dcmc,yxtfbm from base_dcbm t";
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sql);
 			rs = st.executeQuery();
-			
-//			OracleConnection oc = new OracleConnection();
-//			ResultSet rs=  oc.query(sql,null);
 		
 			while(rs.next()){
 				plantAbbrDic.put(rs.getString("dcmc"), rs.getString("yxtfbm"));
@@ -38,7 +35,7 @@ public class PimsTools {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn, rs, st);
 		}
 	}
 	
@@ -90,13 +87,10 @@ public class PimsTools {
 		String sql = "select ssdc from pcadb.base_yhbm where yhid = ?";
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sql);
 			st.setString(1,yhid);
 			rs = st.executeQuery();
-//		OracleConnection oc = new OracleConnection();
-//		String paras[] = {yhid};
-//		ResultSet rs=  oc.query(sql,paras);
 		
 			while(rs.next()){
 				yhid += rs.getString("ssdc");
@@ -105,7 +99,7 @@ public class PimsTools {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn, rs, st);
 		}
 		return yhid;
 	}

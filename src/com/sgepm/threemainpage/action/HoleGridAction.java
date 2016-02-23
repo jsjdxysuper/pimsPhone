@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.JdbcUtilProxoolImpl;
-import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.sgepm.Tools.Tools;
 
 public class HoleGridAction extends ActionSupport{
