@@ -173,7 +173,7 @@ $(function () {
             //pointFormat: '月度发电量<b>{point.y:.1f} (万千瓦时)</b>',
             formatter:function(){
 				var month = $("#appDate").val().substr(5,2);
-				var s = this.series.data[this.x].name+month+'月份';
+				var s = this.series.data[this.x].name;
 				s += '<br/>'+this.y+'万千瓦时';
 				return s;
 			}
@@ -278,7 +278,7 @@ intervalFunction = function(){
 	else
 		var date = null;
 	$.ajax({
-		url:"Plant_plant60GensPowerLineData",
+		url:"Plant_plant60GensPowerLineData.go",
 		data:$.param({"realtime":true,"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -340,7 +340,7 @@ submitRequest= function(){
 	
 	//取实时曲线数据
 	$.ajax({
-		url:"Plant_plant60GensPowerLineData",
+		url:"Plant_plant60GensPowerLineData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -405,7 +405,7 @@ submitRequest= function(){
 	
 	//取相关电厂月度发电量柱图数据
 	$.ajax({
-		url:"Plant_oneMonth60GensEnergyColumnData",
+		url:"Plant_oneMonth60GensEnergyColumnData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -425,7 +425,7 @@ submitRequest= function(){
 	
 	//取相关电厂年累计发电量数据
 	$.ajax({
-		url:"Plant_year60GensAccuEnergyStackColumnData",
+		url:"Plant_year60GensAccuEnergyStackColumnData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -443,6 +443,293 @@ submitRequest= function(){
 	.fail(function(){
 	});
 	
+	
+	$.getJSON("Yfhl_Ylyxs.go",{datetime:date}, function(data) {	
+		
+		var ylyxs = data.members[0].ylyxs;var nlyxs = data.members[1].nlyxs;var yfhl = data.members[2].yfhl;var nfhl = data.members[3].nfhl;
+		var ylyxsrank = data.members[0].ylyxsrank;var nlyxsrank = data.members[1].nlyxsrank;var yfhlrank = data.members[2].yfhlrank;var nfhlrank = data.members[3].nfhlrank;
+		var ylyxsplant = data.members[0].ylyxsplant;var nlyxsplant = data.members[1].nlyxsplant;var yfhlplant = data.members[2].yfhlplant;var nfhlplant = data.members[3].nfhlplant;
+		var rank = 0;var rank1 = 0;var rank2 = 0;var rank3 = 0;
+
+		var ylyxsoptions = {
+			chart : {
+				renderTo : 'ylyxsContainer',
+				type : 'column',
+				inverted : true
+				//marginRight : 130,
+				//marginBottom : 50
+			},
+			colors: ['#8085e9', 
+			         '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+			title : {
+				text : '月利用小时对标',
+			//center
+			},
+			xAxis : {					
+				categories : []
+			},
+			yAxis : {						
+				//tickInterval : 50,
+				title : {
+					text : '',
+					//center
+				},									
+			},
+			exporting:{
+				enabled :false
+			},
+			tooltip : {
+				formatter : function() {
+				
+					for(var i=0;i<6;i++){
+						if(ylyxs[i] == this.y){
+							rank = ylyxsrank[i];
+						}
+					}																																												
+					return '<b>' + this.x
+							+ '</b><br/>月利用小时数:' + this.y +'<br/>排名:'+rank;
+				}
+			},
+			legend : {
+				enabled : false
+				//align : 'center',
+				//layout : 'horizontal',
+				//verticalAlign : 'bottom',
+				//y : 20,
+				//borderWidth : 0
+			},
+			credits : {
+				enabled : false
+			},
+			series : [{
+				dataLabels : {
+					enabled : true,
+					//rotation : -90,
+					color : '#FFFFFF',
+					align : 'right',
+					format : this.y, // one decimal
+					//y : 10, // 10 pixels down from the top
+					style : {
+						fontSize : '13px',
+						fontFamily : 'Verdana, sans-serif'
+					}
+				}
+			}]
+		};
+		
+		var nlyxsoptions = {
+			chart : {
+				renderTo : 'nlyxsContainer',
+				type : 'column',
+				inverted : true
+				//marginRight : 130,
+				//marginBottom : 50
+			},
+			colors: ['#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+			title : {
+				text : '年利用小时对标',
+			//center
+			},
+			xAxis : {					
+				categories : []
+			},
+			yAxis : {						
+				//tickInterval : 50,
+				title : {
+					text : '',
+					//center
+				},									
+			},
+			exporting:{
+				enabled :false
+			},
+			tooltip : {
+				formatter : function() {
+				
+					for(var i=0;i<6;i++){
+						if(nlyxs[i] == this.y){
+							rank1 = nlyxsrank[i];
+						}
+					}																																		
+					return '<b>' + this.x
+							+ '</b><br/>年利用小时数:' + this.y +'<br/>排名:'+rank1;
+				}
+			},
+			legend : {
+				enabled : false
+				//align : 'center',
+				//layout : 'horizontal',
+				//verticalAlign : 'bottom',
+				//y : 20,
+				//borderWidth : 0
+			},
+			credits : {
+				enabled : false
+			},
+			series : [{
+				dataLabels : {
+					enabled : true,
+					//rotation : -90,
+					color : '#CCFFFF',
+					align : 'right',
+					format : this.y, // one decimal
+					//y : 10, // 10 pixels down from the top
+					style : {
+						fontSize : '13px',
+						fontFamily : 'Verdana, sans-serif'
+					}
+				}
+			}]
+		};
+		
+		var yfhloptions = {
+			chart : {
+				renderTo : 'yfhlContainer',
+				type : 'column',
+				inverted : true
+				//marginRight : 130,
+				//marginBottom : 50
+			},
+			colors: ['#8085e9', 
+			         '#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+			title : {
+				text : '月负荷率对标',
+			//center
+			},
+			xAxis : {					
+				categories : []
+			},
+			yAxis : {						
+				//tickInterval : 10,
+				title : {
+					text : '',
+					//center
+				},									
+			},
+			exporting:{
+				enabled :false
+			},
+			tooltip : {
+				formatter : function() {
+				
+					for(var i=0;i<6;i++){
+						if(yfhl[i] == this.y){
+							rank2 = yfhlrank[i];
+						}
+					}																																		
+					return '<b>' + this.x
+							+ '</b><br/>月负荷率:' + this.y +'<br/>排名:'+rank2;
+				}
+			},
+			legend : {
+				enabled : false
+				//align : 'center',
+				//layout : 'horizontal',
+				//verticalAlign : 'bottom',
+				//y : 20,
+				//borderWidth : 0
+			},
+			credits : {
+				enabled : false
+			},
+			series : [{
+				dataLabels : {
+					enabled : true,
+					//rotation : -90,
+					color : '#FFFFFF',
+					align : 'right',
+					format : this.y, // one decimal
+					//y : 10, // 10 pixels down from the top
+					style : {
+						fontSize : '13px',
+						fontFamily : 'Verdana, sans-serif'
+					}
+				}
+			}]
+		};
+		
+		var nfhloptions = {
+			chart : {
+				renderTo : 'nfhlContainer',
+				type : 'column',
+				inverted : true
+				//marginRight : 130,
+				//marginBottom : 50
+			},
+			colors: ['#f15c80', '#e4d354', '#8085e8', '#8d4653', '#91e8e1'],
+			title : {
+				text : '年负荷率对标',
+			//center
+			},
+			xAxis : {					
+				categories : []
+			},
+			yAxis : {						
+				//tickInterval : 10,
+				title : {
+					text : '',
+					//center
+				},									
+			},
+			exporting:{
+				enabled :false
+			},
+			tooltip : {
+				formatter : function() {
+				
+					for(var i=0;i<6;i++){
+						if(nfhl[i] == this.y){
+							rank3 = nfhlrank[i];
+						}
+					}																																		
+					return '<b>' + this.x
+							+ '</b><br/>年负荷率:' + this.y +'<br/>排名:'+rank3;
+				}
+			},
+			legend : {
+				enabled : false
+				//align : 'center',
+				//layout : 'horizontal',
+				//verticalAlign : 'bottom',
+				//y : 20,
+				//borderWidth : 0
+			},
+			credits : {
+				enabled : false
+			},
+			series : [{
+				dataLabels : {
+					enabled : true,
+					//rotation : -90,
+					color : '#CCFFFF',
+					align : 'right',
+					format : this.y, // one decimal
+					//y : 10, // 10 pixels down from the top
+					style : {
+						fontSize : '13px',
+						fontFamily : 'Verdana, sans-serif'
+					}
+				}
+			}]
+		};
+									
+		ylyxsoptions.series[0].data = ylyxs;
+		nlyxsoptions.series[0].data = nlyxs;
+		yfhloptions.series[0].data = yfhl;
+		nfhloptions.series[0].data = nfhl;
+								
+		ylyxsoptions.xAxis.categories = ylyxsplant;
+		nlyxsoptions.xAxis.categories = nlyxsplant;
+		yfhloptions.xAxis.categories = yfhlplant;
+		nfhloptions.xAxis.categories = nfhlplant;
+		
+		var chart = new Highcharts.Chart(ylyxsoptions);
+		var chart = new Highcharts.Chart(nlyxsoptions);
+		var chart = new Highcharts.Chart(yfhloptions);
+		var chart = new Highcharts.Chart(nfhloptions);
+
+	});	
+		
 	$(document).ready(function() {
 	
 		//$('#table_id1').DataTable();
@@ -455,6 +742,20 @@ submitRequest= function(){
 				ordering: false,
 			});
 		}
+		
+		$("#floatbutton").click(function(){
+			$("#floatbutton").hide();
+			$("#ui-menu").show();			
+		});
+		$("#ui-menu").click(function(){
+			$("#floatbutton").show();
+			$("#ui-menu").hide();			
+		});
+		
+		
+		
+		
+		
 	});//end for $(document).ready(function() {
 };//end for submitRequest= function(){
 //默认日期设置为当天

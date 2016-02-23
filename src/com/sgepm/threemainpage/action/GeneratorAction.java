@@ -12,6 +12,7 @@ import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
@@ -56,7 +57,7 @@ public class GeneratorAction  extends ActionSupport{
 		
 		try {
 			
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(generatorSqlStr);
 			st.setString(1,dcbm);
 			st.setString(2,date);
@@ -78,7 +79,7 @@ public class GeneratorAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		float energy  = g1Energy+g2Energy;
@@ -130,7 +131,7 @@ public class GeneratorAction  extends ActionSupport{
 		
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(generatorSqlStr);
 			st.setString(1,dcbm);
 			st.setString(2,date);
@@ -152,7 +153,7 @@ public class GeneratorAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		
@@ -192,23 +193,21 @@ public class GeneratorAction  extends ActionSupport{
 		log.debug("进入"+Thread.currentThread().getStackTrace()[1].getClassName()+
 				":"+Thread.currentThread().getStackTrace()[1].getMethodName());
 		
-//		select sum(decode(t.bc,'1','9','2','8','3','7','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from
-//		pri_zbb1 t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like '2015-01-%%'
-//		group by t.wz 
 		Vector<Integer> eachDutyHours = new Vector<Integer>();
-		Vector<Float> g1Energy = new Vector<Float>();
-		Vector<Float> g2Energy = new Vector<Float>();
+		Vector<Float> gEnergy = new Vector<Float>();
+
 		eachDutyHours.setSize(5);
-		g1Energy.setSize(5);
-		g2Energy.setSize(5);
+		gEnergy.setSize(5);
+
 		for(int i=0;i<eachDutyHours.size();i++){
 			eachDutyHours.set(i, new Integer(0));
-			g1Energy.set(i,new Float(0));
-			g2Energy.set(i,new Float(0));
+			gEnergy.set(i,new Float(0));
 		}
-		String hoursSql = 				"select sum(decode(t.bc,'1','7','2','8','3','9','0')) sj,t.wz,sum(b.dl1) dl1,sum(b.dl2) dl2 from "+
-				"pri_zbb t,pri_dljh b where t.wz=b.wz and t.rq=b.rq  and t.rq like ? "+
-				"group by t.wz";
+		String hoursSql = "select a.wz,sum(yxsj)/12 sj,sum(dl2)+sum(dl1) dl "+
+						"from "+
+						"pri_zbb a,pri_bcyxsj b,pri_dljh c "+ 
+						"where a.bc=b.bc and a.rq=b.rq and a.wz=c.wz and a.rq=c.rq and a.rq "+ 
+						"like ? group by a.wz order by a.wz";
 		
 		String date = ServletActionContext.getRequest().getParameter("date");
 		String dateMonthWildcard = Tools.change2WildcardDate(date, Tools.time_span[2]);
@@ -216,25 +215,24 @@ public class GeneratorAction  extends ActionSupport{
 		log.debug("sql查询："+hoursSql+"\n参数："+dateMonthWildcard);
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(hoursSql);
 			st.setString(1,dateMonthWildcard);
 			rs = st.executeQuery();
 			while(rs.next()){
 				int wz = rs.getInt("wz");
 				int sj = rs.getInt("sj");
-				float dl1 = rs.getFloat("dl1");
-				float dl2 = rs.getFloat("dl2");
+				float dl = rs.getFloat("dl");
+
 				eachDutyHours.set(wz-1, sj);
 
-				g1Energy.set(wz-1, dl1);
-				g2Energy.set(wz-1, dl1);
+				gEnergy.set(wz-1, dl);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		Vector<PlantMonthEnergyOrRealTimeData> loadRate = new Vector<PlantMonthEnergyOrRealTimeData>();
@@ -242,20 +240,15 @@ public class GeneratorAction  extends ActionSupport{
 		for(int i=0;i<eachDutyHours.size();i++){
 			float temp =0;
 			PlantMonthEnergyOrRealTimeData object = new PlantMonthEnergyOrRealTimeData();
-			if(Math.abs(g1Energy.get(i)-0)<Tools.FLOAT_MIN&&Math.abs(g2Energy.get(i)-0)<Tools.FLOAT_MIN)
+			if(Math.abs(gEnergy.get(i)-0)<Tools.FLOAT_MIN)
 			{
 				Float va = new Float(0);
 				object.setData(Tools.float2Format(va*100, 2));
 				object.setName((i+1)+"");
 			}
-			else if(Math.abs(g1Energy.get(i)-0)<Tools.FLOAT_MIN||Math.abs(g2Energy.get(i)-0)<Tools.FLOAT_MIN)
+			else
 			{
-				Float va = (g1Energy.get(i)+g2Energy.get(i))/(Tools.rongLiang/10*eachDutyHours.get(i));
-				object.setData(Tools.float2Format(va*100, 2));
-				object.setName((i+1)+"");
-			}else
-			{
-				Float va = (g1Energy.get(i)+g2Energy.get(i))/(Tools.rongLiang*2/10*eachDutyHours.get(i));
+				Float va = (gEnergy.get(i))/(Tools.rongLiang/10*eachDutyHours.get(i));
 				object.setData(Tools.float2Format(va*100, 2));
 				object.setName((i+1)+"");
 			}

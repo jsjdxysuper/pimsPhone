@@ -8,8 +8,8 @@
 			
 %>
 <!DOCTYPE HTML>
-<html>
-<!-- <html  manifest="./support/cache.manifest"> -->
+<!-- <html> -->
+ <html  manifest="./support/cache.manifest">
 	<head>
     	<meta name="viewport" content="width=device-width,,user-scalable=no">
     	<base href="<%=basePath %>">

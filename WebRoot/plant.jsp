@@ -42,9 +42,21 @@
 	<link rel="stylesheet" type="text/css" href="support/threeMainPage.css" />
 	<script type="text/javascript" src="support/plant.js"></script>
 
+	<style type="text/css">	
+	#floatbutton{
+		color:black;
+		font-size:xx-large;
+		position:fixed;
+		left:85%;
+		top:90%;
+		filter:alpha(opacity=50);
+		opacity:0.5;
+		-moz-opacity:0.5
+	}
+	</style>
 	</head>
 	<body>
-		<div style="clear:both;height:10px"></div>
+		<div style="clear:both;height:10px"><a id = "ssyg" name = "ssyg"></a></div>
 		<div style="margin-left:20px;margin-right:20px">
 			<div style=";float:left">	
 		        <label for="test_default" style="float:left;;width:80px">日&nbsp;&nbsp;&nbsp;&nbsp;期</label>
@@ -56,7 +68,6 @@
 			</div>
 		</div>
 
-
 		<div style="height:60px"></div>
 		<div id="realTimeLineContainer" style="clear:both;width: 95%;height: 500px;margin-left:auto;margin-right:auto">
 			
@@ -66,9 +77,27 @@
 		<img src="./support/images/noData.png" style="height:90px;width:90px"></img>
 		<h6>此日期没有出力数据</h6>
 		</div>
+		<div id = "fdl" style="height:40px"></div>
+		<div id="columnContainer" style=" clear:both;height: 350px;width:95%;margin-left:auto;margin-right:auto"></div>
 		<div style="height:40px"></div>
-		<div id="columnContainer" style=" clear:both;height: 350px;width:95%"></div>
+		<div id="stackColumnContainer" style=" clear:both;height: 400px;width: 95%;margin-left:auto;margin-right:auto"></div>
+		<div id = "lyxs" style="height:40px"></div>
+		<div id="ylyxsContainer" style="height: 350px;clear:both;width: 95%;margin-left:auto;margin-right:auto"></div>
 		<div style="height:40px"></div>
-		<div id="stackColumnContainer" style=" clear:both;height: 400px;"></div>
+		<div id="nlyxsContainer" style="height: 350px;clear:both;width: 95%;margin-left:auto;margin-right:auto"></div>
+		<div id = "fhl" style="height:40px"></div>
+		<div id="yfhlContainer" style="height: 350px;clear:both;width: 95%;margin-left:auto;margin-right:auto"></div>
+		<div style="height:40px"></div>
+		<div id="nfhlContainer" style="height: 350px;clear:both;width: 95%;margin-left:auto;margin-right:auto"></div>	
+
+		<span id = "floatbutton" class="glyphicon glyphicon-list"></span>
+		
+		<ul id = "ui-menu" class="list-group" 
+		style="position: fixed;bottom: 0px;right: 0px;padding: 0px;margin: 0px;width: 100px;height: 165px;padding: 0px;margin: 0px;display: none;">
+		  <li class="list-group-item" style="text-align: center;"><a href="plant.jsp#ssyg" style="color: blue">实时有功</a></li>
+		  <li class="list-group-item" style="text-align: center;"><a href="plant.jsp#fdl" style="color: blue">发电量</a></li>
+		  <li class="list-group-item" style="text-align: center;"><a href="plant.jsp#lyxs" style="color: blue">利用小时</a></li>
+		  <li class="list-group-item" style="text-align: center;"><a href="plant.jsp#fhl" style="color: blue">负荷率</a></li>
+		</ul>
 	</body>
 </html>

@@ -228,7 +228,7 @@ submitRequest = function(){
 	
 	//获取表盘数据
 	$.ajax({
-		url:"Generator_dayGensLoadGaugeData",
+		url:"Generator_dayGensLoadGaugeData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -253,7 +253,7 @@ submitRequest = function(){
 	
 	//获取表格数据
 	$.ajax({
-		url:"Generator_dayGensDetailTableData",
+		url:"Generator_dayGensDetailTableData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -286,7 +286,7 @@ submitRequest = function(){
 	
 	//获取值间发电量对比柱图
 	$.ajax({
-		url:"Generator_monthInterDutyLoadColumnData",
+		url:"Generator_monthInterDutyLoadColumnData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){

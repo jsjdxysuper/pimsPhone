@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.AbstractInterceptor;
+import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.JdbcUtils_C3P0;
 public class UserRequestLog  extends AbstractInterceptor{
 
@@ -44,7 +45,7 @@ public class UserRequestLog  extends AbstractInterceptor{
 			String nowTime = String.format("%tT", now);
 			
 			String sqlStr = "insert into pcadb.info_user_request_log (rq,sj,yhid,class,method,message) values(?,?,?,?,?,?)";
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sqlStr);
 			st.setString(1, todyDate);
 			st.setString(2, nowTime);
@@ -57,7 +58,8 @@ public class UserRequestLog  extends AbstractInterceptor{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, null);
+			JdbcUtilProxoolImpl.closeStatement(st);
+			JdbcUtilProxoolImpl.closeConn(conn);
 		}
 		
 		

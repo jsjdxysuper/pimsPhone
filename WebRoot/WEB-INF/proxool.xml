@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<something-else-entirely>
+<proxool>
+	<alias>oracle_dddmdb</alias>
+	<driver-url>jdbc:oracle:thin:@114.215.142.63:1521:orcl</driver-url>
+	<driver-class>oracle.jdbc.driver.OracleDriver</driver-class>
+	<driver-properties>
+	<property name="user" value="dddmdb"/>
+	<property name="password" value="dddmdb"/>
+	</driver-properties>
+	<maximum-connection-count>10</maximum-connection-count>
+	<house-keeping-test-sql>select sysdate from DUAL</house-keeping-test-sql>
+</proxool>
+</something-else-entirely>

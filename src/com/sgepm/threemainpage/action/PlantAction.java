@@ -15,8 +15,8 @@ import net.sf.json.JSONObject;
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.opensymphony.xwork2.ActionSupport;
+import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
 import com.sgepm.threemainpage.entity.Plant60GenPower;
@@ -91,7 +91,7 @@ public class PlantAction  extends ActionSupport{
 		double min = Double.MAX_VALUE;
 		double max = 0;
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sql);
 			st.setString(1,date);
 			rs = st.executeQuery();
@@ -118,7 +118,7 @@ public class PlantAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		//如果查询结果为空
@@ -192,7 +192,7 @@ public class PlantAction  extends ActionSupport{
 		
 		try {
 
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sql);
 			st.setString(1,dateWildcard);
 			rs = st.executeQuery();
@@ -213,7 +213,7 @@ public class PlantAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		JSONArray allColumnData = new JSONArray();
@@ -302,7 +302,7 @@ public class PlantAction  extends ActionSupport{
 		log.info("sql查询:"+sql+"\n参数："+startDate+","+date);
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sql);
 			st.setString(1,startDate);
 			st.setString(2,date);
@@ -326,7 +326,7 @@ public class PlantAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		for(int i=0;i<6;i++){
@@ -381,7 +381,7 @@ public class PlantAction  extends ActionSupport{
 		log.debug("sql查询:"+sqlGetYearPlan+"\n参数："+jzbm+","+date.substring(0,4));
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sqlGetYearPlan);
 			st.setString(1,jzbm);
 			st.setString(2,date.substring(0,4));
@@ -394,7 +394,7 @@ public class PlantAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		float oneMonthPlan = yearPlan/12/10000;
@@ -410,7 +410,7 @@ public class PlantAction  extends ActionSupport{
 		
 		try {
 			
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(sqlGetYearPlan);
 			st.setString(1,startDate);
 			st.setString(2,date);
@@ -427,7 +427,8 @@ public class PlantAction  extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
+
 		}
 		
 		//plantIdentity

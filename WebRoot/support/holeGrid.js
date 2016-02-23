@@ -102,7 +102,7 @@ $(document).ready(function() {
 		table_example_id2 = $("#table_example").DataTable({
 	// 		"processing": true,
 		    "ajax":{
-	        	url:"HoleGrid_dayEnergyTableData",
+	        	url:"HoleGrid_dayEnergyTableData.go",
 	        	type:"POST",
 	        	data:function ( d ) {
 	// 		        	alert($('#appDate').serialize());
@@ -135,7 +135,7 @@ $(document).ready(function() {
 	var yhid = getUrlVars()["yhid"];
 	var date = $("#appDate").val().trim();
 	$.ajax({
-		url:"HoleGrid_monthEnergyLineData",
+		url:"HoleGrid_monthEnergyLineData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){
@@ -174,13 +174,13 @@ submitRequest = function(){
 	$("#requestButton").css("position","relative").css("top","0px").css("background-color","#0060b0");
 	
 	if(table_example_id2!=null)
-		table_example_id2.ajax.url("HoleGrid_dayEnergyTableData").load();	
+		table_example_id2.ajax.url("HoleGrid_dayEnergyTableData.go").load();	
 	
 	var yhid = getUrlVars()["yhid"];
 	var date = $("#appDate").val().trim();
 	sessionStorage.setItem("date",date);
 	$.ajax({
-		url:"HoleGrid_monthEnergyLineData",
+		url:"HoleGrid_monthEnergyLineData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
 		beforeSend:function(){

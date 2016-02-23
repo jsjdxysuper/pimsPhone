@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.opensymphony.xwork2.ActionSupport;
+import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.JdbcUtils_C3P0;
 import com.sgepm.Tools.Tools;
 
@@ -96,7 +97,7 @@ public class HoleGridAction extends ActionSupport{
 		log.info("sql 查询上个月的全省发电量数据:"+projectSqlStr+",参数:"+lastMonthDateWildStr);
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(projectSqlStr);
 			st.setString(1,lastMonthDateWildStr);
 			rs = st.executeQuery();
@@ -109,13 +110,13 @@ public class HoleGridAction extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(projectSqlStr);
 			st.setString(1,Tools.change2WildcardDate(date, Tools.time_span[2]));
 			//获得这个月的全省发电量数据
@@ -130,7 +131,7 @@ public class HoleGridAction extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 		
 		
@@ -139,7 +140,7 @@ public class HoleGridAction extends ActionSupport{
 		log.info("sql 查询去年同期月份全省发电量数据,参数:"+lastYearDateWildStr);
 		try {
 		
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(projectSqlStr);
 			st.setString(1,lastYearDateWildStr);
 			rs = st.executeQuery();
@@ -151,7 +152,7 @@ public class HoleGridAction extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 
 		dataMap.clear();
@@ -201,7 +202,7 @@ public class HoleGridAction extends ActionSupport{
 		
 		
 		try {
-			conn = JdbcUtils_C3P0.getConnection();
+			conn = JdbcUtilProxoolImpl.getConnection();
 			st = conn.prepareStatement(projectSqlStr);
 			st.setString(1,date);
 			rs = st.executeQuery();
@@ -237,7 +238,7 @@ public class HoleGridAction extends ActionSupport{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			JdbcUtils_C3P0.release(conn, st, rs);
+			JdbcUtilProxoolImpl.close(conn,rs,st);
 		}
 
 		dataMap.clear();
