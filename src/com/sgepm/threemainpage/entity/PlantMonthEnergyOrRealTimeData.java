@@ -1,7 +1,5 @@
 package com.sgepm.threemainpage.entity;
 
-import java.util.Vector;
-
 /**
  * 用以表示plant页面显示一个月各个电厂发电量柱图（柱图：某一个月各个电厂的月累计电量，一个电厂一个柱）
  * 也用于表示电厂的实时有功

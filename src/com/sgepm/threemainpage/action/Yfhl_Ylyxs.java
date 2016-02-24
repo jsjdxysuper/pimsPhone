@@ -1,7 +1,6 @@
 package com.sgepm.threemainpage.action;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -22,6 +21,7 @@ public class Yfhl_Ylyxs extends ActionSupport{
 		return members;
 	}
 
+	@Override
 	public String execute()
 			throws Exception {
 

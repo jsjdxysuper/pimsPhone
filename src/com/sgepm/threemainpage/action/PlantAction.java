@@ -19,12 +19,13 @@ import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.PimsTools;
 import com.sgepm.Tools.Tools;
+import com.sgepm.common.BaseAction;
 import com.sgepm.threemainpage.entity.Plant60GenPower;
 import com.sgepm.threemainpage.entity.Plant60GenPowerLineWrapper;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 import com.sgepm.threemainpage.entity.PlantYearAccumulateDataSeries;
 
-public class PlantAction  extends ActionSupport{
+public class PlantAction  extends BaseAction{
 	
 	private Logger log = LoggerFactory.getLogger(PlantAction.class);
 	private Map<String,Object>dataMap;//used to return json data
@@ -131,7 +132,7 @@ public class PlantAction  extends ActionSupport{
 		retWrapper.setMinRealtime(min);
 
 		dataMap.put("plantLinePower", JSONObject.fromObject(retWrapper).toString());
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 	
 	
@@ -239,7 +240,7 @@ public class PlantAction  extends ActionSupport{
 		
 		dataMap.clear();
 		dataMap.put("oneMonth60GensEnergyColumnData", allColumnData);
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 		
 	}
 	
@@ -352,7 +353,7 @@ public class PlantAction  extends ActionSupport{
 		dataMap.put("seriesPlantName", plantListStr);
 		dataMap.put("yearAccumulatePlantPowerSeries", plantVectorDataseries);
 		
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 	
 	
@@ -444,6 +445,6 @@ public class PlantAction  extends ActionSupport{
 		
 		dataMap.put("plantProgressData", vector);
 		
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 }

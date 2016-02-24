@@ -2,7 +2,6 @@ package com.sgepm.interception;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.Date;
 import java.util.Map;
 
@@ -27,13 +26,15 @@ public class UserRequestLog  extends AbstractInterceptor{
 		if(names != null && names.length>0)
 			yhid = names[0];
 		else
+		{
 			yhid = "";
+		}
 		
 		String method = invocation.getInvocationContext().getName(); 
 		
 		String className = invocation.getAction().getClass().getSimpleName();
 		
-		String result = null   ;
+		String result = null;
 		try {
 			result = invocation.invoke();
 

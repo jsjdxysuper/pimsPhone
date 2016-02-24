@@ -8,7 +8,12 @@
 	<property name="user" value="dddmdb"/>
 	<property name="password" value="dddmdb"/>
 	</driver-properties>
-	<maximum-connection-count>10</maximum-connection-count>
+	<maximum-connection-count>50</maximum-connection-count>      
+	<minimum-connection-count>10</minimum-connection-count>      
+	<house-keeping-sleep-time>60000</house-keeping-sleep-time>    
+	<maximum-new-connections>10</maximum-new-connections>      
+	<prototype-count>5</prototype-count>      
+	<test-before-use>true</test-before-use>    
 	<house-keeping-test-sql>select sysdate from DUAL</house-keeping-test-sql>
 </proxool>
 </something-else-entirely>

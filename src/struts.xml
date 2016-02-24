@@ -14,16 +14,11 @@
 
 
 
-		<interceptors>
-			<interceptor name="userRequestLog" class="com.sgepm.interception.UserRequestLog"></interceptor>
-		</interceptors>
-		
  		<action name="HoleGrid_*" class="com.sgepm.threemainpage.action.HoleGridAction" method="{1}"> 
 			<!-- 定义三个逻辑视图和物理资源之间的映射 -->		
  			<result type="json"> 
  				<param name="root">dataMap</param> 
  			</result>
- 			<interceptor-ref name="userRequestLog"></interceptor-ref>
  		</action> 
  		
  		<action name="Plant_*" class="com.sgepm.threemainpage.action.PlantAction" method="{1}"> 
@@ -31,7 +26,6 @@
  			<result type="json"> 
  				<param name="root">dataMap</param> 
  			</result>
- 			<interceptor-ref name="userRequestLog"></interceptor-ref>
  		</action> 
 		
 		
@@ -40,7 +34,6 @@
  			<result type="json"> 
  				<param name="root">dataMap</param> 
  			</result>
- 			<interceptor-ref name="userRequestLog"></interceptor-ref>
  		</action> 
  		
  		<action name="Yfhl_Ylyxs" class="com.sgepm.threemainpage.action.Yfhl_Ylyxs" method="execute">

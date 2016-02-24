@@ -28,6 +28,14 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 	
+	<servlet>
+	   <servlet-name>Admin</servlet-name>
+	   <servlet-class>org.logicalcobwebs.proxool.admin.servlet.AdminServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+	   <servlet-name>Admin</servlet-name>
+	   <url-pattern>/admin.proxool</url-pattern>
+	</servlet-mapping>
 	<welcome-file-list>
 	  <welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>

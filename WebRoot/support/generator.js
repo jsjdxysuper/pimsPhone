@@ -231,6 +231,7 @@ submitRequest = function(){
 		url:"Generator_dayGensLoadGaugeData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
+		"dataType" : "json",
 		beforeSend:function(){
 		}
 	})
@@ -256,6 +257,7 @@ submitRequest = function(){
 		url:"Generator_dayGensDetailTableData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
+		"dataType" : "json",
 		beforeSend:function(){
 		}
 	})
@@ -289,6 +291,7 @@ submitRequest = function(){
 		url:"Generator_monthInterDutyLoadColumnData.go",
 		data:$.param({"date":date,"yhid":yhid}),
 		type:"post",
+		"dataType" : "json",
 		beforeSend:function(){
 		}
 	})

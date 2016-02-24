@@ -8,15 +8,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.Tools;
+import com.sgepm.common.BaseAction;
 import com.sgepm.threemainpage.entity.PlantMonthEnergyOrRealTimeData;
 
-public class GeneratorAction  extends ActionSupport{
+public class GeneratorAction  extends BaseAction{
 	
 	private Logger log = LoggerFactory.getLogger(GeneratorAction.class);
 	private Map<String,Object>dataMap;//used to return json data
@@ -101,7 +103,7 @@ public class GeneratorAction  extends ActionSupport{
 
 		dataMap.put("g1Load", Tools.float2Format(g1Load, 2));
 		dataMap.put("g2Load", Tools.float2Format(g2Load, 2));
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 	
 	
@@ -180,7 +182,7 @@ public class GeneratorAction  extends ActionSupport{
 		dataMap.put("g2Average",Tools.float2Format(g2Average,2));
 		dataMap.put("g2Energy",Tools.float2Format(g2Energy,2));
 		dataMap.put("g2TimeUse",Tools.float2Format(g2TimeUse,2));
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 	
 	/**
@@ -265,6 +267,7 @@ public class GeneratorAction  extends ActionSupport{
 		
 		dataMap.clear();
 		dataMap.put("monthLoadRate", ja);
-		return SUCCESS;
+		JSONObject jResult = JSONObject.fromObject(dataMap);
+		return renderJson(jResult.toString());
 	}
 }

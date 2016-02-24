@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import net.sf.json.JSONObject;
+
 import org.apache.struts2.ServletActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +18,9 @@ import org.slf4j.LoggerFactory;
 import com.opensymphony.xwork2.ActionSupport;
 import com.sgepm.Tools.JdbcUtilProxoolImpl;
 import com.sgepm.Tools.Tools;
+import com.sgepm.common.BaseAction;
 
-public class HoleGridAction extends ActionSupport{
-//	private String date;
-//	private String dateWildcard;
+public class HoleGridAction extends BaseAction{
 	private Logger log                       = LoggerFactory.getLogger(HoleGridAction.class);
 	private HashMap<String,Integer> sequence = new HashMap<String,Integer>();
 	private int tableRows                    = 6;
@@ -162,7 +163,7 @@ public class HoleGridAction extends ActionSupport{
 		dataMap.put("lastMonth", allData.get(1));
 		dataMap.put("thisMonth", allData.get(2));
 		
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 	
 	/**
@@ -242,7 +243,7 @@ public class HoleGridAction extends ActionSupport{
 
 		dataMap.clear();
 		dataMap.put("data", vector);
-		return SUCCESS;
+		return renderJson(JSONObject.fromObject(dataMap).toString());
 	}
 	
 }
